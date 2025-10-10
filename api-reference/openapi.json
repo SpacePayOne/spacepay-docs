@@ -1,216 +1,4711 @@
 {
-  "openapi": "3.1.0",
-  "info": {
-    "title": "OpenAPI Plant Store",
-    "description": "A sample API that uses a plant store as an example to demonstrate features in the OpenAPI specification",
-    "license": {
-      "name": "MIT"
-    },
-    "version": "1.0.0"
-  },
-  "servers": [
-    {
-      "url": "http://sandbox.mintlify.com"
-    }
-  ],
-  "security": [
-    {
-      "bearerAuth": []
-    }
-  ],
+  "openapi": "3.0.0",
   "paths": {
-    "/plants": {
+    "/v1": {
       "get": {
-        "description": "Returns all plants from the system that the user has access to",
+        "operationId": "AppController_checkStatus",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": ["Base"]
+      }
+    },
+    "/v1/auth/me": {
+      "get": {
+        "operationId": "AuthController_getProfile",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "User profile retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthBusinessUserDto"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized - Invalid or missing token"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Get current user profile",
+        "tags": ["Authentication"]
+      }
+    },
+    "/v1/clerk/webhook": {
+      "post": {
+        "operationId": "ClerkController_handleWebhook",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Webhook received and processed"
+          },
+          "201": {
+            "description": ""
+          }
+        },
+        "summary": "Handle an incoming Clerk webhook",
+        "tags": ["Thirdparty Webhooks"]
+      }
+    },
+    "/v1/merchants/{merchantId}": {
+      "get": {
+        "operationId": "MerchantsController_getMerchantById",
         "parameters": [
           {
-            "name": "limit",
-            "in": "query",
-            "description": "The maximum number of results to return",
+            "name": "merchantId",
+            "required": true,
+            "in": "path",
             "schema": {
-              "type": "integer",
-              "format": "int32"
+              "type": "string"
             }
           }
         ],
         "responses": {
           "200": {
-            "description": "Plant response",
+            "description": "Merchant retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MerchantDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Merchant not found"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Get a merchant by ID",
+        "tags": ["Merchants"]
+      },
+      "post": {
+        "operationId": "MerchantsController_updateMerchant",
+        "parameters": [
+          {
+            "name": "merchantId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateMerchantRequestDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Merchant updated successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MerchantDto"
+                }
+              }
+            }
+          },
+          "201": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MerchantDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Update a merchant",
+        "tags": ["Merchants"]
+      }
+    },
+    "/v1/merchants/{merchantId}/onboarding": {
+      "get": {
+        "operationId": "MerchantsController_getMerchantOnboarding",
+        "parameters": [
+          {
+            "name": "merchantId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Merchant onboarding status retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MerchantOnboardingDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Get merchant onboarding status",
+        "tags": ["Merchants"]
+      }
+    },
+    "/v1/merchants/{merchantId}/payout-accounts/active": {
+      "get": {
+        "operationId": "MerchantsController_getActivePayoutAccount",
+        "parameters": [
+          {
+            "name": "merchantId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Active payout account retrieved successfully or null if none exists",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "oneOf": [
+                    {
+                      "$ref": "#/components/schemas/MerchantPayoutAccountDto"
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ]
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Get active payout account for merchant",
+        "tags": ["Merchants"]
+      }
+    },
+    "/v1/merchants/{merchantId}/payout-accounts": {
+      "get": {
+        "operationId": "MerchantsController_getAllPayoutAccounts",
+        "parameters": [
+          {
+            "name": "merchantId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Payout accounts retrieved successfully",
             "content": {
               "application/json": {
                 "schema": {
                   "type": "array",
                   "items": {
-                    "$ref": "#/components/schemas/Plant"
+                    "$ref": "#/components/schemas/MerchantPayoutAccountDto"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Get all payout accounts for a merchant",
+        "tags": ["Merchants"]
+      }
+    },
+    "/v1/merchants/{merchantId}/balance": {
+      "get": {
+        "operationId": "MerchantsController_getBalance",
+        "parameters": [
+          {
+            "name": "merchantId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Balance retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MerchantBalanceDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Get balance for a merchant",
+        "tags": ["Merchants"]
+      }
+    },
+    "/v1/merchants/{merchantId}/payouts": {
+      "get": {
+        "operationId": "MerchantsPayoutsController_getPayouts",
+        "parameters": [
+          {
+            "name": "merchantId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "status",
+            "required": false,
+            "in": "query",
+            "description": "Filter by payout status",
+            "schema": {
+              "example": "completed",
+              "type": "string",
+              "enum": ["pending", "completed", "failed"]
+            }
+          },
+          {
+            "name": "limit",
+            "required": false,
+            "in": "query",
+            "description": "Number of items to return",
+            "schema": {
+              "minimum": 1,
+              "maximum": 1000,
+              "default": 100,
+              "example": 50,
+              "type": "number"
+            }
+          },
+          {
+            "name": "offset",
+            "required": false,
+            "in": "query",
+            "description": "Number of items to skip",
+            "schema": {
+              "minimum": 0,
+              "default": 0,
+              "example": 0,
+              "type": "number"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Payouts retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PaginatedMerchantPayoutDtoResult"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Get all payouts for a merchant",
+        "tags": ["Merchants"]
+      }
+    },
+    "/v1/merchants/{merchantId}/payouts/{payoutId}": {
+      "get": {
+        "operationId": "MerchantsPayoutsController_getPayout",
+        "parameters": [
+          {
+            "name": "merchantId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "payoutId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Payout retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MerchantPayoutDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Payout not found"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Get a specific payout by ID",
+        "tags": ["Merchants"]
+      }
+    },
+    "/v1/admin/merchants": {
+      "get": {
+        "operationId": "AdminMerchantsController_getAllMerchants",
+        "parameters": [
+          {
+            "name": "name",
+            "required": false,
+            "in": "query",
+            "description": "Filter by merchant business name (case-insensitive)",
+            "schema": {
+              "example": "Coffee Shop",
+              "type": "string"
+            }
+          },
+          {
+            "name": "status",
+            "required": false,
+            "in": "query",
+            "description": "Filter by merchant status",
+            "schema": {
+              "example": "approved",
+              "type": "string",
+              "enum": ["pending", "onboarding", "approved", "rejected"]
+            }
+          },
+          {
+            "name": "sortBy",
+            "required": false,
+            "in": "query",
+            "description": "Field to sort by",
+            "schema": {
+              "example": "createdAt",
+              "type": "string",
+              "enum": ["status", "businessName", "createdAt"]
+            }
+          },
+          {
+            "name": "sortOrder",
+            "required": false,
+            "in": "query",
+            "description": "Sort order",
+            "schema": {
+              "example": "DESC",
+              "type": "string",
+              "enum": ["ASC", "DESC"]
+            }
+          },
+          {
+            "name": "limit",
+            "required": false,
+            "in": "query",
+            "description": "Number of items to return",
+            "schema": {
+              "minimum": 1,
+              "maximum": 1000,
+              "default": 100,
+              "example": 50,
+              "type": "number"
+            }
+          },
+          {
+            "name": "offset",
+            "required": false,
+            "in": "query",
+            "description": "Number of items to skip",
+            "schema": {
+              "minimum": 0,
+              "default": 0,
+              "example": 0,
+              "type": "number"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Merchants retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PaginatedMerchantDtoResult"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Get all merchants (Super Admin only)",
+        "tags": ["Admin"]
+      }
+    },
+    "/v1/admin/merchants/{merchantId}/status": {
+      "post": {
+        "operationId": "AdminMerchantsController_updateMerchantStatus",
+        "parameters": [
+          {
+            "name": "merchantId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateMerchantStatusDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Merchant status updated successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MerchantDto"
+                }
+              }
+            }
+          },
+          "201": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MerchantDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Update merchant status (Super Admin only)",
+        "tags": ["Admin"]
+      }
+    },
+    "/v1/admin/merchants/{merchantId}/payout-accounts": {
+      "post": {
+        "operationId": "AdminMerchantsController_createPayoutAccount",
+        "parameters": [
+          {
+            "name": "merchantId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateMerchantPayoutAccountDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Payout account created successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MerchantPayoutAccountDto"
+                }
+              }
+            }
+          },
+          "201": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MerchantPayoutAccountDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Create a payout account for a merchant",
+        "tags": ["Admin"]
+      }
+    },
+    "/v1/admin/merchants/{merchantId}/payout-accounts/{payoutAccountId}/activate": {
+      "post": {
+        "operationId": "AdminMerchantsController_activatePayoutAccount",
+        "parameters": [
+          {
+            "name": "merchantId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "payoutAccountId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": ""
+          },
+          "204": {
+            "description": "Payout account activated successfully"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Activate a payout account for a merchant",
+        "tags": ["Admin"]
+      }
+    },
+    "/v1/admin/merchants/{merchantId}/payouts": {
+      "post": {
+        "operationId": "AdminMerchantsController_createPayout",
+        "parameters": [
+          {
+            "name": "merchantId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateMerchantPayoutDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Payout created successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MerchantPayoutDto"
+                }
+              }
+            }
+          },
+          "201": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MerchantPayoutDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Create a payout for a merchant",
+        "tags": ["Admin"]
+      }
+    },
+    "/v1/merchants/{merchantId}/api-key": {
+      "get": {
+        "operationId": "ApiKeysController_getAllApiKeys",
+        "parameters": [
+          {
+            "name": "merchantId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "List of API keys",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ApiKeyDto"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Get all API keys for a merchant",
+        "tags": ["API Keys"]
+      }
+    },
+    "/v1/merchants/{merchantId}/api-key/secrets": {
+      "post": {
+        "operationId": "ApiKeysController_createSecretKey",
+        "parameters": [
+          {
+            "name": "merchantId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateSecretKeyRequestDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Secret key created successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CreateSecretKeyResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Create a new secret key",
+        "tags": ["API Keys"]
+      }
+    },
+    "/v1/merchants/{merchantId}/api-key/secrets/{keyId}/rotate": {
+      "post": {
+        "operationId": "ApiKeysController_rotateSecretKey",
+        "parameters": [
+          {
+            "name": "merchantId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "keyId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Secret key rotated successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CreateSecretKeyResponseDto"
+                }
+              }
+            }
+          },
+          "201": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CreateSecretKeyResponseDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Secret key not found"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Rotate a secret key",
+        "tags": ["API Keys"]
+      }
+    },
+    "/v1/merchants/{merchantId}/api-key/secrets/{keyId}": {
+      "put": {
+        "operationId": "ApiKeysController_updateSecretKey",
+        "parameters": [
+          {
+            "name": "merchantId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "keyId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateApiKeyDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Secret key updated successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiKeyDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Secret key not found"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Update a secret key",
+        "tags": ["API Keys"]
+      },
+      "delete": {
+        "operationId": "ApiKeysController_deleteSecretKey",
+        "parameters": [
+          {
+            "name": "merchantId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "keyId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Secret key deleted successfully"
+          },
+          "404": {
+            "description": "Secret key not found"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Delete a secret key",
+        "tags": ["API Keys"]
+      }
+    },
+    "/v1/merchants/{merchantId}/events": {
+      "get": {
+        "operationId": "EventsController_getEvents",
+        "parameters": [
+          {
+            "name": "type",
+            "required": false,
+            "in": "query",
+            "description": "Filter by event type",
+            "schema": {
+              "example": "payment.created",
+              "type": "string",
+              "enum": [
+                "payment.created",
+                "payment.updated",
+                "payment.cancelled",
+                "payment.received",
+                "payment.confirmed",
+                "payment.failed",
+                "user.created",
+                "user.updated",
+                "merchant.created",
+                "merchant.updated",
+                "payout.created"
+              ]
+            }
+          },
+          {
+            "name": "limit",
+            "required": false,
+            "in": "query",
+            "description": "Number of items to return",
+            "schema": {
+              "minimum": 1,
+              "maximum": 1000,
+              "default": 100,
+              "example": 50,
+              "type": "number"
+            }
+          },
+          {
+            "name": "offset",
+            "required": false,
+            "in": "query",
+            "description": "Number of items to skip",
+            "schema": {
+              "minimum": 0,
+              "default": 0,
+              "example": 0,
+              "type": "number"
+            }
+          },
+          {
+            "name": "merchantId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "List of events",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PaginatedApplicationEventDtoResult"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Get all events for a merchant",
+        "tags": ["Events"]
+      }
+    },
+    "/v1/merchants/{merchantId}/events/{eventId}": {
+      "get": {
+        "operationId": "EventsController_getEvent",
+        "parameters": [
+          {
+            "name": "merchantId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "eventId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Event details",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApplicationEventDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Event not found"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Get an event by ID",
+        "tags": ["Events"]
+      }
+    },
+    "/v1/merchants/{merchantId}/notifications/settings": {
+      "get": {
+        "operationId": "NotificationSettingsController_getSettings",
+        "parameters": [
+          {
+            "name": "merchantId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MerchantNotificationSettingsDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Get merchant notification settings",
+        "tags": ["Notification Settings"]
+      },
+      "put": {
+        "operationId": "NotificationSettingsController_updateSettings",
+        "parameters": [
+          {
+            "name": "merchantId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateMerchantNotificationSettingsDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MerchantNotificationSettingsDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Update merchant notification settings",
+        "tags": ["Notification Settings"]
+      }
+    },
+    "/v1/merchants/{merchantId}/webhook-endpoints": {
+      "get": {
+        "operationId": "WebhooksController_getAllWebhookEndpoints",
+        "parameters": [
+          {
+            "name": "merchantId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "List of webhook endpoints",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/WebhookEndpointDto"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "List all webhook endpoints for a merchant",
+        "tags": ["Webhook Endpoints"]
+      },
+      "post": {
+        "operationId": "WebhooksController_createWebhook",
+        "parameters": [
+          {
+            "name": "merchantId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateWebhookEndpointRequestDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Webhook endpoint created successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CreateWebhookEndpointResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Create a new webhook endpoint",
+        "tags": ["Webhook Endpoints"]
+      }
+    },
+    "/v1/merchants/{merchantId}/webhook-endpoints/{webhookEndpointId}": {
+      "get": {
+        "operationId": "WebhooksController_getWebhook",
+        "parameters": [
+          {
+            "name": "merchantId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "webhookEndpointId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Webhook endpoint details",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/WebhookEndpointDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Webhook endpoint not found"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Get a webhook endpoint by ID",
+        "tags": ["Webhook Endpoints"]
+      },
+      "put": {
+        "operationId": "WebhooksController_updateWebhook",
+        "parameters": [
+          {
+            "name": "merchantId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "webhookEndpointId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateWebhookEndpointRequestDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Webhook endpoint updated successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/WebhookEndpointDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Webhook endpoint not found"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Update a webhook endpoint",
+        "tags": ["Webhook Endpoints"]
+      },
+      "delete": {
+        "operationId": "WebhooksController_deleteWebhook",
+        "parameters": [
+          {
+            "name": "merchantId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "webhookEndpointId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Webhook endpoint deleted successfully"
+          },
+          "404": {
+            "description": "Webhook endpoint not found"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Delete a webhook endpoint",
+        "tags": ["Webhook Endpoints"]
+      }
+    },
+    "/v1/merchants/{merchantId}/webhook-endpoints/queue/health": {
+      "get": {
+        "operationId": "WebhooksController_getQueueHealth",
+        "parameters": [
+          {
+            "name": "merchantId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Queue health information"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Get webhook queue health status",
+        "tags": ["Webhook Endpoints"]
+      }
+    },
+    "/v1/merchants/{merchantId}/webhook-endpoints/{webhookEndpointId}/stats": {
+      "get": {
+        "operationId": "WebhooksController_getWebhookStats",
+        "parameters": [
+          {
+            "name": "merchantId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "webhookEndpointId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Webhook delivery statistics"
+          },
+          "404": {
+            "description": "Webhook endpoint not found"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Get webhook delivery statistics",
+        "tags": ["Webhook Endpoints"]
+      }
+    },
+    "/v1/merchants/{merchantId}/email-endpoints": {
+      "get": {
+        "operationId": "EmailEndpointsController_getAllEmailEndpoints",
+        "parameters": [
+          {
+            "name": "merchantId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "List of email endpoints",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/EmailEndpointDto"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "List all email endpoints for a merchant",
+        "tags": ["Email Endpoints"]
+      },
+      "post": {
+        "operationId": "EmailEndpointsController_createEmailEndpoint",
+        "parameters": [
+          {
+            "name": "merchantId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateEmailEndpointRequestDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Email endpoint created successfully"
+          },
+          "400": {
+            "description": "Invalid input data"
+          },
+          "403": {
+            "description": "Access denied"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Create a new email endpoint",
+        "tags": ["Email Endpoints"]
+      }
+    },
+    "/v1/merchants/{merchantId}/email-endpoints/{emailEndpointId}": {
+      "get": {
+        "operationId": "EmailEndpointsController_getEmailEndpoint",
+        "parameters": [
+          {
+            "name": "merchantId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "emailEndpointId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Email endpoint details",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmailEndpointDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Email endpoint not found"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Get an email endpoint by ID",
+        "tags": ["Email Endpoints"]
+      },
+      "put": {
+        "operationId": "EmailEndpointsController_updateEmailEndpoint",
+        "parameters": [
+          {
+            "name": "merchantId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "emailEndpointId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateEmailEndpointRequestDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Email endpoint updated successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmailEndpointDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid input data"
+          },
+          "404": {
+            "description": "Email endpoint not found"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Update an email endpoint",
+        "tags": ["Email Endpoints"]
+      },
+      "delete": {
+        "operationId": "EmailEndpointsController_deleteEmailEndpoint",
+        "parameters": [
+          {
+            "name": "merchantId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "emailEndpointId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Email endpoint deleted successfully"
+          },
+          "404": {
+            "description": "Email endpoint not found"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Delete an email endpoint",
+        "tags": ["Email Endpoints"]
+      }
+    },
+    "/v1/merchants/{merchantId}/email-endpoints/sync": {
+      "post": {
+        "operationId": "EmailEndpointsController_syncEmailAddresses",
+        "parameters": [
+          {
+            "name": "merchantId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SyncEmailAddressesDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Email addresses synced successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SyncEmailAddressesResponseDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid input data"
+          },
+          "403": {
+            "description": "Access denied"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Sync email addresses - delete missing and add new ones",
+        "tags": ["Email Endpoints"]
+      }
+    },
+    "/v1/merchants/{merchantId}/email-endpoints/{emailEndpointId}/health": {
+      "get": {
+        "operationId": "EmailEndpointsController_getEndpointHealth",
+        "parameters": [
+          {
+            "name": "merchantId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "emailEndpointId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "days",
+            "required": false,
+            "in": "query",
+            "description": "Number of days to analyze",
+            "schema": {
+              "type": "number"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Health metrics retrieved successfully"
+          },
+          "404": {
+            "description": "Email endpoint not found"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Get health metrics for an email endpoint",
+        "tags": ["Email Endpoints"]
+      }
+    },
+    "/v1/merchants/{merchantId}/email-endpoints/health/overview": {
+      "get": {
+        "operationId": "EmailEndpointsController_getHealthOverview",
+        "parameters": [
+          {
+            "name": "merchantId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "days",
+            "required": false,
+            "in": "query",
+            "description": "Number of days to analyze",
+            "schema": {
+              "type": "number"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Health overview retrieved successfully"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Get overall email health metrics for a merchant",
+        "tags": ["Email Endpoints"]
+      }
+    },
+    "/v1/merchants/{merchantId}/payments": {
+      "get": {
+        "operationId": "PaymentsController_getAllPayments",
+        "parameters": [
+          {
+            "name": "merchantId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "status",
+            "required": false,
+            "in": "query",
+            "description": "Filter by payment status",
+            "schema": {
+              "example": "pending",
+              "type": "string",
+              "enum": [
+                "pending",
+                "processing",
+                "completed",
+                "failed",
+                "expired",
+                "cancelled"
+              ]
+            }
+          },
+          {
+            "name": "limit",
+            "required": false,
+            "in": "query",
+            "description": "Number of items to return",
+            "schema": {
+              "minimum": 1,
+              "maximum": 1000,
+              "default": 100,
+              "example": 50,
+              "type": "number"
+            }
+          },
+          {
+            "name": "offset",
+            "required": false,
+            "in": "query",
+            "description": "Number of items to skip",
+            "schema": {
+              "minimum": 0,
+              "default": 0,
+              "example": 0,
+              "type": "number"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Payments retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PaginatedPaymentDtoResult"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Get all payments",
+        "tags": ["Payments"]
+      }
+    },
+    "/v1/merchants/{merchantId}/payments/export": {
+      "get": {
+        "operationId": "PaymentsController_exportPaymentsCsv",
+        "parameters": [
+          {
+            "name": "merchantId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "status",
+            "required": false,
+            "in": "query",
+            "description": "Filter by payment status",
+            "schema": {
+              "example": "pending",
+              "type": "string",
+              "enum": [
+                "pending",
+                "processing",
+                "completed",
+                "failed",
+                "expired",
+                "cancelled"
+              ]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "CSV stream of payments matching filters"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Export payments as CSV",
+        "tags": ["Payments"]
+      }
+    },
+    "/v1/merchants/{merchantId}/payments/{paymentId}": {
+      "get": {
+        "operationId": "PaymentsController_getPayment",
+        "parameters": [
+          {
+            "name": "merchantId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "paymentId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Payment found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PaymentDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Payment not found"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Get payment by ID",
+        "tags": ["Payments"]
+      }
+    },
+    "/v1/external/secretkey-auth/payments": {
+      "post": {
+        "operationId": "ExternalPaymentsBySecretKeyController_createPayment",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreatePaymentRequestDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Payment created successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CreatePaymentResponseDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid input data"
+          },
+          "401": {
+            "description": "Invalid or missing x-spacepay-secret-key header"
+          }
+        },
+        "security": [
+          {
+            "Secret Key": []
+          }
+        ],
+        "summary": "Create a new payment using secret key (external API)",
+        "tags": ["External - Payments (Secret Key)"]
+      }
+    },
+    "/v1/external/secretkey-auth/payments/{paymentId}": {
+      "get": {
+        "operationId": "ExternalPaymentsBySecretKeyController_getPaymentDetails",
+        "parameters": [
+          {
+            "name": "paymentId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Payment retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PaymentDto"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Invalid or missing x-spacepay-secret-key header"
+          },
+          "404": {
+            "description": "Payment not found"
+          }
+        },
+        "security": [
+          {
+            "Secret Key": []
+          }
+        ],
+        "summary": "Get payment details by ID using secret key (external API)",
+        "tags": ["External - Payments (Secret Key)"]
+      }
+    },
+    "/v1/external/payment-secret-auth/payments/{paymentId}": {
+      "get": {
+        "operationId": "ExternalPaymentsByPaymentSecretController_getPaymentDetails",
+        "parameters": [
+          {
+            "name": "paymentId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Payment retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PaymentDto"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Invalid or missing x-spacepay-payment-secret header"
+          },
+          "404": {
+            "description": "Payment not found"
+          }
+        },
+        "security": [
+          {
+            "Payment Secret": []
+          }
+        ],
+        "summary": "Get payment details by ID using Payment Secret.",
+        "tags": ["External - Payments (Payment Secret)"]
+      }
+    },
+    "/v1/external/payment-secret-auth/payments/{paymentId}/status": {
+      "get": {
+        "operationId": "ExternalPaymentsByPaymentSecretController_getPaymentStatus",
+        "parameters": [
+          {
+            "name": "paymentId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Payment status retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PaymentStatusDto"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Invalid or missing x-spacepay-payment-secret header"
+          },
+          "404": {
+            "description": "Payment not found"
+          }
+        },
+        "security": [
+          {
+            "Payment Secret": []
+          }
+        ],
+        "summary": "Get payment status by ID using Payment Secret, for polling",
+        "tags": ["External - Payments (Payment Secret)"]
+      }
+    },
+    "/v1/external/payment-secret-auth/payments/{paymentId}/quotes": {
+      "get": {
+        "operationId": "ExternalPaymentsByPaymentSecretController_getActiveQuotes",
+        "parameters": [
+          {
+            "name": "paymentId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "List of active quotes",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/PaymentQuoteDto"
                   }
                 }
               }
             }
           },
-          "400": {
-            "description": "Unexpected error",
+          "401": {
+            "description": "Invalid or missing x-spacepay-payment-secret header"
+          }
+        },
+        "security": [
+          {
+            "Payment Secret": []
+          }
+        ],
+        "summary": "Get active quotes for a payment using Payment Secret",
+        "tags": ["External - Payments (Payment Secret)"]
+      },
+      "post": {
+        "operationId": "ExternalPaymentsByPaymentSecretController_createOrUpdateQuote",
+        "parameters": [
+          {
+            "name": "paymentId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateQuoteByContractDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Quote created or updated successfully",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/Error"
+                  "$ref": "#/components/schemas/PaymentQuoteDto"
                 }
               }
             }
+          },
+          "400": {
+            "description": "Payment is not pending, cannot create or update a quote"
+          },
+          "401": {
+            "description": "Invalid or missing x-spacepay-payment-secret header"
+          }
+        },
+        "security": [
+          {
+            "Payment Secret": []
+          }
+        ],
+        "summary": "Create or update a quote by contract address and chain using Payment Secret. If neither contractAddress nor chainId is provided, a default quote will be created.",
+        "tags": ["External - Payments (Payment Secret)"]
+      }
+    },
+    "/v1/external/chains": {
+      "get": {
+        "operationId": "ExternalChainsController_getAllChains",
+        "parameters": [
+          {
+            "name": "limit",
+            "required": false,
+            "in": "query",
+            "description": "Number of items to return",
+            "schema": {
+              "minimum": 1,
+              "maximum": 1000,
+              "default": 100,
+              "example": 50,
+              "type": "number"
+            }
+          },
+          {
+            "name": "offset",
+            "required": false,
+            "in": "query",
+            "description": "Number of items to skip",
+            "schema": {
+              "minimum": 0,
+              "default": 0,
+              "example": 0,
+              "type": "number"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Chains retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PaginatedChainDtoResult"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Get all chains. Returns only active chains.",
+        "tags": ["External - Token Registry (Public)"]
+      }
+    },
+    "/v1/external/chains/{chainId}": {
+      "get": {
+        "operationId": "ExternalChainsController_getChainById",
+        "parameters": [
+          {
+            "name": "chainId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "number"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Chain retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ChainDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Chain not found"
+          }
+        },
+        "summary": "Get a chain by ID. Returns only active chains.",
+        "tags": ["External - Token Registry (Public)"]
+      }
+    },
+    "/v1/external/tokens": {
+      "get": {
+        "operationId": "ExternalTokensController_getAllTokens",
+        "parameters": [
+          {
+            "name": "chainId",
+            "required": false,
+            "in": "query",
+            "description": "Filter by chain ID",
+            "schema": {
+              "example": 1,
+              "type": "number"
+            }
+          },
+          {
+            "name": "symbol",
+            "required": false,
+            "in": "query",
+            "description": "Filter by token symbol (case-insensitive)",
+            "schema": {
+              "example": "USDC",
+              "type": "string"
+            }
+          },
+          {
+            "name": "contractAddress",
+            "required": false,
+            "in": "query",
+            "description": "Filter by contract address (case-insensitive)",
+            "schema": {
+              "example": "0xa0b86a33e6441b8c4c8c0c0c0c0c0c0c0c0c0c0",
+              "type": "string"
+            }
+          },
+          {
+            "name": "limit",
+            "required": false,
+            "in": "query",
+            "description": "Number of items to return",
+            "schema": {
+              "minimum": 1,
+              "maximum": 1000,
+              "default": 100,
+              "example": 50,
+              "type": "number"
+            }
+          },
+          {
+            "name": "offset",
+            "required": false,
+            "in": "query",
+            "description": "Number of items to skip",
+            "schema": {
+              "minimum": 0,
+              "default": 0,
+              "example": 0,
+              "type": "number"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Tokens retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PaginatedTokenDtoResult"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Get all tokens. Returns only active tokens for enabled chains. Includes price in USD.",
+        "tags": ["External - Token Registry (Public)"]
+      }
+    },
+    "/v1/external/tokens/{tokenId}": {
+      "get": {
+        "operationId": "ExternalTokensController_getTokenById",
+        "parameters": [
+          {
+            "name": "tokenId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Token retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TokenDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Token not found"
+          }
+        },
+        "summary": "Get a token by ID, including price in USD. Returns only active tokens for enabled chains.",
+        "tags": ["External - Token Registry (Public)"]
+      }
+    },
+    "/v1/tatum/webhook": {
+      "post": {
+        "operationId": "TatumWebhookController_handleWebhook",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/TatumFungibleWebhookDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": ["Thirdparty Webhooks"]
+      }
+    },
+    "/v1/merchants/{merchantId}/analytics/summary-stats": {
+      "get": {
+        "operationId": "AnalyticsController_getMerchantDashboardSummary",
+        "parameters": [
+          {
+            "name": "merchantId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Merchant dashboard summary stats retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SummaryStatsDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Get summary stats for a merchant",
+        "tags": ["Analytics"]
+      }
+    },
+    "/v1/merchants/{merchantId}/analytics/aggregated-stats": {
+      "get": {
+        "operationId": "AnalyticsController_getAggregatedStats",
+        "parameters": [
+          {
+            "name": "merchantId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "from",
+            "required": true,
+            "in": "query",
+            "description": "Start of date range (ISO 8601)",
+            "schema": {
+              "example": "2025-01-01T00:00:00.000Z",
+              "type": "string"
+            }
+          },
+          {
+            "name": "to",
+            "required": true,
+            "in": "query",
+            "description": "End of date range (ISO 8601)",
+            "schema": {
+              "example": "2025-01-31T23:59:59.999Z",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Aggregated stats retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AggregatedStatsDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Get aggregated analytics stats for a merchant",
+        "tags": ["Analytics"]
+      }
+    },
+    "/v1/merchants/{merchantId}/analytics/detailed": {
+      "get": {
+        "operationId": "AnalyticsController_getDetailed",
+        "parameters": [
+          {
+            "name": "merchantId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "from",
+            "required": true,
+            "in": "query",
+            "description": "Start of date range (ISO 8601)",
+            "schema": {
+              "example": "2025-01-01T00:00:00.000Z",
+              "type": "string"
+            }
+          },
+          {
+            "name": "to",
+            "required": true,
+            "in": "query",
+            "description": "End of date range (ISO 8601)",
+            "schema": {
+              "example": "2025-01-31T23:59:59.999Z",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Detailed analytics retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DetailedAnalyticsDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Get detailed analytics for a merchant",
+        "tags": ["Analytics"]
+      }
+    },
+    "/v1/accounts/auth/login": {
+      "get": {
+        "operationId": "AccountsAuthController_getLoginPayload",
+        "parameters": [
+          {
+            "name": "address",
+            "required": true,
+            "in": "query",
+            "description": "User address",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "chainId",
+            "required": false,
+            "in": "query",
+            "description": "Blockchain chain ID",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Payload generated successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AccountLoginPayloadDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Address is required"
+          }
+        },
+        "summary": "Generate login payload",
+        "tags": ["Accounts Auth"]
+      },
+      "post": {
+        "operationId": "AccountsAuthController_verifyLogin",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "description": "Payload to verify",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/VerifyAccountAuthRequestDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Login verified and JWT generated",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/VerifyAccountAuthResponseDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Failed to login"
+          }
+        },
+        "summary": "Verify login payload and generate JWT",
+        "tags": ["Accounts Auth"]
+      }
+    },
+    "/v1/accounts/auth/isLoggedIn": {
+      "get": {
+        "operationId": "AccountsAuthController_isLoggedIn",
+        "parameters": [
+          {
+            "name": "address",
+            "required": true,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "User logged in status",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "boolean"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "x-spacepay-thirdweb-jwt": []
+          }
+        ],
+        "summary": "Check if user is logged in",
+        "tags": ["Accounts Auth"]
+      }
+    },
+    "/v1/accounts/auth/logout": {
+      "post": {
+        "operationId": "AccountsAuthController_logout",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "User logged out successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "boolean"
+                }
+              }
+            }
+          },
+          "201": {
+            "description": ""
+          }
+        },
+        "summary": "Logout user and clear JWT cookie",
+        "tags": ["Accounts Auth"]
+      }
+    },
+    "/v1/accounts/payments/{accountId}/history": {
+      "get": {
+        "operationId": "AccountsPaymentsController_getPaymentHistory",
+        "parameters": [
+          {
+            "name": "accountId",
+            "required": true,
+            "in": "path",
+            "description": "Account ID",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "status",
+            "required": false,
+            "in": "query",
+            "description": "Filter by payment status",
+            "schema": {
+              "example": "pending",
+              "type": "string",
+              "enum": [
+                "pending",
+                "processing",
+                "completed",
+                "failed",
+                "expired",
+                "cancelled"
+              ]
+            }
+          },
+          {
+            "name": "limit",
+            "required": false,
+            "in": "query",
+            "description": "Number of items to return",
+            "schema": {
+              "minimum": 1,
+              "maximum": 1000,
+              "default": 100,
+              "example": 50,
+              "type": "number"
+            }
+          },
+          {
+            "name": "offset",
+            "required": false,
+            "in": "query",
+            "description": "Number of items to skip",
+            "schema": {
+              "minimum": 0,
+              "default": 0,
+              "example": 0,
+              "type": "number"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Payment history retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PaginatedPaymentDtoResult"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Account not found"
+          }
+        },
+        "security": [
+          {
+            "Accounts JWT": []
+          },
+          {
+            "x-spacepay-thirdweb-jwt": []
+          }
+        ],
+        "summary": "Get payment history for an account",
+        "tags": ["Accounts Payments"]
+      }
+    },
+    "/v1/accounts/payments/{accountId}/history/{paymentId}": {
+      "get": {
+        "operationId": "AccountsPaymentsController_getPaymentDetail",
+        "parameters": [
+          {
+            "name": "accountId",
+            "required": true,
+            "in": "path",
+            "description": "Account ID",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "paymentId",
+            "required": true,
+            "in": "path",
+            "description": "Payment ID",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Payment retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PaymentDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Payment not found"
+          }
+        },
+        "security": [
+          {
+            "Accounts JWT": []
+          },
+          {
+            "x-spacepay-thirdweb-jwt": []
+          }
+        ],
+        "summary": "Get single payment detail for an account",
+        "tags": ["Accounts Payments"]
+      }
+    },
+    "/v1/accounts/payments/{accountId}/stats": {
+      "get": {
+        "operationId": "AccountsPaymentsController_getAccountPaymentStats",
+        "parameters": [
+          {
+            "name": "accountId",
+            "required": true,
+            "in": "path",
+            "description": "Account ID",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "from",
+            "required": true,
+            "in": "query",
+            "description": "Start of date range (ISO 8601)",
+            "schema": {
+              "example": "2025-01-01T00:00:00.000Z",
+              "type": "string"
+            }
+          },
+          {
+            "name": "to",
+            "required": true,
+            "in": "query",
+            "description": "End of date range (ISO 8601)",
+            "schema": {
+              "example": "2025-12-31T23:59:59.999Z",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Payment statistics retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AccountPaymentStatsDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Account not found"
+          }
+        },
+        "security": [
+          {
+            "Accounts JWT": []
+          },
+          {
+            "x-spacepay-thirdweb-jwt": []
+          }
+        ],
+        "summary": "Get payment statistics for an account",
+        "tags": ["Accounts Payments"]
+      }
+    }
+  },
+  "info": {
+    "title": "SpacePay One API",
+    "description": "",
+    "version": "1.0",
+    "contact": {}
+  },
+  "tags": [],
+  "servers": [],
+  "components": {
+    "securitySchemes": {
+      "bearer": {
+        "scheme": "bearer",
+        "bearerFormat": "JWT",
+        "type": "http",
+        "description": "User JWT token."
+      },
+      "Secret Key": {
+        "type": "apiKey",
+        "in": "header",
+        "name": "x-spacepay-secret-key",
+        "description": "Secret key for authentication of external API."
+      },
+      "Payment Secret": {
+        "type": "apiKey",
+        "in": "header",
+        "name": "x-spacepay-payment-secret",
+        "description": "Payment secret for authentication of external API."
+      },
+      "Accounts JWT": {
+        "type": "apiKey",
+        "in": "header",
+        "name": "x-spacepay-thirdweb-jwt",
+        "description": "Account JWT token for authentication of customers/users."
+      },
+      "cookie": {
+        "type": "apiKey",
+        "in": "cookie",
+        "name": "x-spacepay-thirdweb-jwt",
+        "description": "Account JWT token for authentication of customers/users."
+      }
+    },
+    "schemas": {
+      "OrganizationDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Organization ID",
+            "example": "org_1234567890abcdef"
+          },
+          "name": {
+            "type": "string",
+            "description": "Organization name",
+            "example": "Acme Corp"
+          },
+          "slug": {
+            "type": "string",
+            "description": "Organization slug",
+            "example": "acme-corp"
+          },
+          "role": {
+            "type": "string",
+            "nullable": true,
+            "description": "User role in the organization",
+            "example": "admin"
+          }
+        },
+        "required": ["id", "name", "slug", "role"]
+      },
+      "SimpleMerchantDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Merchant ID",
+            "example": "merchant_1234567890abcdef"
+          },
+          "shortName": {
+            "type": "string",
+            "description": "Business name",
+            "example": "Acme Corp"
+          },
+          "clerkOrganizationId": {
+            "type": "string",
+            "description": "Clerk organization ID",
+            "example": "org_1234567890abcdef"
+          },
+          "status": {
+            "type": "string",
+            "description": "Merchant status",
+            "example": "pending"
+          }
+        },
+        "required": ["id", "shortName", "clerkOrganizationId", "status"]
+      },
+      "AuthBusinessUserDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "User ID",
+            "example": "user_1234567890abcdef"
+          },
+          "email": {
+            "type": "string",
+            "description": "User email address",
+            "example": "john.doe@example.com"
+          },
+          "firstName": {
+            "type": "string",
+            "nullable": true,
+            "description": "User first name",
+            "example": "John"
+          },
+          "lastName": {
+            "type": "string",
+            "nullable": true,
+            "description": "User last name",
+            "example": "Doe"
+          },
+          "organizations": {
+            "description": "List of organizations the user belongs to",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/OrganizationDto"
+            }
+          },
+          "merchant": {
+            "nullable": true,
+            "description": "Merchant information if user belongs to a merchant organization",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/SimpleMerchantDto"
+              }
+            ]
+          },
+          "role": {
+            "enum": ["business_member", "superadmin"],
+            "type": "string",
+            "description": "User role. If user is super admin, this will be SUPER_ADMIN. If user is a business member, this will be BUSINESS_MEMBER.",
+            "example": "business_member"
+          }
+        },
+        "required": [
+          "id",
+          "email",
+          "firstName",
+          "lastName",
+          "organizations",
+          "merchant",
+          "role"
+        ]
+      },
+      "MerchantDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "clerkOrganizationId": {
+            "type": "string"
+          },
+          "shortName": {
+            "type": "string"
+          },
+          "businessName": {
+            "type": "string"
+          },
+          "contactEmail": {
+            "type": "string",
+            "nullable": true
+          },
+          "contactPhone": {
+            "type": "string",
+            "nullable": true
+          },
+          "countryCode": {
+            "type": "string",
+            "nullable": true
+          },
+          "fieldOfOperation": {
+            "nullable": true,
+            "enum": [
+              "food_beverage",
+              "retail",
+              "health_beauty",
+              "home_garden",
+              "sports_outdoors",
+              "entertainment",
+              "digital_services",
+              "travel",
+              "nonprofit",
+              "other"
+            ],
+            "type": "object"
+          },
+          "description": {
+            "type": "string",
+            "nullable": true
+          },
+          "websiteUrl": {
+            "type": "string",
+            "nullable": true
+          },
+          "isActive": {
+            "type": "boolean"
+          },
+          "status": {
+            "enum": ["pending", "onboarding", "approved", "rejected"],
+            "type": "string"
+          },
+          "rejectionReason": {
+            "type": "string",
+            "nullable": true
+          },
+          "balanceInCents": {
+            "type": "number"
+          },
+          "createdAt": {
+            "format": "date-time",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "clerkOrganizationId",
+          "shortName",
+          "businessName",
+          "isActive",
+          "status",
+          "balanceInCents",
+          "createdAt"
+        ]
+      },
+      "UpdateMerchantRequestDto": {
+        "type": "object",
+        "properties": {
+          "shortName": {
+            "type": "string",
+            "maxLength": 255
+          },
+          "businessName": {
+            "type": "string",
+            "maxLength": 255
+          },
+          "contactEmail": {
+            "type": "string",
+            "maxLength": 255,
+            "format": "email"
+          },
+          "contactPhone": {
+            "type": "string",
+            "maxLength": 255
+          },
+          "countryCode": {
+            "type": "string",
+            "maxLength": 3
+          },
+          "fieldOfOperation": {
+            "type": "string",
+            "enum": [
+              "food_beverage",
+              "retail",
+              "health_beauty",
+              "home_garden",
+              "sports_outdoors",
+              "entertainment",
+              "digital_services",
+              "travel",
+              "nonprofit",
+              "other"
+            ]
+          },
+          "description": {
+            "type": "string",
+            "maxLength": 1000
+          },
+          "websiteUrl": {
+            "type": "string",
+            "maxLength": 500
+          },
+          "isActive": {
+            "type": "boolean"
           }
         }
       },
-      "post": {
-        "description": "Creates a new plant in the store",
-        "requestBody": {
-          "description": "Plant to add to the store",
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/NewPlant"
-              }
-            }
+      "MerchantOnboardingDto": {
+        "type": "object",
+        "properties": {
+          "merchantVerified": {
+            "type": "boolean",
+            "description": "Whether merchant is verified (status is approved)",
+            "example": false
           },
-          "required": true
-        },
-        "responses": {
-          "200": {
-            "description": "plant response",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Plant"
-                }
-              }
-            }
+          "payoutsSetUp": {
+            "type": "boolean",
+            "description": "Whether payouts are configured",
+            "example": false
           },
-          "400": {
-            "description": "unexpected error",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/plants/{id}": {
-      "delete": {
-        "description": "Deletes a single plant based on the ID supplied",
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "description": "ID of plant to delete",
-            "required": true,
-            "schema": {
-              "type": "integer",
-              "format": "int64"
-            }
-          }
-        ],
-        "responses": {
-          "204": {
-            "description": "Plant deleted",
-            "content": {}
+          "integrationSetUp": {
+            "type": "boolean",
+            "description": "Whether integration is configured (has secret key)",
+            "example": false
           },
-          "400": {
-            "description": "unexpected error",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          }
-        }
-      }
-    }
-  },
-  "webhooks": {
-    "/plant/webhook": {
-      "post": {
-        "description": "Information about a new plant added to the store",
-        "requestBody": {
-          "description": "Plant added to the store",
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/NewPlant"
-              }
-            }
+          "firstPayment": {
+            "type": "boolean",
+            "description": "Whether first payment was made",
+            "example": false
           }
         },
-        "responses": {
-          "200": {
-            "description": "Return a 200 status to indicate that the data was received successfully"
-          }
-        }
-      }
-    }
-  },
-  "components": {
-    "schemas": {
-      "Plant": {
         "required": [
-          "name"
-        ],
+          "merchantVerified",
+          "payoutsSetUp",
+          "integrationSetUp",
+          "firstPayment"
+        ]
+      },
+      "MerchantPayoutAccountDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "merchantId": {
+            "type": "string"
+          },
+          "bankName": {
+            "type": "string"
+          },
+          "bankAddress": {
+            "type": "string"
+          },
+          "iban": {
+            "type": "string"
+          },
+          "currency": {
+            "enum": ["USD", "EUR", "GBP"],
+            "type": "string"
+          },
+          "isActive": {
+            "type": "boolean"
+          },
+          "createdAt": {
+            "format": "date-time",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "merchantId",
+          "bankName",
+          "bankAddress",
+          "iban",
+          "currency",
+          "isActive",
+          "createdAt"
+        ]
+      },
+      "MerchantBalanceDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "balanceInCents": {
+            "type": "number"
+          },
+          "updatedAt": {
+            "format": "date-time",
+            "type": "string"
+          }
+        },
+        "required": ["id", "balanceInCents", "updatedAt"]
+      },
+      "MerchantPayoutDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "payoutAccountId": {
+            "type": "string"
+          },
+          "paymentReference": {
+            "type": "string"
+          },
+          "amountInCents": {
+            "type": "number"
+          },
+          "amountInCentsPayoutCurrency": {
+            "type": "number"
+          },
+          "payoutCurrency": {
+            "enum": ["USD", "EUR", "GBP"],
+            "type": "string"
+          },
+          "payoutDate": {
+            "format": "date-time",
+            "type": "string"
+          },
+          "status": {
+            "enum": ["pending", "completed", "failed"],
+            "type": "string"
+          },
+          "createdAt": {
+            "format": "date-time",
+            "type": "string"
+          },
+          "updatedAt": {
+            "format": "date-time",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "payoutAccountId",
+          "paymentReference",
+          "amountInCents",
+          "amountInCentsPayoutCurrency",
+          "payoutCurrency",
+          "payoutDate",
+          "status",
+          "createdAt",
+          "updatedAt"
+        ]
+      },
+      "PaginationMetaDto": {
+        "type": "object",
+        "properties": {
+          "total": {
+            "type": "number"
+          },
+          "limit": {
+            "type": "number"
+          },
+          "offset": {
+            "type": "number"
+          },
+          "hasMore": {
+            "type": "boolean"
+          },
+          "totalPages": {
+            "type": "number"
+          },
+          "currentPage": {
+            "type": "number"
+          }
+        },
+        "required": [
+          "total",
+          "limit",
+          "offset",
+          "hasMore",
+          "totalPages",
+          "currentPage"
+        ]
+      },
+      "PaginatedMerchantPayoutDtoResult": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/MerchantPayoutDto"
+            }
+          },
+          "pagination": {
+            "$ref": "#/components/schemas/PaginationMetaDto"
+          }
+        },
+        "required": ["data", "pagination"]
+      },
+      "PaginatedMerchantDtoResult": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/MerchantDto"
+            }
+          },
+          "pagination": {
+            "$ref": "#/components/schemas/PaginationMetaDto"
+          }
+        },
+        "required": ["data", "pagination"]
+      },
+      "UpdateMerchantStatusDto": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "enum": ["pending", "onboarding", "approved", "rejected"],
+            "type": "string",
+            "description": "New status for the merchant",
+            "example": "approved"
+          },
+          "rejectionReason": {
+            "type": "string",
+            "maxLength": 1000,
+            "description": "Reason for rejection (required when status is REJECTED)",
+            "example": "Incomplete documentation"
+          }
+        },
+        "required": ["status"]
+      },
+      "CreateMerchantPayoutAccountDto": {
+        "type": "object",
+        "properties": {
+          "bankName": {
+            "type": "string",
+            "description": "Bank name"
+          },
+          "bankAddress": {
+            "type": "string",
+            "description": "Bank address"
+          },
+          "iban": {
+            "type": "string",
+            "minLength": 10,
+            "maxLength": 34,
+            "description": "IBAN"
+          },
+          "currency": {
+            "enum": ["USD", "EUR", "GBP"],
+            "type": "string",
+            "description": "Currency"
+          },
+          "isActive": {
+            "type": "boolean",
+            "description": "Whether this account should be active"
+          }
+        },
+        "required": ["bankName", "bankAddress", "iban", "currency"]
+      },
+      "CreateMerchantPayoutDto": {
+        "type": "object",
+        "properties": {
+          "paymentReference": {
+            "type": "string",
+            "description": "Payment reference"
+          },
+          "amountInCents": {
+            "type": "number",
+            "minimum": 0,
+            "description": "Payout amount in cents, USD"
+          },
+          "amountInCentsPayoutCurrency": {
+            "type": "number",
+            "minimum": 0,
+            "description": "Payout amount in cents in the payout currency"
+          },
+          "payoutCurrency": {
+            "enum": ["USD", "EUR", "GBP"],
+            "type": "string",
+            "description": "Currency in which the payout was made"
+          },
+          "payoutDate": {
+            "type": "string",
+            "description": "Payout date"
+          }
+        },
+        "required": [
+          "paymentReference",
+          "amountInCents",
+          "amountInCentsPayoutCurrency",
+          "payoutCurrency",
+          "payoutDate"
+        ]
+      },
+      "ApiKeyDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string",
+            "nullable": true
+          },
+          "type": {
+            "enum": ["public", "secret"],
+            "type": "string"
+          },
+          "keyPrefix": {
+            "type": "string"
+          },
+          "keyValue": {
+            "type": "string",
+            "nullable": true
+          },
+          "merchantId": {
+            "type": "string"
+          },
+          "isActive": {
+            "type": "boolean"
+          },
+          "lastUsedAt": {
+            "format": "date-time",
+            "type": "string",
+            "nullable": true
+          },
+          "createdAt": {
+            "format": "date-time",
+            "type": "string"
+          },
+          "updatedAt": {
+            "format": "date-time",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "name",
+          "type",
+          "keyPrefix",
+          "merchantId",
+          "isActive",
+          "createdAt",
+          "updatedAt"
+        ]
+      },
+      "CreateSecretKeyRequestDto": {
         "type": "object",
         "properties": {
           "name": {
-            "description": "The name of the plant",
-            "type": "string"
+            "type": "string",
+            "maxLength": 255
           },
-          "tag": {
-            "description": "Tag to specify the type",
-            "type": "string"
+          "description": {
+            "type": "string",
+            "maxLength": 1000
           }
-        }
+        },
+        "required": ["name"]
       },
-      "NewPlant": {
-        "allOf": [
-          {
-            "$ref": "#/components/schemas/Plant"
-          },
-          {
-            "required": [
-              "id"
-            ],
-            "type": "object",
-            "properties": {
-              "id": {
-                "description": "Identification number of the plant",
-                "type": "integer",
-                "format": "int64"
-              }
-            }
-          }
-        ]
-      },
-      "Error": {
-        "required": [
-          "error",
-          "message"
-        ],
+      "CreateSecretKeyResponseDto": {
         "type": "object",
         "properties": {
-          "error": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "message": {
+          "secretKeyOnlyOnce": {
             "type": "string"
+          },
+          "apiKey": {
+            "$ref": "#/components/schemas/ApiKeyDto"
+          }
+        },
+        "required": ["secretKeyOnlyOnce", "apiKey"]
+      },
+      "UpdateApiKeyDto": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "maxLength": 255,
+            "description": "Name of the API key",
+            "example": "Production API Key"
+          },
+          "description": {
+            "type": "string",
+            "maxLength": 1000,
+            "description": "Description of the API key",
+            "example": "API key for production environment"
           }
         }
-      }
-    },
-    "securitySchemes": {
-      "bearerAuth": {
-        "type": "http",
-        "scheme": "bearer"
+      },
+      "ApplicationEventDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "merchantId": {
+            "type": "string"
+          },
+          "type": {
+            "enum": [
+              "payment.created",
+              "payment.updated",
+              "payment.cancelled",
+              "payment.received",
+              "payment.confirmed",
+              "payment.failed",
+              "user.created",
+              "user.updated",
+              "merchant.created",
+              "merchant.updated",
+              "payout.created"
+            ],
+            "type": "string"
+          },
+          "occurredAt": {
+            "format": "date-time",
+            "type": "string"
+          }
+        },
+        "required": ["id", "merchantId", "type", "occurredAt"]
+      },
+      "PaginatedApplicationEventDtoResult": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ApplicationEventDto"
+            }
+          },
+          "pagination": {
+            "$ref": "#/components/schemas/PaginationMetaDto"
+          }
+        },
+        "required": ["data", "pagination"]
+      },
+      "MerchantNotificationSettingsDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Unique identifier for the notification settings",
+            "example": "123e4567-e89b-12d3-a456-426614174000"
+          },
+          "emailEnabled": {
+            "type": "boolean",
+            "description": "Whether email notifications are enabled for this merchant",
+            "example": true
+          },
+          "emailSubscribedEvents": {
+            "nullable": true,
+            "type": "array",
+            "description": "List of event types the merchant is subscribed to for email notifications",
+            "example": ["payment.succeeded", "payout.succeeded"],
+            "items": {
+              "type": "string",
+              "enum": ["payment.succeeded", "payout.succeeded"]
+            }
+          },
+          "updatedAt": {
+            "format": "date-time",
+            "type": "string",
+            "description": "When these settings were last updated",
+            "example": "2024-01-01T00:00:00.000Z"
+          }
+        },
+        "required": ["id", "emailEnabled", "emailSubscribedEvents", "updatedAt"]
+      },
+      "UpdateMerchantNotificationSettingsDto": {
+        "type": "object",
+        "properties": {
+          "emailEnabled": {
+            "type": "boolean",
+            "description": "Enable/disable email notifications entirely"
+          },
+          "emailSubscribedEvents": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "enum": ["payment.succeeded", "payout.succeeded"]
+            },
+            "description": "List of event types to subscribe to for email notifications"
+          }
+        }
+      },
+      "WebhookEndpointDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string",
+            "nullable": true
+          },
+          "url": {
+            "type": "string"
+          },
+          "merchantId": {
+            "type": "string"
+          },
+          "status": {
+            "enum": ["ACTIVE", "INACTIVE"],
+            "type": "string"
+          },
+          "secretPrefix": {
+            "type": "string"
+          },
+          "lastTriggeredAt": {
+            "format": "date-time",
+            "type": "string",
+            "nullable": true
+          },
+          "createdAt": {
+            "format": "date-time",
+            "type": "string"
+          },
+          "updatedAt": {
+            "format": "date-time",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "name",
+          "url",
+          "merchantId",
+          "status",
+          "secretPrefix",
+          "createdAt",
+          "updatedAt"
+        ]
+      },
+      "CreateWebhookEndpointRequestDto": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "maxLength": 255
+          },
+          "description": {
+            "type": "string",
+            "maxLength": 1000
+          },
+          "url": {
+            "type": "string",
+            "maxLength": 2048,
+            "format": "uri"
+          }
+        },
+        "required": ["name", "url"]
+      },
+      "CreateWebhookEndpointResponseDto": {
+        "type": "object",
+        "properties": {
+          "secretKeyOnlyOnce": {
+            "type": "string"
+          },
+          "webhook": {
+            "$ref": "#/components/schemas/WebhookEndpointDto"
+          }
+        },
+        "required": ["secretKeyOnlyOnce", "webhook"]
+      },
+      "UpdateWebhookEndpointRequestDto": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "maxLength": 255
+          },
+          "description": {
+            "type": "string",
+            "maxLength": 1000
+          },
+          "url": {
+            "type": "string",
+            "maxLength": 2048,
+            "format": "uri"
+          },
+          "status": {
+            "type": "string",
+            "enum": ["ACTIVE", "INACTIVE"]
+          }
+        }
+      },
+      "EmailEndpointDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string",
+            "nullable": true
+          },
+          "emailAddress": {
+            "type": "string"
+          },
+          "status": {
+            "enum": ["ACTIVE", "INACTIVE"],
+            "type": "string"
+          }
+        },
+        "required": ["id", "name", "emailAddress", "status"]
+      },
+      "CreateEmailEndpointRequestDto": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "maxLength": 255
+          },
+          "description": {
+            "type": "string",
+            "maxLength": 1000
+          },
+          "emailAddress": {
+            "type": "string",
+            "format": "email"
+          }
+        },
+        "required": ["emailAddress"]
+      },
+      "SyncEmailAddressesDto": {
+        "type": "object",
+        "properties": {
+          "emailAddresses": {
+            "description": "Array of email addresses to sync",
+            "example": ["user1@example.com", "user2@example.com"],
+            "type": "array",
+            "items": {
+              "type": "string",
+              "format": "email"
+            }
+          }
+        },
+        "required": ["emailAddresses"]
+      },
+      "SyncEmailAddressesResponseDto": {
+        "type": "object",
+        "properties": {
+          "added": {
+            "type": "number",
+            "description": "Number of new endpoints added",
+            "example": 2
+          },
+          "deleted": {
+            "type": "number",
+            "description": "Number of endpoints deleted",
+            "example": 1
+          },
+          "total": {
+            "type": "number",
+            "description": "Total number of email addresses after sync",
+            "example": 3
+          }
+        },
+        "required": ["added", "deleted", "total"]
+      },
+      "UpdateEmailEndpointRequestDto": {
+        "type": "object",
+        "properties": {}
+      },
+      "DepositAddressDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "description": "Deposit address ID"
+          },
+          "paymentId": {
+            "type": "string",
+            "nullable": true
+          },
+          "type": {
+            "type": "string",
+            "enum": ["EVM"]
+          },
+          "address": {
+            "type": "string",
+            "description": "Token contract address (lowercase)",
+            "example": "0xa0b86a33e6441b8c4c8c0c0c0c0c0c0c0c0c0c0"
+          },
+          "createdAt": {
+            "format": "date-time",
+            "type": "string"
+          }
+        },
+        "required": ["id", "type", "address", "createdAt"]
+      },
+      "ChainDto": {
+        "type": "object",
+        "properties": {
+          "chainId": {
+            "type": "number",
+            "description": "Chain ID",
+            "example": 1
+          },
+          "name": {
+            "type": "string",
+            "description": "Chain name",
+            "example": "Ethereum"
+          },
+          "nativeSymbol": {
+            "type": "string",
+            "description": "Native token symbol",
+            "example": "ETH"
+          },
+          "nativeDecimals": {
+            "type": "number",
+            "description": "Native token decimals",
+            "example": 18
+          },
+          "isEnabled": {
+            "type": "boolean",
+            "description": "Whether the chain is enabled",
+            "example": true
+          }
+        },
+        "required": [
+          "chainId",
+          "name",
+          "nativeSymbol",
+          "nativeDecimals",
+          "isEnabled"
+        ]
+      },
+      "TokenDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Token ID",
+            "example": "123e4567-e89b-12d3-a456-426614174000"
+          },
+          "coingeckoApiId": {
+            "type": "string",
+            "description": "Coingecko API ID",
+            "example": "ethereum"
+          },
+          "chain": {
+            "description": "Chain information",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/ChainDto"
+              }
+            ]
+          },
+          "symbol": {
+            "type": "string",
+            "description": "Token symbol",
+            "example": "USDC"
+          },
+          "contractAddress": {
+            "type": "string",
+            "description": "Token contract address (lowercase)",
+            "example": "0xa0b86a33e6441b8c4c8c0c0c0c0c0c0c0c0c0c0"
+          },
+          "decimals": {
+            "type": "number",
+            "description": "Token decimals",
+            "example": 6
+          },
+          "type": {
+            "enum": ["stablecoin", "volatile"],
+            "type": "string",
+            "description": "Token type",
+            "example": "stablecoin"
+          },
+          "assetType": {
+            "enum": ["native", "erc20"],
+            "type": "string",
+            "description": "Token asset type",
+            "example": "native"
+          },
+          "status": {
+            "enum": ["active", "deprecated", "blocked"],
+            "type": "string",
+            "description": "Token status",
+            "example": "active"
+          },
+          "tokenPriceUsd": {
+            "type": "number",
+            "nullable": true,
+            "description": "Token price in USD",
+            "example": 1
+          }
+        },
+        "required": [
+          "id",
+          "coingeckoApiId",
+          "chain",
+          "symbol",
+          "contractAddress",
+          "decimals",
+          "type",
+          "assetType",
+          "status",
+          "tokenPriceUsd"
+        ]
+      },
+      "PaymentQuoteDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "description": "Quote ID"
+          },
+          "paymentId": {
+            "type": "string",
+            "format": "uuid",
+            "description": "Payment ID"
+          },
+          "token": {
+            "description": "Token",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/TokenDto"
+              }
+            ]
+          },
+          "chainId": {
+            "type": "number",
+            "description": "Chain ID"
+          },
+          "expectedAmountAsset": {
+            "type": "string",
+            "description": "Expected amount asset"
+          },
+          "rateUsdAsset": {
+            "type": "number",
+            "description": "Rate USD asset"
+          },
+          "expiresAt": {
+            "format": "date-time",
+            "type": "string",
+            "description": "Expires at"
+          },
+          "status": {
+            "enum": ["active", "expired", "used", "failed"],
+            "type": "string",
+            "description": "Status"
+          },
+          "createdAt": {
+            "format": "date-time",
+            "type": "string",
+            "description": "Created at"
+          }
+        },
+        "required": [
+          "id",
+          "paymentId",
+          "token",
+          "chainId",
+          "expectedAmountAsset",
+          "rateUsdAsset",
+          "expiresAt",
+          "status",
+          "createdAt"
+        ]
+      },
+      "PaymentReceiptDto": {
+        "type": "object",
+        "properties": {
+          "paymentId": {
+            "type": "string",
+            "format": "uuid",
+            "description": "Payment ID"
+          },
+          "selectedQuote": {
+            "description": "Selected quote",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/PaymentQuoteDto"
+              }
+            ]
+          },
+          "settledToken": {
+            "description": "Settled token",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/TokenDto"
+              }
+            ]
+          },
+          "settledChain": {
+            "description": "Settled chain",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/ChainDto"
+              }
+            ]
+          },
+          "settledAmountAsset": {
+            "type": "string",
+            "description": "Settled amount in asset",
+            "example": "100"
+          },
+          "settledAmountUsd": {
+            "type": "string",
+            "description": "Settled amount in USD",
+            "example": "100.00"
+          },
+          "txHash": {
+            "type": "string",
+            "nullable": true,
+            "description": "Transaction hash",
+            "example": "0xda3be87732110de6c1354c83770aae630ede9ac308d9f7b399ecfba23d923384"
+          },
+          "txBlockNumber": {
+            "type": "number",
+            "nullable": true,
+            "description": "Block number",
+            "example": 123456
+          },
+          "txTimestamp": {
+            "format": "date-time",
+            "type": "string",
+            "nullable": true,
+            "description": "Timestamp",
+            "example": "2021-01-01T00:00:00.000Z"
+          },
+          "txSenderAddress": {
+            "type": "string",
+            "nullable": true,
+            "description": "Sender address",
+            "example": "0x0000000000000000000000000000000000000000"
+          },
+          "createdAt": {
+            "format": "date-time",
+            "type": "string",
+            "description": "Created at"
+          }
+        },
+        "required": [
+          "paymentId",
+          "selectedQuote",
+          "settledToken",
+          "settledChain",
+          "settledAmountAsset",
+          "settledAmountUsd",
+          "txHash",
+          "txBlockNumber",
+          "txTimestamp",
+          "txSenderAddress",
+          "createdAt"
+        ]
+      },
+      "PaymentDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "description": "Payment ID"
+          },
+          "merchantId": {
+            "type": "string",
+            "format": "uuid",
+            "description": "Merchant ID"
+          },
+          "merchantShortName": {
+            "type": "string",
+            "description": "Merchant short name"
+          },
+          "amountInCents": {
+            "type": "number",
+            "description": "Payment amount in cents"
+          },
+          "currency": {
+            "type": "string",
+            "enum": ["USD"],
+            "description": "Currency of the payment"
+          },
+          "status": {
+            "enum": [
+              "pending",
+              "processing",
+              "completed",
+              "failed",
+              "expired",
+              "cancelled"
+            ],
+            "type": "string",
+            "description": "Payment status"
+          },
+          "depositAddress": {
+            "nullable": true,
+            "description": "Deposit address",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/DepositAddressDto"
+              }
+            ]
+          },
+          "quotes": {
+            "description": "Quotes",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/PaymentQuoteDto"
+            }
+          },
+          "receipt": {
+            "nullable": true,
+            "description": "Receipt",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/PaymentReceiptDto"
+              }
+            ]
+          },
+          "orderId": {
+            "type": "string",
+            "nullable": true,
+            "description": "Order ID"
+          },
+          "redirectUrl": {
+            "type": "string",
+            "nullable": true,
+            "description": "Redirect URL"
+          },
+          "createdAt": {
+            "format": "date-time",
+            "type": "string",
+            "description": "Created at"
+          }
+        },
+        "required": [
+          "id",
+          "merchantId",
+          "merchantShortName",
+          "amountInCents",
+          "currency",
+          "status",
+          "depositAddress",
+          "quotes",
+          "receipt",
+          "orderId",
+          "redirectUrl",
+          "createdAt"
+        ]
+      },
+      "PaginatedPaymentDtoResult": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/PaymentDto"
+            }
+          },
+          "pagination": {
+            "$ref": "#/components/schemas/PaginationMetaDto"
+          }
+        },
+        "required": ["data", "pagination"]
+      },
+      "CreatePaymentRequestDto": {
+        "type": "object",
+        "properties": {
+          "amount": {
+            "type": "number",
+            "minimum": 100,
+            "maximum": 100000000,
+            "description": "Payment amount in cents (e.g., 100 = $1.00). Minimum: 100 cents, Maximum: 100000000 cents.",
+            "example": 100
+          },
+          "currency": {
+            "type": "string",
+            "enum": ["USD"],
+            "description": "The currency of the payment. Only USD is supported.",
+            "example": "USD"
+          },
+          "orderId": {
+            "type": "string",
+            "maxLength": 255,
+            "description": "The order ID from the merchant",
+            "example": "Order_1234567890"
+          },
+          "redirectUrl": {
+            "type": "string",
+            "maxLength": 2048,
+            "format": "uri",
+            "description": "URL to redirect the customer to after successful payment",
+            "example": "https://merchant.example.com/checkout/success"
+          },
+          "customMetadata": {
+            "type": "string",
+            "maxLength": 2048,
+            "description": "Arbitrary metadata to append to the redirect URL as a query string",
+            "example": "{\"cartId\":\"abc123\",\"promo\":\"SUMMER24\"}"
+          }
+        },
+        "required": ["amount", "currency", "orderId"]
+      },
+      "CreatePaymentResponseDto": {
+        "type": "object",
+        "properties": {
+          "paymentUrl": {
+            "type": "string",
+            "description": "URL of the payment screen where the customer can complete the payment",
+            "example": "https://spacepay.example.com/payment?paymentId=1234567890&secret=1234567890"
+          },
+          "secret": {
+            "type": "string",
+            "description": "Secret of the payment",
+            "example": "1234567890"
+          },
+          "paymentId": {
+            "type": "string",
+            "description": "Payment ID",
+            "example": "1234567890"
+          },
+          "payment": {
+            "description": "Payment",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/PaymentDto"
+              }
+            ]
+          }
+        },
+        "required": ["paymentUrl", "secret", "paymentId", "payment"]
+      },
+      "PaymentStatusDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "description": "Payment ID"
+          },
+          "status": {
+            "enum": [
+              "pending",
+              "processing",
+              "completed",
+              "failed",
+              "expired",
+              "cancelled"
+            ],
+            "type": "string",
+            "description": "Payment status"
+          }
+        },
+        "required": ["id", "status"]
+      },
+      "CreateQuoteByContractDto": {
+        "type": "object",
+        "properties": {
+          "contractAddress": {
+            "type": "string"
+          },
+          "chainId": {
+            "type": "number"
+          }
+        }
+      },
+      "PaginatedChainDtoResult": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ChainDto"
+            }
+          },
+          "pagination": {
+            "$ref": "#/components/schemas/PaginationMetaDto"
+          }
+        },
+        "required": ["data", "pagination"]
+      },
+      "PaginatedTokenDtoResult": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/TokenDto"
+            }
+          },
+          "pagination": {
+            "$ref": "#/components/schemas/PaginationMetaDto"
+          }
+        },
+        "required": ["data", "pagination"]
+      },
+      "TatumFungibleWebhookDto": {
+        "type": "object",
+        "properties": {
+          "currency": {
+            "type": "string",
+            "description": "The currency symbol of the transaction.",
+            "example": "ETH"
+          },
+          "chain": {
+            "type": "string",
+            "description": "Tatum network name of the transaction.",
+            "example": "ethereum-sepolia"
+          },
+          "amount": {
+            "type": "string",
+            "description": "The amount of the transaction in the currency of the transaction.",
+            "example": "0.0001"
+          },
+          "address": {
+            "type": "string",
+            "description": "The recipient address of the transaction.",
+            "example": "0x23fc921b431b515c3e3e2b5a147f62cd4c7adab9"
+          },
+          "counterAddress": {
+            "type": "string",
+            "nullable": true,
+            "description": "The sender address of the transaction.",
+            "example": "0x23fc921b431b515c3e3e2b5a147f62cd4c7adab9"
+          },
+          "subscriptionType": {
+            "type": "string",
+            "description": "The type of the transaction.",
+            "enum": ["INCOMING_NATIVE_TX", "INCOMING_FUNGIBLE_TX"],
+            "example": "INCOMING_NATIVE_TX"
+          },
+          "blockNumber": {
+            "type": "number",
+            "description": "The block number of the transaction.",
+            "example": 1234567890
+          },
+          "txId": {
+            "type": "string",
+            "description": "The transaction hash of the transaction.",
+            "example": "0x5e57a675957dbf62676e3a9807014a355bfb95f7cd3d7dd26790a2ec8b3ca5ec"
+          },
+          "contractAddress": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "required": [
+          "currency",
+          "chain",
+          "amount",
+          "address",
+          "counterAddress",
+          "subscriptionType",
+          "blockNumber",
+          "txId"
+        ]
+      },
+      "SummaryStatsDto": {
+        "type": "object",
+        "properties": {
+          "totalRevenueTodayUsd": {
+            "type": "number",
+            "description": "Total revenue in USD dollars today",
+            "example": 1234.56
+          },
+          "numTransactionsToday": {
+            "type": "number",
+            "description": "Number of transactions today",
+            "example": 42
+          },
+          "totalRevenueCurrentMonthUsd": {
+            "type": "number",
+            "description": "Total revenue in USD dollars current month",
+            "example": 1234.56
+          },
+          "numTransactionsCurrentMonth": {
+            "type": "number",
+            "description": "Number of transactions current month",
+            "example": 42
+          }
+        },
+        "required": [
+          "totalRevenueTodayUsd",
+          "numTransactionsToday",
+          "totalRevenueCurrentMonthUsd",
+          "numTransactionsCurrentMonth"
+        ]
+      },
+      "AggregatedStatsDto": {
+        "type": "object",
+        "properties": {
+          "totalRevenueUsd": {
+            "type": "number",
+            "description": "Total revenue in USD dollars",
+            "example": 1234.56
+          },
+          "numTransactions": {
+            "type": "number",
+            "description": "Number of transactions",
+            "example": 42
+          },
+          "numCustomers": {
+            "type": "number",
+            "description": "Number of customers",
+            "example": 42
+          },
+          "averageTransactionUsd": {
+            "type": "number",
+            "description": "Average Transaction Value in USD dollars",
+            "example": 12.34
+          },
+          "previousTotalRevenueUsd": {
+            "type": "number",
+            "description": "Previous period total revenue in USD dollars",
+            "example": 1000
+          },
+          "previousNumTransactions": {
+            "type": "number",
+            "description": "Previous period number of transactions",
+            "example": 35
+          },
+          "previousNumCustomers": {
+            "type": "number",
+            "description": "Previous period number of customers",
+            "example": 35
+          },
+          "previousAverageTransactionUsd": {
+            "type": "number",
+            "description": "Previous period average transaction value in USD dollars",
+            "example": 10
+          },
+          "totalRevenueChangePercent": {
+            "type": "number",
+            "nullable": true,
+            "description": "Percentage change in total revenue",
+            "example": 23.46
+          },
+          "numTransactionsChangePercent": {
+            "type": "number",
+            "nullable": true,
+            "description": "Percentage change in number of transactions",
+            "example": 20
+          },
+          "numCustomersChangePercent": {
+            "type": "number",
+            "nullable": true,
+            "description": "Percentage change in number of customers",
+            "example": 20
+          },
+          "averageTransactionChangePercent": {
+            "type": "number",
+            "nullable": true,
+            "description": "Percentage change in average transaction value",
+            "example": 23.4
+          }
+        },
+        "required": [
+          "totalRevenueUsd",
+          "numTransactions",
+          "numCustomers",
+          "averageTransactionUsd",
+          "previousTotalRevenueUsd",
+          "previousNumTransactions",
+          "previousNumCustomers",
+          "previousAverageTransactionUsd",
+          "totalRevenueChangePercent",
+          "numTransactionsChangePercent",
+          "numCustomersChangePercent",
+          "averageTransactionChangePercent"
+        ]
+      },
+      "DailyTotalDto": {
+        "type": "object",
+        "properties": {
+          "date": {
+            "type": "string",
+            "description": "Day (ISO date, UTC)",
+            "example": "2024-01-01"
+          },
+          "count": {
+            "type": "number",
+            "description": "Number of transactions on this day",
+            "example": 10
+          },
+          "totalRevenueUsd": {
+            "type": "number",
+            "description": "Total revenue in USD dollars on this day",
+            "example": 123.45
+          }
+        },
+        "required": ["date", "count", "totalRevenueUsd"]
+      },
+      "StatusDistributionItemDto": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "enum": [
+              "pending",
+              "processing",
+              "completed",
+              "failed",
+              "expired",
+              "cancelled"
+            ],
+            "type": "string"
+          },
+          "count": {
+            "type": "number",
+            "example": 5
+          }
+        },
+        "required": ["status", "count"]
+      },
+      "ChainDistributionItemDto": {
+        "type": "object",
+        "properties": {
+          "chainId": {
+            "type": "number",
+            "description": "Chain ID",
+            "example": 1
+          },
+          "count": {
+            "type": "number",
+            "example": 7
+          }
+        },
+        "required": ["chainId", "count"]
+      },
+      "TokenDistributionItemDto": {
+        "type": "object",
+        "properties": {
+          "symbol": {
+            "type": "string",
+            "description": "Token symbol",
+            "example": "USDC"
+          },
+          "count": {
+            "type": "number",
+            "example": 7
+          }
+        },
+        "required": ["symbol", "count"]
+      },
+      "DetailedAnalyticsDto": {
+        "type": "object",
+        "properties": {
+          "dailyTotals": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/DailyTotalDto"
+            }
+          },
+          "statusDistribution": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/StatusDistributionItemDto"
+            }
+          },
+          "chainDistribution": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ChainDistributionItemDto"
+            }
+          },
+          "tokenDistribution": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/TokenDistributionItemDto"
+            }
+          },
+          "totalOrders": {
+            "type": "number",
+            "description": "Total number of orders in the range",
+            "example": 150
+          },
+          "totalCompleted": {
+            "type": "number",
+            "description": "Total number of completed orders in the range",
+            "example": 123
+          }
+        },
+        "required": [
+          "dailyTotals",
+          "statusDistribution",
+          "chainDistribution",
+          "tokenDistribution",
+          "totalOrders",
+          "totalCompleted"
+        ]
+      },
+      "AccountLoginPayloadDto": {
+        "type": "object",
+        "properties": {
+          "domain": {
+            "type": "string"
+          },
+          "address": {
+            "type": "string"
+          },
+          "statement": {
+            "type": "string"
+          },
+          "uri": {
+            "type": "string"
+          },
+          "version": {
+            "type": "string"
+          },
+          "chain_id": {
+            "type": "string"
+          },
+          "nonce": {
+            "type": "string"
+          },
+          "issued_at": {
+            "type": "string"
+          },
+          "expiration_time": {
+            "type": "string"
+          },
+          "invalid_before": {
+            "type": "string"
+          },
+          "resources": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        "required": [
+          "domain",
+          "address",
+          "statement",
+          "version",
+          "nonce",
+          "issued_at",
+          "expiration_time",
+          "invalid_before"
+        ]
+      },
+      "VerifyAccountAuthRequestDto": {
+        "type": "object",
+        "properties": {
+          "payload": {
+            "$ref": "#/components/schemas/AccountLoginPayloadDto"
+          },
+          "signature": {
+            "type": "string"
+          }
+        },
+        "required": ["payload", "signature"]
+      },
+      "VerifyAccountAuthResponseDto": {
+        "type": "object",
+        "properties": {
+          "token": {
+            "type": "string"
+          }
+        },
+        "required": ["token"]
+      },
+      "AccountPaymentStatsDto": {
+        "type": "object",
+        "properties": {
+          "numTransactions": {
+            "type": "number",
+            "description": "Number of completed transactions in the date range",
+            "example": 15
+          },
+          "totalAmountUsd": {
+            "type": "number",
+            "description": "Total amount in USD for completed transactions in the date range",
+            "example": 1234.56
+          }
+        },
+        "required": ["numTransactions", "totalAmountUsd"]
       }
     }
   }

@@ -1,0 +1,223 @@
+---
+title: "Get Payment"
+description: "Retrieve payment details and current status"
+openapi: "GET /v1/external/secretkey-auth/payments/:paymentId"
+---
+
+# Get Payment
+
+Retrieve payment details and current status by payment ID.
+
+<RequestExample>
+  ```bash cURL curl -X GET
+  https://api.spacepay.co.uk/v1/external/secretkey-auth/payments/4291f98b-d68c-4eb0-883e-6bc790a41c96
+  \ -H "X-SpacePay-Secret-Key: sk_test_your_secret_key"
+  ```
+</RequestExample>
+
+<ResponseExample>
+```json Success Response (200)
+{
+  "id": "4291f98b-d68c-4eb0-883e-6bc790a41c96",
+  "merchantId": "4e29f55d-d6a8-42d7-8230-cb8efeded39e",
+  "merchantShortName": "Copycat Creations",
+  "amountInCents": 100,
+  "currency": "USD",
+  "status": "completed",
+  "depositAddress": {
+    "id": "6c1c95e1-04f1-4881-b7cc-c2a529fbde76",
+    "paymentId": "4291f98b-d68c-4eb0-883e-6bc790a41c96",
+    "type": "EVM",
+    "address": "0xa35e74109b7040d0ee74cb7cb71bae35a2981254",
+    "createdAt": "2025-10-10T21:44:06.749Z"
+  },
+  "quotes": [
+    {
+      "id": "eb0e59b9-14d5-4324-a056-e87b74aa954f",
+      "paymentId": "4291f98b-d68c-4eb0-883e-6bc790a41c96",
+      "token": {
+        "id": "f9d14525-367d-4e16-b247-8d4ed23f1413",
+        "coingeckoApiId": "ethereum",
+        "chain": {
+          "chainId": 84532,
+          "name": "Base Sepolia",
+          "nativeSymbol": "ETH",
+          "nativeDecimals": 18,
+          "isEnabled": true
+        },
+        "symbol": "ETH",
+        "contractAddress": "0x0000000000000000000000000000000000000000",
+        "decimals": 18,
+        "type": "volatile",
+        "assetType": "native",
+        "status": "active"
+      },
+      "chainId": 84532,
+      "expectedAmountAsset": "668082370801162",
+      "rateUsdAsset": "3742.05353900",
+      "expiresAt": "2025-10-10T21:54:06.796Z",
+      "status": "active",
+      "createdAt": "2025-10-10T21:44:06.794Z"
+    }
+  ],
+  "receipt": {
+    "transactionHash": "0x1234567890abcdef1234567890abcdef12345678",
+    "blockNumber": 18500000,
+    "confirmations": 12,
+    "requiredConfirmations": 12,
+    "completedAt": "2025-10-10T21:45:00.000Z"
+  },
+  "orderId": "order_123",
+  "redirectUrl": "https://merchant.example.com/checkout/success",
+  "createdAt": "2025-10-10T21:44:06.733Z",
+  "updatedAt": "2025-10-10T21:45:00.000Z"
+}
+```
+</ResponseExample>
+
+## Path Parameters
+
+<ParamField path="paymentId" type="string" required>
+  Unique identifier of the payment to retrieve.
+</ParamField>
+
+## Response Fields
+
+<ResponseField name="id" type="string" required>
+  Unique payment identifier.
+</ResponseField>
+
+<ResponseField name="merchantId" type="string" required>
+  ID of the merchant who created the payment.
+</ResponseField>
+
+<ResponseField name="merchantShortName" type="string" required>
+  Short name of the merchant for display purposes.
+</ResponseField>
+
+<ResponseField name="amountInCents" type="integer" required>
+  Payment amount in cents.
+</ResponseField>
+
+<ResponseField name="currency" type="string" required>
+  Payment currency.
+</ResponseField>
+
+<ResponseField name="status" type="string" required>
+  Current payment status. Possible values: - `pending`: Payment created, waiting
+  for customer payment - `processing`: Payment received, waiting for
+  confirmations - `completed`: Payment confirmed and complete - `failed`:
+  Payment failed - `expired`: Payment expired - `cancelled`: Payment cancelled
+</ResponseField>
+
+<ResponseField name="depositAddress" type="object" required>
+Cryptocurrency deposit address for the payment.
+
+<Expandable title="Deposit address properties">
+  <ResponseField name="address" type="string">
+  The cryptocurrency address where customers should send payment.
+  </ResponseField>
+  
+  <ResponseField name="type" type="string">
+  Address type (e.g., "EVM" for Ethereum-compatible chains).
+  </ResponseField>
+  
+  <ResponseField name="createdAt" type="string">
+  Timestamp when the deposit address was created.
+  </ResponseField>
+</Expandable>
+</ResponseField>
+
+<ResponseField name="quotes" type="array" required>
+Available cryptocurrency quotes for the payment.
+
+<Expandable title="Quote properties">
+  <ResponseField name="token" type="object">
+  Token information including symbol, decimals, and contract address.
+  </ResponseField>
+  
+  <ResponseField name="expectedAmountAsset" type="string">
+  Expected amount to send in the smallest token unit.
+  </ResponseField>
+  
+  <ResponseField name="rateUsdAsset" type="string">
+  Exchange rate from token to USD.
+  </ResponseField>
+  
+  <ResponseField name="expiresAt" type="string">
+  Quote expiration timestamp.
+  </ResponseField>
+  
+  <ResponseField name="status" type="string">
+  Quote status (active, expired, etc.).
+  </ResponseField>
+</Expandable>
+</ResponseField>
+
+<ResponseField name="receipt" type="object">
+Transaction receipt information (only present for completed payments).
+
+<Expandable title="Receipt properties">
+  <ResponseField name="transactionHash" type="string">
+  Blockchain transaction hash.
+  </ResponseField>
+  
+  <ResponseField name="blockNumber" type="integer">
+  Block number where the transaction was confirmed.
+  </ResponseField>
+  
+  <ResponseField name="confirmations" type="integer">
+  Number of confirmations received.
+  </ResponseField>
+  
+  <ResponseField name="requiredConfirmations" type="integer">
+  Required number of confirmations for completion.
+  </ResponseField>
+  
+  <ResponseField name="completedAt" type="string">
+  Timestamp when the payment was completed.
+  </ResponseField>
+</Expandable>
+</ResponseField>
+
+<ResponseField name="orderId" type="string">
+  Merchant's order identifier.
+</ResponseField>
+
+<ResponseField name="redirectUrl" type="string">
+  URL to redirect the customer after payment completion.
+</ResponseField>
+
+<ResponseField name="createdAt" type="string" required>
+  Timestamp when the payment was created.
+</ResponseField>
+
+<ResponseField name="updatedAt" type="string" required>
+  Timestamp when the payment was last updated.
+</ResponseField>
+
+## Error Responses
+
+<ResponseExample>
+```json Error Response (401)
+{
+  "error": {
+    "type": "authentication_error",
+    "message": "Invalid or missing x-spacepay-secret-key header",
+    "code": "invalid_api_key"
+  }
+}
+```
+</ResponseExample>
+
+<ResponseExample>
+```json Error Response (404)
+{
+  "error": {
+    "type": "not_found_error",
+    "message": "Payment not found",
+    "code": "payment_not_found"
+  }
+}
+```
+</ResponseExample>

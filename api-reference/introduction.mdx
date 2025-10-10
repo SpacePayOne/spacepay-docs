@@ -1,33 +1,196 @@
 ---
-title: 'Introduction'
-description: 'Example section for showcasing API endpoints'
+title: "API Reference"
+description: "Complete SpacePay API documentation with authentication, endpoints, and examples"
 ---
 
-<Note>
-  If you're not looking to build API reference documentation, you can delete
-  this section by removing the api-reference folder.
-</Note>
+# SpacePay API Reference
 
-## Welcome
+Welcome to the SpacePay API documentation. This reference provides comprehensive information about our REST API endpoints, authentication methods, and integration examples.
 
-There are two ways to build API documentation: [OpenAPI](https://mintlify.com/docs/api-playground/openapi/setup) and [MDX components](https://mintlify.com/docs/api-playground/mdx/configuration). For the starter kit, we are using the following OpenAPI specification.
+## Getting Started
 
-<Card
-  title="Plant Store Endpoints"
-  icon="leaf"
-  href="https://github.com/mintlify/starter/blob/main/api-reference/openapi.json"
->
-  View the OpenAPI specification file
-</Card>
+<Steps>
+<Step title="Get Your API Keys">
+  Generate your API keys in the admin dashboard under Settings → Developers → API Keys.
+  
+  <Note>
+    **API Keys**: Available in both testnet and mainnet environments. Test keys start with `pk_test_` and `sk_test_`.
+  </Note>
+</Step>
+
+<Step title="Choose Your Environment">
+  Select the appropriate base URL for your integration: - **Testnet**:
+  `https://api-testnet.spacepay.co.uk` (for development) - **Mainnet**:
+  `https://api.spacepay.co.uk` (for production)
+</Step>
+
+<Step title="Start Integrating">
+  Use our SDK or integrate directly with our REST API endpoints.
+</Step>
+</Steps>
 
 ## Authentication
 
-All API endpoints are authenticated using Bearer tokens and picked up from the specification file.
+All API requests require authentication using your secret key with the `X-SpacePay-Secret-Key` header:
 
-```json
-"security": [
-  {
-    "bearerAuth": []
-  }
-]
+```javascript
+const headers = {
+  "X-SpacePay-Secret-Key": "sk_test_your_secret_key",
+  "Content-Type": "application/json",
+  "Idempotency-Key": "unique-key-for-request", // Optional but recommended
+};
 ```
+
+<Warning>
+  Never expose your API keys in client-side code or public repositories. Use
+  environment variables and server-side implementations only.
+</Warning>
+
+<Card title="Learn More" icon="book" href="/developer-docs/api-integration">
+  Detailed authentication examples and API integration guide
+</Card>
+
+## Base URLs
+
+SpacePay provides different base URLs for different environments:
+
+<CardGroup cols={2}>
+<Card title="Testnet Environment" icon="flask">
+  **Base URL**: `https://api-testnet.spacepay.co.uk`
+  
+  **Networks**: Base Sepolia, Ethereum Sepolia
+  
+  **Use for**: Development and testing
+</Card>
+
+<Card title="Mainnet Environment" icon="rocket">
+  **Base URL**: `https://api.spacepay.co.uk`
+  
+  **Networks**: Base, Ethereum, Polygon, BSC, Avalanche
+  
+  **Use for**: Production with real tokens
+</Card>
+</CardGroup>
+
+<Card title="Learn More" icon="flask" href="/developer-docs/testing">
+  Detailed test environments, scenarios, and token addresses
+</Card>
+
+## Payment Statuses
+
+SpacePay payments progress through the following statuses:
+
+<CardGroup cols={2}>
+<Card title="PENDING" icon="clock">
+  Payment has been created and is waiting for customer payment.
+</Card>
+
+<Card title="PROCESSING" icon="cog">
+  Payment is being processed and waiting for blockchain confirmations.
+</Card>
+
+<Card title="COMPLETED" icon="check">
+  Payment has been confirmed and is complete.
+</Card>
+
+<Card title="FAILED" icon="times">
+  Payment failed due to network issues or insufficient funds.
+</Card>
+
+<Card title="EXPIRED" icon="hourglass-end">
+  Payment expired before completion.
+</Card>
+
+<Card title="CANCELLED" icon="ban">
+  Payment was cancelled by the merchant.
+</Card>
+</CardGroup>
+
+<Card
+  title="Learn More"
+  icon="exchange-alt"
+  href="/core-products/payment-flows"
+>
+  Detailed payment processing flow and status explanations
+</Card>
+
+## Webhook Events
+
+SpacePay sends webhooks for the following events:
+
+- `payment.created`: Payment has been created and is ready for customer payment
+- `payment.updated`: Payment status has been updated (confirmed, failed, expired, etc.)
+
+<Note>
+  **Webhook Secret**: Each webhook endpoint gets its own unique secret key for
+  signature verification. Set up webhooks in your admin dashboard under Settings
+  → Developers → Webhooks.
+</Note>
+
+<Card title="Learn More" icon="webhook" href="/developer-docs/webhooks">
+  Complete webhook setup, payload structure, and signature verification
+</Card>
+
+## Error Handling
+
+SpacePay uses standard HTTP status codes and provides detailed error information:
+
+```javascript
+try {
+  const response = await fetch(url, options);
+
+  if (!response.ok) {
+    const error = await response.json();
+    console.error("API Error:", error.message);
+    console.error("Error Code:", error.code);
+  }
+} catch (error) {
+  console.error("Network Error:", error.message);
+}
+```
+
+<Card
+  title="Learn More"
+  icon="exclamation-triangle"
+  href="/developer-docs/api-integration"
+>
+  Detailed error handling examples and troubleshooting guide
+</Card>
+
+## Integration Resources
+
+<CardGroup cols={2}>
+<Card title="SDK Integration" icon="code" href="/developer-docs/sdk-integration">
+  Use our official SDK for easier integration with built-in functionality.
+</Card>
+
+<Card
+  title="API Integration"
+  icon="terminal"
+  href="/developer-docs/api-integration"
+>
+  Integrate directly with SpacePay's REST APIs for full control.
+</Card>
+
+<Card title="Webhooks" icon="webhook" href="/developer-docs/webhooks">
+  Set up real-time payment notifications with secure signature verification.
+</Card>
+
+<Card title="Testing" icon="flask" href="/developer-docs/testing">
+  Learn about test environments and scenarios for development.
+</Card>
+</CardGroup>
+
+## Support
+
+Need help with the API?
+
+<CardGroup cols={2}>
+<Card title="Contact Support" icon="envelope" href="https://spacepay.co.uk/contact-us/">
+  Reach out to our support team for technical assistance.
+</Card>
+
+<Card title="Merchant Dashboard" icon="tachometer-alt" href="https://spacepayone-dashboard-staging.vercel.app">
+  Access your dashboard to manage API keys, webhooks, and view transactions.
+</Card>
+</CardGroup>

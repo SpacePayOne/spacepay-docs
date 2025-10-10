@@ -1,0 +1,204 @@
+---
+title: "Create Payment"
+description: "Create a new payment using secret key authentication"
+openapi: "POST /v1/external/secretkey-auth/payments"
+---
+
+# Create Payment
+
+Create a new payment intent with quotes and deposit address.
+
+<RequestExample>
+```bash cURL
+curl -X POST https://api.spacepay.co.uk/v1/external/secretkey-auth/payments \
+  -H "X-SpacePay-Secret-Key: sk_test_your_secret_key" \
+  -H "Content-Type: application/json" \
+  -H "Idempotency-Key: unique-key-for-request" \
+  -d '{
+    "orderId": "order_123",
+    "amount": 100,
+    "currency": "USD",
+    "redirectUrl": "https://merchant.example.com/checkout/success",
+    "customMetadata": "{\"cartId\":\"abc123\",\"promo\":\"SUMMER24\"}"
+  }'
+```
+</RequestExample>
+
+<ResponseExample>
+```json Success Response (201)
+{
+  "payment": {
+    "id": "4291f98b-d68c-4eb0-883e-6bc790a41c96",
+    "merchantId": "4e29f55d-d6a8-42d7-8230-cb8efeded39e",
+    "merchantShortName": "Copycat Creations",
+    "amountInCents": 100,
+    "currency": "USD",
+    "status": "pending",
+    "depositAddress": {
+      "id": "6c1c95e1-04f1-4881-b7cc-c2a529fbde76",
+      "paymentId": "4291f98b-d68c-4eb0-883e-6bc790a41c96",
+      "type": "EVM",
+      "address": "0xa35e74109b7040d0ee74cb7cb71bae35a2981254",
+      "createdAt": "2025-10-10T21:44:06.749Z"
+    },
+    "quotes": [
+      {
+        "id": "eb0e59b9-14d5-4324-a056-e87b74aa954f",
+        "paymentId": "4291f98b-d68c-4eb0-883e-6bc790a41c96",
+        "token": {
+          "id": "f9d14525-367d-4e16-b247-8d4ed23f1413",
+          "coingeckoApiId": "ethereum",
+          "chain": {
+            "chainId": 84532,
+            "name": "Base Sepolia",
+            "nativeSymbol": "ETH",
+            "nativeDecimals": 18,
+            "isEnabled": true
+          },
+          "symbol": "ETH",
+          "contractAddress": "0x0000000000000000000000000000000000000000",
+          "decimals": 18,
+          "type": "volatile",
+          "assetType": "native",
+          "status": "active"
+        },
+        "chainId": 84532,
+        "expectedAmountAsset": "668082370801162",
+        "rateUsdAsset": "3742.05353900",
+        "expiresAt": "2025-10-10T21:54:06.796Z",
+        "status": "active",
+        "createdAt": "2025-10-10T21:44:06.794Z"
+      }
+    ],
+    "receipt": null,
+    "orderId": "order_123",
+    "redirectUrl": "https://merchant.example.com/checkout/success",
+    "createdAt": "2025-10-10T21:44:06.733Z"
+  },
+  "paymentUrl": "https://pay.spacepay.co.uk/payment/4291f98b-d68c-4eb0-883e-6bc790a41c96",
+  "secret": "payment_secret_key",
+  "paymentId": "4291f98b-d68c-4eb0-883e-6bc790a41c96"
+}
+```
+</ResponseExample>
+
+## Request Parameters
+
+<ParamField body="orderId" type="string" required>
+  Unique identifier for the order. Used for tracking and reconciliation.
+</ParamField>
+
+<ParamField body="amount" type="integer" required>
+  Payment amount in cents. For example, 100 = $1.00.
+</ParamField>
+
+<ParamField body="currency" type="string" required>
+  Payment currency. Currently supports "USD".
+</ParamField>
+
+<ParamField body="redirectUrl" type="string">
+  URL to redirect the customer after payment completion.
+</ParamField>
+
+<ParamField body="customMetadata" type="string">
+  Custom metadata as a JSON string for additional order information.
+</ParamField>
+
+## Response Fields
+
+<ResponseField name="payment" type="object" required>
+Complete payment object with all details.
+
+<Expandable title="Payment properties">
+  <ResponseField name="id" type="string">
+  Unique payment identifier.
+  </ResponseField>
+  
+  <ResponseField name="status" type="string">
+  Current payment status: pending, processing, completed, failed, expired, cancelled.
+  </ResponseField>
+  
+  <ResponseField name="amountInCents" type="integer">
+  Payment amount in cents.
+  </ResponseField>
+  
+  <ResponseField name="currency" type="string">
+  Payment currency.
+  </ResponseField>
+  
+  <ResponseField name="depositAddress" type="object">
+  Cryptocurrency deposit address for the payment.
+  
+  <Expandable title="Deposit address properties">
+    <ResponseField name="address" type="string">
+    The cryptocurrency address where customers should send payment.
+    </ResponseField>
+    
+    <ResponseField name="type" type="string">
+    Address type (e.g., "EVM" for Ethereum-compatible chains).
+    </ResponseField>
+  </Expandable>
+  </ResponseField>
+  
+  <ResponseField name="quotes" type="array">
+  Available cryptocurrency quotes for the payment.
+  
+  <Expandable title="Quote properties">
+    <ResponseField name="token" type="object">
+    Token information including symbol, decimals, and contract address.
+    </ResponseField>
+    
+    <ResponseField name="expectedAmountAsset" type="string">
+    Expected amount to send in the smallest token unit.
+    </ResponseField>
+    
+    <ResponseField name="rateUsdAsset" type="string">
+    Exchange rate from token to USD.
+    </ResponseField>
+    
+    <ResponseField name="expiresAt" type="string">
+    Quote expiration timestamp.
+    </ResponseField>
+  </Expandable>
+  </ResponseField>
+</Expandable>
+</ResponseField>
+
+<ResponseField name="paymentUrl" type="string">
+  URL for the hosted payment page.
+</ResponseField>
+
+<ResponseField name="paymentId" type="string">
+  Payment identifier for API calls.
+</ResponseField>
+
+<ResponseField name="secret" type="string">
+  Secret key for payment verification.
+</ResponseField>
+
+## Error Responses
+
+<ResponseExample>
+```json Error Response (400)
+{
+  "error": {
+    "type": "invalid_request_error",
+    "message": "The amount must be greater than 0",
+    "code": "invalid_amount",
+    "param": "amount"
+  }
+}
+```
+</ResponseExample>
+
+<ResponseExample>
+```json Error Response (401)
+{
+  "error": {
+    "type": "authentication_error",
+    "message": "Invalid or missing x-spacepay-secret-key header",
+    "code": "invalid_api_key"
+  }
+}
+```
+</ResponseExample>
