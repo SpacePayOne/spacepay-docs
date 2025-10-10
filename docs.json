@@ -11,38 +11,43 @@
   "navigation": {
     "tabs": [
       {
-        "tab": "Guides",
+        "tab": "For Businesses",
         "groups": [
           {
-            "group": "Getting started",
+            "group": "Overview",
+            "pages": ["overview/introduction", "overview/quickstart"]
+          },
+          {
+            "group": "Getting Started",
             "pages": [
-              "index",
-              "quickstart",
-              "development"
+              "getting-started/merchant-onboarding",
+              "getting-started/accept-payments"
             ]
           },
           {
-            "group": "Customization",
+            "group": "Core Products",
             "pages": [
-              "essentials/settings",
-              "essentials/navigation"
+              "core-products/merchant-dashboard",
+              "core-products/payment-flows"
             ]
           },
           {
-            "group": "Writing content",
+            "group": "Developer Docs",
             "pages": [
-              "essentials/markdown",
-              "essentials/code",
-              "essentials/images",
-              "essentials/reusable-snippets"
+              "developer-docs/overview",
+              "developer-docs/sdk-integration",
+              "developer-docs/api-integration",
+              "developer-docs/webhooks",
+              "developer-docs/testing",
+              "developer-docs/blockchain-concepts"
             ]
           },
           {
-            "group": "AI tools",
+            "group": "Trust and Operations",
             "pages": [
-              "ai-tools/cursor",
-              "ai-tools/claude-code",
-              "ai-tools/windsurf"
+              "trust-operations/compliance-security",
+              "trust-operations/pricing",
+              "trust-operations/support"
             ]
           }
         ]
@@ -52,9 +57,7 @@
         "groups": [
           {
             "group": "API documentation",
-            "pages": [
-              "api-reference/introduction"
-            ]
+            "pages": ["api-reference/introduction"]
           },
           {
             "group": "Endpoint examples",
@@ -71,14 +74,14 @@
     "global": {
       "anchors": [
         {
-          "anchor": "Documentation",
-          "href": "https://mintlify.com/docs",
-          "icon": "book-open-cover"
+          "anchor": "Merchant Dashboard",
+          "href": "https://spacepayone-dashboard-staging.vercel.app",
+          "icon": "gauge"
         },
         {
-          "anchor": "Blog",
-          "href": "https://mintlify.com/blog",
-          "icon": "newspaper"
+          "anchor": "Website",
+          "href": "https://spacepay.co.uk/",
+          "icon": "globe"
         }
       ]
     }
@@ -90,27 +93,26 @@
   "navbar": {
     "links": [
       {
-        "label": "Website",
-        "href": "https://spacepay.co.uk/"
+        "label": "Support",
+        "href": "mailto:support@spacepay.co.uk"
+      },
+      {
+        "label": "Contact Us",
+        "href": "https://spacepay.co.uk/contact-us/"
       }
-    ],
-    "primary": {
-      "type": "button",
-      "label": "Dashboard",
-      "href": "https://spacepayone-dashboard-staging.vercel.app"
-    }
+    ]
   },
   "contextual": {
     "options": [
-     "copy",
-     "view",
-     "chatgpt",
-     "claude",
-     "perplexity",
-     "mcp",
-     "cursor",
-     "vscode"
-   ]
+      "copy",
+      "view",
+      "chatgpt",
+      "claude",
+      "perplexity",
+      "mcp",
+      "cursor",
+      "vscode"
+    ]
   },
   "footer": {
     "socials": {

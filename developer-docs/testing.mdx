@@ -1,0 +1,149 @@
+---
+title: "Testing"
+description: "Test environments and scenarios for SpacePay integration"
+---
+
+# Testing
+
+SpacePay offers comprehensive testing environments and scenarios to ensure your integration works correctly before going live.
+
+## Environments
+
+SpacePay offers two separate environments for development and production:
+
+<CardGroup cols={2}>
+<Card title="Testnet Environment" icon="flask">
+  **Networks**: Base Sepolia, Ethereum Sepolia
+  
+  **Use for**: Development and testing
+  
+  **API Keys**: `pk_test_...`, `sk_test_...`
+  
+  **Base URL**: `https://api-testnet.spacepay.co.uk`
+</Card>
+
+<Card title="Mainnet Environment" icon="rocket">
+  **Networks**: Base, Ethereum, Polygon, BSC, Avalanche
+  
+  **Use for**: Production with real tokens
+  
+  **API Keys**: `pk_...`, `sk_...`
+  
+  **Base URL**: `https://api.spacepay.co.uk`
+</Card>
+</CardGroup>
+
+## Test Scenarios
+
+<CardGroup cols={2}>
+<Card title="Successful Payment" icon="check">
+  Send the exact amount specified in the payment request. Payment will be marked as successful after confirmation.
+</Card>
+
+<Card title="Underpayment" icon="exclamation-triangle">
+  Send less than the required amount. Payment will be marked as failed due to
+  insufficient funds.
+</Card>
+
+<Card title="Overpayment" icon="plus">
+  Send more than the required amount. Payment will be marked as successful with
+  the excess amount noted.
+</Card>
+
+<Card title="No Payment" icon="times">
+  Don't send any payment within the timeout period. Payment will expire and be marked as failed.
+</Card>
+</CardGroup>
+
+## Testing Checklist
+
+<Steps>
+<Step title="Environment Setup">
+  - [ ] Obtain testnet API keys
+  - [ ] Configure your application for testnet
+  - [ ] Set up webhook endpoint for testing
+</Step>
+
+<Step title="Payment Flow Testing">
+  - [ ] Test payment creation
+  - [ ] Test payment status updates
+  - [ ] Verify webhook delivery
+</Step>
+
+<Step title="Error Handling">
+  - [ ] Test invalid API keys
+  - [ ] Test network timeouts
+  - [ ] Test webhook signature verification
+</Step>
+
+<Step title="Edge Cases">
+  - [ ] Test payment expiration
+  - [ ] Test duplicate payments
+  - [ ] Test different token amounts
+  - [ ] Test multiple concurrent payments
+</Step>
+</Steps>
+
+## Test Data
+
+### Testnet Tokens
+
+<AccordionGroup>
+<Accordion title="Ethereum Sepolia Testnet (Chain ID: 11155111)">
+  - **ETH**: Native token (`0x0000000000000000000000000000000000000000`)
+  - **USDC**: `0xcae5e5b4a5dd769b021f9f93257b44b0742f77d3`
+  - **USDT**: `0xd14fce5bc55861c3b71bdea38d22590df8666dbc`
+</Accordion>
+
+<Accordion title="Base Sepolia Testnet (Chain ID: 84532)">
+  - **ETH**: Native token (`0x0000000000000000000000000000000000000000`)
+  - **USDC**: `0x00fc61d7de7655db3984db634e3489130ebeacf6`
+  - **USDT**: `0xe290136a17a1804d4e538bd747b7a48d1a44a629`
+</Accordion>
+</AccordionGroup>
+
+## Going Live Checklist
+
+<Steps>
+<Step title="Switch to Production">
+  - [ ] Update API base URL to production
+  - [ ] Replace test API keys with production keys
+  - [ ] Update webhook URLs to production endpoints
+</Step>
+
+<Step title="Final Verification">
+  - [ ] Test with small real payments
+  - [ ] Verify webhook delivery in production
+  - [ ] Confirm payment status updates
+  - [ ] Test error handling scenarios
+</Step>
+
+<Step title="Monitor and Support">
+  - [ ] Set up monitoring for webhook failures
+  - [ ] Configure alerts for payment issues
+</Step>
+</Steps>
+
+## Next Steps
+
+<CardGroup cols={2}>
+<Card title="SDK Integration" icon="code" href="/developer-docs/sdk-integration">
+  Use our official SDK for easier integration.
+</Card>
+
+<Card
+  title="API Integration"
+  icon="terminal"
+  href="/developer-docs/api-integration"
+>
+  Integrate directly with SpacePay's REST APIs.
+</Card>
+
+<Card title="Webhooks" icon="webhook" href="/developer-docs/webhooks">
+  Set up real-time payment notifications.
+</Card>
+
+<Card title="Support" icon="question-circle" href="/trust-operations/support">
+  Get help with your integration from our support team.
+</Card>
+</CardGroup>

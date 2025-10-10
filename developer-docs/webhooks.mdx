@@ -1,0 +1,222 @@
+---
+title: "Webhooks"
+description: "Real-time payment notifications with secure signature verification"
+---
+
+# Webhooks
+
+Set up webhooks to receive real-time payment notifications. SpacePay signs webhooks using HMAC-SHA256 with the format `timestamp + "." + rawBody`.
+
+<Note>
+  **Webhook Setup**: Webhooks are set up in your admin dashboard under Settings
+  → Developers → Webhooks. Each webhook endpoint gets its own unique secret key
+  for signature verification.
+</Note>
+
+## Webhook Event Types
+
+SpacePay sends the following webhook events:
+
+- `payment.created`: Payment has been created and is ready for customer payment
+- `payment.updated`: Payment status has been updated (confirmed, failed, expired, etc.)
+
+## Webhook Payload Structure
+
+```json
+{
+  "type": "payment.created",
+  "data": {
+    "payment": {
+      "id": "4291f98b-d68c-4eb0-883e-6bc790a41c96",
+      "merchantId": "4e29f55d-d6a8-42d7-8230-cb8efeded39e",
+      "merchantShortName": "Copycat Creations",
+      "amountInCents": 250,
+      "currency": "USD",
+      "status": "pending",
+      "depositAddress": {
+        "id": "6c1c95e1-04f1-4881-b7cc-c2a529fbde76",
+        "paymentId": "4291f98b-d68c-4eb0-883e-6bc790a41c96",
+        "type": "EVM",
+        "address": "0xa35e74109b7040d0ee74cb7cb71bae35a2981254",
+        "createdAt": "2025-10-10T21:44:06.749Z"
+      },
+      "quotes": [
+        {
+          "id": "eb0e59b9-14d5-4324-a056-e87b74aa954f",
+          "paymentId": "4291f98b-d68c-4eb0-883e-6bc790a41c96",
+          "token": {
+            "id": "f9d14525-367d-4e16-b247-8d4ed23f1413",
+            "coingeckoApiId": "ethereum",
+            "chain": {
+              "chainId": 84532,
+              "name": "Base Sepolia",
+              "nativeSymbol": "ETH",
+              "nativeDecimals": 18,
+              "isEnabled": true
+            },
+            "symbol": "ETH",
+            "contractAddress": "0x0000000000000000000000000000000000000000",
+            "decimals": 18,
+            "type": "volatile",
+            "assetType": "native",
+            "status": "active"
+          },
+          "chainId": 84532,
+          "expectedAmountAsset": "668082370801162",
+          "rateUsdAsset": "3742.05353900",
+          "expiresAt": "2025-10-10T21:54:06.796Z",
+          "status": "active",
+          "createdAt": "2025-10-10T21:44:06.794Z"
+        }
+      ],
+      "receipt": null,
+      "orderId": "Order_1234567890",
+      "redirectUrl": null,
+      "createdAt": "2025-10-10T21:44:06.733Z"
+    }
+  },
+  "timestamp": "2025-10-10T21:44:07.164Z"
+}
+```
+
+## Webhook Headers
+
+SpacePay includes these headers with each webhook:
+
+- `X-SpacePay-Id`: Webhook endpoint ID
+- `X-SpacePay-Event-Id`: Unique event identifier
+- `X-SpacePay-Timestamp`: Timestamp when webhook was sent
+- `X-SpacePay-Delivery-Id`: Unique delivery attempt ID
+- `X-SpacePay-Signature`: HMAC-SHA256 signature
+
+## Signature Verification
+
+```javascript
+import crypto from "crypto";
+
+function verifyWebhookSignature(payload, signature, secret, timestamp) {
+  // Create the signed payload: timestamp + "." + rawBody
+  const signedPayload = Buffer.concat([
+    Buffer.from(timestamp),
+    Buffer.from("."),
+    Buffer.from(payload, "utf8"),
+  ]);
+
+  // Generate HMAC-SHA256 signature
+  const expectedSignature = crypto
+    .createHmac("sha256", Buffer.from(secret, "utf8"))
+    .update(signedPayload)
+    .digest("hex");
+
+  // Compare signatures using constant-time comparison
+  return crypto.timingSafeEqual(
+    Buffer.from(signature, "hex"),
+    Buffer.from(expectedSignature, "hex")
+  );
+}
+```
+
+## Webhook Handler Implementation
+
+```javascript
+app.post("/webhooks/spacepay", (req, res) => {
+  const signature = req.headers["x-spacepay-signature"];
+  const timestamp = req.headers["x-spacepay-timestamp"];
+  const payload = JSON.stringify(req.body);
+  const webhookSecret = process.env.SPACEPAY_WEBHOOK_SECRET;
+
+  // Verify signature
+  if (!verifyWebhookSignature(payload, signature, webhookSecret, timestamp)) {
+    return res.status(400).json({ error: "Invalid signature" });
+  }
+
+  // Handle the event
+  const event = req.body;
+  console.log(`Received event: ${event.type}`);
+
+  switch (event.type) {
+    case "payment.created":
+      console.log(`Payment created: ${event.data.payment.id}`);
+      console.log(`Order ID: ${event.data.payment.orderId}`);
+      console.log(
+        `Amount: ${event.data.payment.amountInCents} ${event.data.payment.currency}`
+      );
+      console.log(
+        `Deposit Address: ${event.data.payment.depositAddress.address}`
+      );
+      break;
+    case "payment.updated":
+      console.log(`Payment updated: ${event.data.payment.id}`);
+      console.log(`New status: ${event.data.payment.status}`);
+      break;
+    default:
+      console.log(`Unknown event type: ${event.type}`);
+  }
+
+  res.json({ received: true });
+});
+```
+
+## Webhook Setup
+
+<Steps>
+<Step title="Access Webhook Settings">
+  Navigate to Settings → Developers → Webhooks in your admin dashboard.
+</Step>
+
+<Step title="Add Webhook Endpoint">
+  Enter your webhook URL (must be HTTPS) to receive payment notifications.
+</Step>
+
+<Step title="Test Your Endpoint">
+  Use the test webhook feature to verify your endpoint is working correctly.
+</Step>
+
+<Step title="Save Webhook Secret">
+  Copy the webhook secret and store it securely in your environment variables.
+</Step>
+</Steps>
+
+## Security Best Practices
+
+<CardGroup cols={2}>
+<Card title="Always Verify Signatures" icon="shield">
+  Never process webhook events without verifying the signature first.
+</Card>
+
+<Card title="Use HTTPS" icon="lock">
+  Webhook endpoints must use HTTPS to ensure secure data transmission.
+</Card>
+
+<Card title="Idempotency" icon="repeat">
+  Handle duplicate webhook deliveries gracefully using event IDs.
+</Card>
+
+<Card title="Timeout Handling" icon="clock">
+  Respond to webhooks quickly (within 30 seconds) to avoid timeouts.
+</Card>
+</CardGroup>
+
+## Next Steps
+
+<CardGroup cols={2}>
+<Card title="SDK Integration" icon="code" href="/developer-docs/sdk-integration">
+  Use our official SDK for easier integration.
+</Card>
+
+<Card
+  title="API Integration"
+  icon="terminal"
+  href="/developer-docs/api-integration"
+>
+  Integrate directly with SpacePay's REST APIs.
+</Card>
+
+<Card title="Testing" icon="flask" href="/developer-docs/testing">
+  Learn about test environments and scenarios.
+</Card>
+
+<Card title="Support" icon="question-circle" href="/trust-operations/support">
+  Get help with your integration from our support team.
+</Card>
+</CardGroup>

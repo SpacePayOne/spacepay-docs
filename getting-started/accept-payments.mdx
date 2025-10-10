@@ -1,0 +1,149 @@
+---
+title: "Accept Payments"
+description: "Learn how to accept cryptocurrency payments with SpacePay - from API setup to your first transaction"
+---
+
+# Accept Payments
+
+This guide will walk you through the process of accepting cryptocurrency payments with SpacePay, from setting up your API keys to processing your first payment.
+
+## Quick Start
+
+<Steps>
+<Step title="Get Your API Keys">
+  Generate your API keys in the admin dashboard under Settings → Developers → API Keys.
+  
+  <Note>
+    **API Keys**: Available in both testnet and mainnet environments. Test keys start with `pk_test_` and `sk_test_`.
+  </Note>
+</Step>
+
+<Step title="Choose Your Integration Method">
+  Select the integration approach that best fits your needs: - **SDK
+  Integration**: Quick setup with built-in functionality - **API Integration**:
+  Full control with direct API calls - **Webhooks**: Real-time payment
+  notifications
+</Step>
+
+<Step title="Test Your Integration">
+  Use our testnet environment to verify everything works correctly before going
+  live.
+</Step>
+
+<Step title="Go Live">
+  Switch to production environment and start accepting real payments.
+</Step>
+</Steps>
+
+## Integration Options
+
+<CardGroup cols={2}>
+<Card title="SDK Integration" icon="code" href="/developer-docs/sdk-integration">
+  **Best for**: Quick setup, simplified development
+  
+  Use our official SDK for easier integration with built-in functionality and type safety.
+</Card>
+
+<Card
+  title="API Integration"
+  icon="terminal"
+  href="/developer-docs/api-integration"
+>
+  **Best for**: Full control, custom UI Integrate directly with SpacePay's REST
+  APIs to build your own payment interface.
+</Card>
+
+</CardGroup>
+
+## Environments
+
+SpacePay provides two separate environments for development and production:
+
+<CardGroup cols={2}>
+<Card title="Testnet Environment" icon="flask">
+  **Networks**: Base Sepolia, Ethereum Sepolia
+  
+  **Use for**: Development and testing
+  
+  **API Keys**: `pk_test_...`, `sk_test_...`
+  
+  **Base URL**: `https://api-testnet.spacepay.co.uk`
+</Card>
+
+<Card title="Mainnet Environment" icon="rocket">
+  **Networks**: Base, Ethereum, Polygon, BSC, Avalanche
+  
+  **Use for**: Production with real tokens
+  
+  **API Keys**: `pk_...`, `sk_...`
+  
+  **Base URL**: `https://api.spacepay.co.uk`
+</Card>
+</CardGroup>
+
+## Payment Flow Overview
+
+<Card title="How SpacePay Processes Payments" icon="info">
+  - **Payment Creation**: Defined in USD with crypto quotes provided
+  - **Token Reception**: Customer sends cryptocurrency to deposit address
+  - **Validation**: Correct amount received and blockchain confirmation
+  - **Offramping**: Conversion to preferred settlement currency
+</Card>
+
+### Supported Payment Methods
+
+<AccordionGroup>
+<Accordion title="Guest One-Time Payments">
+  **Supported Wallets**: Any crypto wallet or direct transfer from CEX
+  
+  **Features**: No account required, instant payment
+  
+  **Benefits**: Maximum flexibility for customers
+  
+  **Best for**: One-time purchases, guest checkouts
+</Accordion>
+
+<Accordion title="SpacePay Smart Account">
+  **Features**: Top-up functionality, pre-funded payments
+  
+  **Benefits**: Faster checkout, reduced transaction fees
+  
+  **Best for**: Regular customers, subscription services
+</Accordion>
+
+<Accordion title="Connected Pre-verified Wallets">
+  **Features**: Pre-verified wallet connections
+  
+  **Benefits**: Streamlined payment experience
+  
+  **Best for**: Returning customers with crypto experience
+</Accordion>
+</AccordionGroup>
+
+## Next Steps
+
+<CardGroup cols={2}>
+<Card title="Payment Flows" icon="exchange-alt" href="/core-products/payment-flows">
+  Learn about payment processing, statuses, and supported payment methods.
+</Card>
+
+<Card
+  title="Merchant Dashboard"
+  icon="chart-line"
+  href="/core-products/merchant-dashboard"
+>
+  Manage payments, view analytics, and configure settings in your dashboard.
+</Card>
+
+<Card
+  title="Blockchain Concepts"
+  icon="link"
+  href="/developer-docs/blockchain-concepts"
+>
+  Learn about supported chains, contract addresses, and blockchain fundamentals.
+</Card>
+
+<Card title="Support" icon="question-circle" href="/trust-operations/support">
+  Get help with your integration from our support team.
+</Card>
+</CardGroup>

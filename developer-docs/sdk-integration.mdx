@@ -1,0 +1,78 @@
+---
+title: "SDK Integration"
+description: "Quick setup and simplified development with SpacePay's official SDK"
+---
+
+# SDK Integration
+
+The SpacePay SDK provides a simple way to integrate payments with minimal code and built-in functionality.
+
+## Installation
+
+```bash
+npm install @spacepay/sdk
+```
+
+<Note>
+  **Coming Soon**: The NPM package is currently in development. Contact us for
+  early access.
+</Note>
+
+## Basic Usage
+
+```javascript
+import { SpacePay, Currency, formatUnits } from "@spacepay/sdk";
+
+async function createPayment() {
+  try {
+    // Create a backend client for merchant operations
+    const backendClient = SpacePay.createBackendClient({
+      baseUrl: "https://api.spacepay.co.uk",
+      publicKey: "pk_test_your_public_key",
+      secretKey: "sk_test_your_secret_key",
+    });
+
+    // Create a new payment
+    const payment = await backendClient.createPayment({
+      orderId: "order_123",
+      amount: 100, // 100 cents = $1.00
+      currency: Currency.USD,
+      redirectUrl: "https://merchant.example.com/checkout/success",
+      customMetadata: '{"cartId":"abc123","promo":"SUMMER24"}',
+    });
+
+    console.log("Payment URL:", payment.paymentUrl);
+    console.log("Payment ID:", payment.paymentId);
+  } catch (error) {
+    console.error("Error:", error.message);
+  }
+}
+```
+
+## SDK Features
+
+<Card title="SDK Benefits" icon="check">
+  - **Simple API**: Easy-to-use methods for common operations - **Type Safety**:
+  Full TypeScript support with type definitions - **Error Handling**: Built-in
+  error handling and validation
+</Card>
+
+## Next Steps
+
+<CardGroup cols={2}>
+<Card title="API Integration" icon="terminal" href="/developer-docs/api-integration">
+  For maximum control, integrate directly with SpacePay's REST APIs.
+</Card>
+
+<Card title="Webhooks" icon="webhook" href="/developer-docs/webhooks">
+  Set up real-time payment notifications.
+</Card>
+
+<Card title="Testing" icon="flask" href="/developer-docs/testing">
+  Learn about test environments and scenarios.
+</Card>
+
+<Card title="Support" icon="question-circle" href="/trust-operations/support">
+  Get help with your integration from our support team.
+</Card>
+</CardGroup>

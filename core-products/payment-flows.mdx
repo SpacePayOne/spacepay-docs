@@ -1,0 +1,160 @@
+---
+title: "Payment Flows"
+description: "Comprehensive guide to SpacePay payment processing, and off-ramping flows"
+---
+
+# Payment Flows
+
+This guide covers all aspects of SpacePay's payment processing system, including payment processing, and off-ramping capabilities. Understand how money flows through the SpacePay ecosystem.
+
+## Payment Processing
+
+SpacePay handles the complete payment lifecycle from initiation to settlement, providing a seamless experience for both merchants and customers.
+
+### Payment Flow Overview
+
+<Steps>
+<Step title="Payment Initiation">
+  Merchant initiates payment through their ecommerce site using SpacePay's API integration or SDK.
+</Step>
+
+<Step title="Payment Intent Creation">
+  SpacePay creates a payment intent with the specified amount, currency, and
+  customer details.
+</Step>
+
+<Step title="Customer Payment">
+  Customer completes payment using one of the available payment methods.
+</Step>
+
+<Step title="Confirmation Monitoring">
+  SpacePay monitors the blockchain for transaction confirmations and network
+  finality.
+</Step>
+
+<Step title="Payment Completion">
+  Once confirmed, the payment is marked as complete and funds are prepared for settlement.
+</Step>
+</Steps>
+
+### Supported Payment Methods
+
+SpacePay offers three flexible payment options for your customers:
+
+<AccordionGroup>
+<Accordion title="Guest One-Time Payments" icon="coins">
+  Customers can pay in guest mode with any crypto wallet they can connect:
+  
+  **Supported Wallets**:
+  - MetaMask
+  - WalletConnect
+  - Coinbase Wallet
+  - Trust Wallet
+  - Hardware wallets
+  - Direct transfers from centralized exchanges
+  
+  **Best for**: One-time purchases, new customers, maximum flexibility
+</Accordion>
+
+<Accordion title="SpacePay Smart Account" icon="wallet">
+  Customers can use a SpacePay Smart Account for payments: **Features**: -
+  Top-up the account with cryptocurrency - Use account balance for payments -
+  Convenient for frequent customers - Faster checkout experience **Best for**:
+  Regular customers, subscription services, frequent purchases
+</Accordion>
+
+<Accordion title="Connected Pre-verified Wallets" icon="link">
+  Customers can connect and pre-verify their wallets:
+  
+  **Benefits**:
+  - Connect wallets for faster checkout
+  - Pre-verified for enhanced security
+  - Streamlined payment experience
+  - Reduced transaction friction
+  
+  **Best for**: Returning customers, security-conscious users, frequent transactions
+</Accordion>
+</AccordionGroup>
+
+### Supported Blockchain Networks
+
+<Card title="Multi-Chain Support" icon="network-wired">
+  SpacePay accepts payments across multiple blockchain networks: - **Ethereum**
+  - ETH, USDC, USDT - **Polygon** - POL, USDC, USDT - **Binance Smart Chain** -
+  BNB, USDC, USDT - **Base** - ETH, USDC, USDT - **Avalanche** - AVAX, USDC,
+  USDT
+</Card>
+
+### Payment States
+
+Understanding payment states helps you provide better customer experience:
+
+<AccordionGroup>
+<Accordion title="Pending">
+  Payment has been initiated but not yet confirmed on the blockchain. Customer has started the transaction process.
+</Accordion>
+
+<Accordion title="Processing">
+  Transaction is being processed on the blockchain. Waiting for network
+  confirmations.
+</Accordion>
+
+<Accordion title="Completed">
+  Payment has been confirmed on the blockchain and is considered final. Funds
+  are available for settlement.
+</Accordion>
+
+<Accordion title="Failed">
+  Payment failed due to network issues, insufficient funds, or other errors. No
+  funds were transferred.
+</Accordion>
+
+<Accordion title="Expired">
+  Payment was not completed within the allowed time window and expired
+  automatically. Customer needs to initiate a new payment.
+</Accordion>
+
+<Accordion title="Cancelled">
+  Payment was cancelled by the merchant before completion. No funds were transferred.
+</Accordion>
+</AccordionGroup>
+
+### How SpacePay Processes Payments
+
+SpacePay handles the complete payment lifecycle with a simple, automated process:
+
+<Card title="Payment Processing Flow" icon="cogs">
+  **1. Payment Creation**: When you create a payment, it's defined in USD and we
+  provide real-time cryptocurrency quotes. **2. Token Reception**: We receive
+  the cryptocurrency tokens from your customers on the specified blockchain
+  network. **3. Validation**: Our system validates that the correct amount of
+  tokens was received and confirms the transaction on the blockchain. **4.
+  Offramping**: Once validated, we handle the offramping process to convert the
+  cryptocurrency to your preferred settlement currency.
+</Card>
+
+## Next Steps
+
+Now that you understand how SpacePay processes payments, explore these related topics:
+
+<CardGroup cols={2}>
+<Card title="API Reference" icon="book" href="/developer-docs/api-reference">
+  Detailed API documentation for all payment operations.
+</Card>
+
+<Card
+  title="SDK Integration"
+  icon="code"
+  href="/developer-docs/sdks-integration"
+>
+  Use our SDKs for easier integration in your preferred language.
+</Card>
+
+<Card title="Webhook Setup" icon="webhook" href="/developer-docs/api-reference">
+  Set up real-time notifications for payment events.
+</Card>
+
+<Card title="Security Best Practices" icon="lock" href="/trust-operations/compliance-security">
+  Learn about security measures and compliance requirements.
+</Card>
+</CardGroup>

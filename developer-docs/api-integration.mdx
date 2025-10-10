@@ -1,0 +1,107 @@
+---
+title: "API Integration"
+description: "Full control and custom UI with SpacePay's REST APIs"
+---
+
+# API Integration
+
+For maximum control, integrate directly with SpacePay's REST APIs to build your own payment interface.
+
+## Authentication
+
+All API requests require authentication using your secret key with the `X-SpacePay-Secret-Key` header:
+
+<Note>
+  **API Keys**: Generate your API keys in the admin dashboard under Settings →
+  Developers → API Keys.
+</Note>
+
+```javascript
+const headers = {
+  "X-SpacePay-Secret-Key": "sk_test_your_secret_key",
+  "Content-Type": "application/json",
+  "Idempotency-Key": "unique-key-for-request", // Optional but recommended
+};
+```
+
+## Create Payment
+
+```javascript
+const response = await fetch(
+  "https://api.spacepay.co.uk/v1/external/secretkey-auth/payments",
+  {
+    method: "POST",
+    headers: {
+      "X-SpacePay-Secret-Key": "sk_test_your_secret_key",
+      "Content-Type": "application/json",
+      "Idempotency-Key": "unique-key-for-request",
+    },
+    body: JSON.stringify({
+      orderId: "order_123",
+      amount: 100, // 100 cents = $1.00
+      currency: "USD",
+      redirectUrl: "https://merchant.example.com/checkout/success",
+      customMetadata: '{"cartId":"abc123","promo":"SUMMER24"}',
+    }),
+  }
+);
+
+const payment = await response.json();
+```
+
+## Get Payment Status
+
+```javascript
+const response = await fetch(
+  `https://api.spacepay.co.uk/v1/external/secretkey-auth/payments/${paymentId}`,
+  {
+    headers: {
+      "X-SpacePay-Secret-Key": "sk_test_your_secret_key",
+    },
+  }
+);
+
+const paymentStatus = await response.json();
+```
+
+## API Reference
+
+For detailed API documentation including all endpoints, request/response schemas, and examples, see our comprehensive [API Reference](/api-reference/introduction).
+
+## Error Handling
+
+SpacePay uses standard HTTP status codes and returns detailed error information:
+
+```javascript
+try {
+  const response = await fetch(url, options);
+
+  if (!response.ok) {
+    const error = await response.json();
+    console.error("API Error:", error.message);
+    console.error("Error Code:", error.code);
+  }
+} catch (error) {
+  console.error("Network Error:", error.message);
+}
+```
+
+## Next Steps
+
+<CardGroup cols={2}>
+<Card title="SDK Integration" icon="code" href="/developer-docs/sdk-integration">
+  Use our official SDK for easier integration.
+</Card>
+
+<Card title="Webhooks" icon="webhook" href="/developer-docs/webhooks">
+  Set up real-time payment notifications.
+</Card>
+
+<Card title="Testing" icon="flask" href="/developer-docs/testing">
+  Learn about test environments and scenarios.
+</Card>
+
+<Card title="API Reference" icon="book" href="/developer-docs/api-reference">
+  Detailed API documentation and endpoint reference.
+</Card>
+</CardGroup>
