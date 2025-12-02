@@ -11,8 +11,7 @@ Retrieve payment details and current status by payment ID.
 <RequestExample>
   ```bash cURL curl -X GET
   https://api.spacepay.co.uk/v1/external/secretkey-auth/payments/4291f98b-d68c-4eb0-883e-6bc790a41c96
-  \ -H "X-SpacePay-Secret-Key: sk_test_your_secret_key"
-  ```
+  \ -H "X-SpacePay-Secret-Key: sk_test_your_secret_key" ```
 </RequestExample>
 
 <ResponseExample>
@@ -69,8 +68,7 @@ Retrieve payment details and current status by payment ID.
   },
   "orderId": "order_123",
   "redirectUrl": "https://merchant.example.com/checkout/success",
-  "createdAt": "2025-10-10T21:44:06.733Z",
-  "updatedAt": "2025-10-10T21:45:00.000Z"
+  "createdAt": "2025-10-10T21:44:06.733Z"
 }
 ```
 </ResponseExample>
@@ -95,7 +93,7 @@ Retrieve payment details and current status by payment ID.
   Short name of the merchant for display purposes.
 </ResponseField>
 
-<ResponseField name="amountInCents" type="integer" required>
+<ResponseField name="amountInCents" type="number" required>
   Payment amount in cents.
 </ResponseField>
 
@@ -190,10 +188,6 @@ Transaction receipt information (only present for completed payments).
 
 <ResponseField name="createdAt" type="string" required>
   Timestamp when the payment was created.
-</ResponseField>
-
-<ResponseField name="updatedAt" type="string" required>
-  Timestamp when the payment was last updated.
 </ResponseField>
 
 ## Error Responses

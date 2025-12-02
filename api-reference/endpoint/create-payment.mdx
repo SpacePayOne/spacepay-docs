@@ -88,8 +88,8 @@ curl -X POST https://api.spacepay.co.uk/v1/external/secretkey-auth/payments \
   Unique identifier for the order. Used for tracking and reconciliation.
 </ParamField>
 
-<ParamField body="amount" type="integer" required>
-  Payment amount in cents. For example, 100 = $1.00.
+<ParamField body="amount" type="number" required>
+  Payment amount in cents. For example, 100 = $1.00. Minimum: 100 cents, Maximum: 100000000 cents.
 </ParamField>
 
 <ParamField body="currency" type="string" required>
@@ -118,7 +118,7 @@ Complete payment object with all details.
   Current payment status: pending, processing, completed, failed, expired, cancelled.
   </ResponseField>
   
-  <ResponseField name="amountInCents" type="integer">
+  <ResponseField name="amountInCents" type="number">
   Payment amount in cents.
   </ResponseField>
   

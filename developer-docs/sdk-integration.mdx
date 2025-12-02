@@ -10,39 +10,48 @@ The SpacePay SDK provides a simple way to integrate payments with minimal code a
 ## Installation
 
 ```bash
-npm install @spacepay/sdk
+npm install spacepay-client-sdk
 ```
 
 <Note>
-  **Coming Soon**: The NPM package is currently in development. Contact us for
-  early access.
+  **Requirements**: Node.js 18+ or modern browsers with Fetch API support.
 </Note>
 
 ## Basic Usage
 
-```javascript
-import { SpacePay, Currency, formatUnits } from "@spacepay/sdk";
+```typescript
+import { SpacePayClient } from "spacepay-client-sdk";
 
+// Initialize the client
+const client = new SpacePayClient({
+  baseUrl: "https://api.spacepay.co.uk",
+  publicKey: "pk_test_your_public_key",
+  secretKey: "sk_test_your_secret_key",
+});
+
+// Create a payment
 async function createPayment() {
   try {
-    // Create a backend client for merchant operations
-    const backendClient = SpacePay.createBackendClient({
-      baseUrl: "https://api.spacepay.co.uk",
-      publicKey: "pk_test_your_public_key",
-      secretKey: "sk_test_your_secret_key",
-    });
-
-    // Create a new payment
-    const payment = await backendClient.createPayment({
+    const payment = await client.createPayment({
       orderId: "order_123",
       amount: 100, // 100 cents = $1.00
-      currency: Currency.USD,
-      redirectUrl: "https://merchant.example.com/checkout/success",
-      customMetadata: '{"cartId":"abc123","promo":"SUMMER24"}',
+      currency: "USD",
+      redirectUrl: "https://merchant.example.com/checkout/success", // Optional
+      customMetadata: '{"cartId":"abc123","promo":"SUMMER24"}', // Optional
     });
 
     console.log("Payment URL:", payment.paymentUrl);
     console.log("Payment ID:", payment.paymentId);
+  } catch (error) {
+    console.error("Error:", error.message);
+  }
+}
+
+// Check payment status
+async function checkPaymentStatus(paymentId: string) {
+  try {
+    const status = await client.getPaymentStatus(paymentId);
+    console.log("Payment status:", status.status);
   } catch (error) {
     console.error("Error:", error.message);
   }
@@ -52,10 +61,62 @@ async function createPayment() {
 ## SDK Features
 
 <Card title="SDK Benefits" icon="check">
-  - **Simple API**: Easy-to-use methods for common operations - **Type Safety**:
-  Full TypeScript support with type definitions - **Error Handling**: Built-in
-  error handling and validation
+  - **Lightweight**: No heavy dependencies, minimal bundle size
+  - **Type-safe**: Full TypeScript support with comprehensive type definitions
+  - **Universal**: Works in Node.js 18+ and modern browsers
+  - **Modern**: Uses native fetch API and modern JavaScript features
+  - **Robust**: Built-in error handling, timeout management, and retry logic
 </Card>
+
+## Client Configuration
+
+You can configure the client with additional options:
+
+```typescript
+const client = new SpacePayClient({
+  baseUrl: "https://api.spacepay.co.uk",
+  publicKey: "pk_test_your_public_key",
+  secretKey: "sk_test_your_secret_key",
+  config: {
+    timeoutMs: 30000, // Request timeout in milliseconds (default: 30000)
+  },
+});
+```
+
+## Payment Status Values
+
+The SDK returns payment statuses with the following values:
+
+- `pending` - Payment created, waiting for funds
+- `processing` - Payment detected, confirming on blockchain
+- `completed` - Payment confirmed and settled
+- `failed` - Payment failed or rejected
+- `expired` - Payment expired without completion
+- `cancelled` - Payment was cancelled
+
+## Error Handling
+
+The SDK provides structured error handling:
+
+```typescript
+import { ApiError } from "spacepay-client-sdk";
+
+try {
+  const payment = await client.createPayment({
+    orderId: "order_123",
+    amount: 100,
+    currency: "USD",
+  });
+} catch (error) {
+  if (error instanceof ApiError) {
+    console.error("API Error:", error.message);
+    console.error("Status:", error.status);
+    console.error("Request ID:", error.requestId);
+  } else {
+    console.error("Unexpected error:", error);
+  }
+}
+```
 
 ## Next Steps
 

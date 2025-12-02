@@ -20,7 +20,7 @@ Before you begin, make sure you have:
 
 <Steps>
 <Step title="Sign Up">
-  Visit the [SpacePay Dashboard](https://spacepayone-dashboard-staging.vercel.app) and click "Sign Up" to create your account.
+  Visit the [SpacePay Dashboard](https://dashboard.spacepay.co.uk/) and click "Sign Up" to create your account.
   
   <Tip>
   You can sign up using your Google account for faster registration, or use your business email address.
@@ -98,43 +98,34 @@ Once your account is verified, you can access your API keys:
 Now you're ready to integrate SpacePay into your application:
 
 <AccordionGroup>
-<Accordion title="Option 1: Hosted Checkout (Easiest)">
-  Use our hosted checkout page for the quickest integration:
-  
-  ```javascript
-  // Redirect customers to SpacePay checkout
-  const checkoutUrl = `https://checkout.spacepay.co.uk/pay?api_key=${API_KEY}&amount=100&currency=USD`;
-  window.location.href = checkoutUrl;
-  ```
-  
-  <Tip>
-  This method requires minimal code and handles all payment UI automatically.
-  </Tip>
-</Accordion>
 
-<Accordion title="Option 2: API Integration">
+<Accordion title="Option 1: API Integration">
   For more control, integrate directly with our API:
   
   ```javascript
-  // Create a payment intent
-  const response = await fetch('https://api.spacepay.co.uk/v1/payment-intents', {
+  // Create a payment
+  const response = await fetch('https://api.spacepay.co.uk/v1/external/secretkey-auth/payments', {
     method: 'POST',
     headers: {
-      'Authorization': `Bearer ${API_KEY}`,
-      'Content-Type': 'application/json'
+      'X-SpacePay-Secret-Key': 'sk_test_your_secret_key',
+      'Content-Type': 'application/json',
+      'Idempotency-Key': 'unique-key-for-request' // Optional but recommended
     },
     body: JSON.stringify({
-      amount: 10000, // $100.00 in cents
+      orderId: 'order_123',
+      amount: 100, // $1.00 in cents (minimum: 100, maximum: 100000000)
       currency: 'USD',
-      description: 'Test payment'
+      redirectUrl: 'https://merchant.example.com/checkout/success', // Optional
+      customMetadata: '{"cartId":"abc123","promo":"SUMMER24"}' // Optional
     })
   });
   
-  const paymentIntent = await response.json();
+  const payment = await response.json();
+  // Access payment.paymentUrl to redirect customer to payment page
   ```
 </Accordion>
 
-<Accordion title="Option 3: Drop-in UI">
+<Accordion title="Option 2: Drop-in UI">
   Embed our payment widget directly in your page:
   
   ```html
