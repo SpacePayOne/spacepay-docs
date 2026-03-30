@@ -60,10 +60,19 @@
             "pages": ["api-reference/introduction"]
           },
           {
-            "group": "Merchant endpoints",
+            "group": "Payments & Deposits",
             "pages": [
-              "api-reference/endpoint/create-payment",
-              "api-reference/endpoint/get-payment"
+              "api-reference/endpoint/external-payments-create",
+              "api-reference/endpoint/external-payments-list",
+              "api-reference/endpoint/external-payments-get"
+            ]
+          },
+          {
+            "group": "Withdrawals",
+            "pages": [
+              "api-reference/endpoint/external-withdrawals-create",
+              "api-reference/endpoint/external-withdrawals-list",
+              "api-reference/endpoint/external-withdrawals-get"
             ]
           }
         ]

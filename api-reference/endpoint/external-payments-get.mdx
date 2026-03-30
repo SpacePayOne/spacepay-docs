@@ -6,11 +6,11 @@ openapi: "GET /v1/external/secretkey-auth/payments/:paymentId"
 
 # Get Payment
 
-Retrieve payment details and current status by payment ID.
+Retrieve full payment details by id, including `type` (`payment` or `deposit`), quotes, and optional receipt.
 
 <RequestExample>
   ```bash cURL curl -X GET
-  https://api.spacepay.co.uk/v1/external/secretkey-auth/payments/4291f98b-d68c-4eb0-883e-6bc790a41c96
+  "https://api.spacepay.co.uk/v1/external/secretkey-auth/payments/4291f98b-d68c-4eb0-883e-6bc790a41c96"
   \ -H "X-SpacePay-Secret-Key: sk_test_your_secret_key" ```
 </RequestExample>
 
@@ -20,7 +20,8 @@ Retrieve payment details and current status by payment ID.
   "id": "4291f98b-d68c-4eb0-883e-6bc790a41c96",
   "merchantId": "4e29f55d-d6a8-42d7-8230-cb8efeded39e",
   "merchantShortName": "Copycat Creations",
-  "amountInCents": 100,
+  "type": "payment",
+  "amountInCents": 250,
   "currency": "USD",
   "status": "completed",
   "depositAddress": {
@@ -93,8 +94,20 @@ Retrieve payment details and current status by payment ID.
   Short name of the merchant for display purposes.
 </ResponseField>
 
+<ResponseField name="type" type="string" required>
+  `payment` (fixed amount) or `deposit` (variable on-chain amount).
+</ResponseField>
+
 <ResponseField name="amountInCents" type="number" required>
   Payment amount in cents.
+</ResponseField>
+
+<ResponseField name="amountDueCents" type="number" required>
+  Amount due in cents.
+</ResponseField>
+
+<ResponseField name="amountMerchantNetCents" type="number" required>
+  Merchant net amount in cents after fees.
 </ResponseField>
 
 <ResponseField name="currency" type="string" required>
@@ -197,7 +210,7 @@ Transaction receipt information (only present for completed payments).
 {
   "error": {
     "type": "authentication_error",
-    "message": "Invalid or missing x-spacepay-secret-key header",
+    "message": "Invalid or missing X-SpacePay-Secret-Key header",
     "code": "invalid_api_key"
   }
 }

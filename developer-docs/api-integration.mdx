@@ -9,66 +9,137 @@ For maximum control, integrate directly with SpacePay's REST APIs to build your 
 
 ## Authentication
 
-All API requests require authentication using your secret key with the `X-SpacePay-Secret-Key` header:
+**Merchant secret key** (`X-SpacePay-Secret-Key`): use on your server for [creating payments or deposits](/api-reference/endpoint/create-payment), [reading a payment by id](/api-reference/endpoint/get-payment), and [withdrawals](/api-reference/endpoint/external-create-withdrawal).
+
+**Payment secret** (`X-SpacePay-Payment-Secret`): returned in the create-payment response as `secret`. Use it for customer-scoped routes under `/v1/external/payment-secret-auth/payments/...` (status, quotes, refresh).
+
+**Bearer JWT**: required for merchant dashboard withdrawal APIs under `/v1/merchants/{merchantId}/withdrawals` and `GET /v1/merchants/{merchantId}/withdrawals/config`.
 
 <Note>
-  **API Keys**: Generate your API keys in the admin dashboard under Settings →
-  Developers → API Keys.
+  **API keys**: Generate merchant secret keys in the admin dashboard under
+  Settings → Developers → API Keys.
 </Note>
 
 ```javascript
-const headers = {
+const merchantHeaders = {
   "X-SpacePay-Secret-Key": "sk_test_your_secret_key",
   "Content-Type": "application/json",
-  "Idempotency-Key": "unique-key-for-request", // Optional but recommended
+  "Idempotency-Key": "unique-key-for-request", // optional but recommended
 };
 ```
 
-## Create Payment
+## Create payment (fixed amount)
+
+`type` defaults to `payment`. You must send `amount` (minimum **250** cents per API schema).
 
 ```javascript
 const response = await fetch(
   "https://api.spacepay.co.uk/v1/external/secretkey-auth/payments",
   {
     method: "POST",
-    headers: {
-      "X-SpacePay-Secret-Key": "sk_test_your_secret_key",
-      "Content-Type": "application/json",
-      "Idempotency-Key": "unique-key-for-request",
-    },
+    headers: merchantHeaders,
     body: JSON.stringify({
+      type: "payment",
       orderId: "order_123",
-      amount: 100, // 100 cents = $1.00
+      amount: 250,
       currency: "USD",
       redirectUrl: "https://merchant.example.com/checkout/success",
       customMetadata: '{"cartId":"abc123","promo":"SUMMER24"}',
     }),
-  }
+  },
 );
 
-const payment = await response.json();
+const { paymentId, secret, paymentUrl } = await response.json();
 ```
 
-## Get Payment Status
+## Create deposit (flexible amount)
+
+Set `type` to `deposit`. Omit `amount` (it is ignored). Deposits must be enabled for the merchant.
+
+```javascript
+const response = await fetch(
+  "https://api.spacepay.co.uk/v1/external/secretkey-auth/payments",
+  {
+    method: "POST",
+    headers: merchantHeaders,
+    body: JSON.stringify({
+      type: "deposit",
+      currency: "USD",
+      orderId: "order_123",
+      redirectUrl: "https://merchant.example.com/checkout/success",
+      customMetadata: '{"cartId":"abc123"}',
+    }),
+  },
+);
+
+const { paymentId, secret, paymentUrl } = await response.json();
+```
+
+## List payments (merchant secret)
+
+[`GET /v1/external/secretkey-auth/payments`](/api-reference/endpoint/list-payments) supports optional query params: `type`, `status`, `search`, `sortBy`, `sortOrder`, `limit`, and `offset`.
+
+```javascript
+const params = new URLSearchParams({
+  status: "pending",
+  limit: "50",
+  offset: "0",
+});
+const response = await fetch(
+  `https://api.spacepay.co.uk/v1/external/secretkey-auth/payments?${params}`,
+  { headers: { "X-SpacePay-Secret-Key": "sk_test_your_secret_key" } },
+);
+const { data, pagination } = await response.json();
+```
+
+## Get payment (merchant secret)
 
 ```javascript
 const response = await fetch(
   `https://api.spacepay.co.uk/v1/external/secretkey-auth/payments/${paymentId}`,
   {
-    headers: {
-      "X-SpacePay-Secret-Key": "sk_test_your_secret_key",
-    },
-  }
+    headers: { "X-SpacePay-Secret-Key": "sk_test_your_secret_key" },
+  },
 );
 
-const paymentStatus = await response.json();
+const payment = await response.json();
 ```
+
+## Payment secret flows
+
+Use `secret` from the create response with `X-SpacePay-Payment-Secret`. Endpoints include payment details, status, listing and creating quotes, and `POST` `refresh-status`. For **deposit** payments, quote creation may include `forceDepositAmount` (cents).
+
+## Withdrawals
+
+```javascript
+const response = await fetch(
+  "https://api.spacepay.co.uk/v1/external/secretkey-auth/withdrawals",
+  {
+    method: "POST",
+    headers: merchantHeaders,
+    body: JSON.stringify({
+      amountInCents: 1000,
+      chainId: 84532,
+      recipientAddress: "0x31adfE243828bb73E5186f77A66de459a4f568A8",
+      orderId: "Order_1234567890",
+      currency: "USD",
+      customMetadata: '{"cartId":"abc123"}',
+    }),
+  },
+);
+```
+
+List and get-by-id use `GET` on the same base path; see [API Reference](/api-reference/introduction).
+
+## Withdrawal configuration (bearer)
+
+Call `GET https://api.spacepay.co.uk/v1/merchants/{merchantId}/withdrawals/config` with a Bearer token to read supported tokens, limits, and the backend wallet before you build withdrawal UIs.
 
 ## API Reference
 
-For detailed API documentation including all endpoints, request/response schemas, and examples, see our comprehensive [API Reference](/api-reference/introduction).
+For generated schemas and every endpoint, see the [API Reference](/api-reference/introduction) and the endpoint groups in the **API reference** tab.
 
-## Error Handling
+## Error handling
 
 SpacePay uses standard HTTP status codes and returns detailed error information:
 
@@ -86,7 +157,7 @@ try {
 }
 ```
 
-## Next Steps
+## Next steps
 
 <CardGroup cols={2}>
 <Card title="SDK Integration" icon="code" href="/developer-docs/sdk-integration">
@@ -101,7 +172,7 @@ try {
   Learn about test environments and scenarios.
 </Card>
 
-<Card title="API Reference" icon="book" href="/developer-docs/api-reference">
-  Detailed API documentation and endpoint reference.
+<Card title="API Reference" icon="book" href="/api-reference/introduction">
+  Endpoint reference and OpenAPI-backed pages.
 </Card>
 </CardGroup>

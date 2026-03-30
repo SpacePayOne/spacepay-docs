@@ -1,0 +1,157 @@
+---
+title: "Create withdrawal"
+description: "Create a crypto withdrawal using the merchant secret key"
+openapi: "POST /v1/external/secretkey-auth/withdrawals"
+---
+
+# Create withdrawal
+
+Creates a withdrawal for the merchant associated with your secret key. SpacePay converts the requested USD amount to crypto and sends it to the specified recipient address on the chosen chain.
+
+<Note>
+  **Withdrawals** must be enabled for your merchant account. If withdrawals are
+  disabled, contact the SpacePay support team.
+</Note>
+
+<RequestExample>
+```bash cURL
+curl -X POST https://api.spacepay.co.uk/v1/external/secretkey-auth/withdrawals \
+  -H "X-SpacePay-Secret-Key: sk_test_your_secret_key" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "amountInCents": 5000,
+    "chainId": 84532,
+    "recipientAddress": "0xRecipientAddressHere",
+    "orderId": "order_123",
+    "currency": "USD",
+    "customMetadata": "{\"note\":\"payout for March\"}"
+  }'
+```
+</RequestExample>
+
+<ResponseExample>
+```json Success Response (201)
+{
+  "id": "a1b2c3d4-e5f6-7890-abcd-ef1234567890",
+  "merchantId": "4e29f55d-d6a8-42d7-8230-cb8efeded39e",
+  "amountInCents": 5000,
+  "chainId": 84532,
+  "recipientAddress": "0xRecipientAddressHere",
+  "status": "pending",
+  "currency": "USD",
+  "orderId": "order_123",
+  "customMetadata": "{\"note\":\"payout for March\"}",
+  "errorMessage": null,
+  "receipt": null,
+  "createdAt": "2025-10-10T21:44:06.733Z",
+  "updatedAt": "2025-10-10T21:44:06.733Z"
+}
+```
+</ResponseExample>
+
+## Request Parameters
+
+<ParamField body="amountInCents" type="number" required>
+  Withdrawal amount in cents (for example, 5000 = $50.00). Minimum: **100** cents, maximum: **100000000** cents.
+</ParamField>
+
+<ParamField body="chainId" type="number" required>
+  EVM chain ID to settle the withdrawal on. Use your withdrawal config endpoint to get supported chain IDs.
+</ParamField>
+
+<ParamField body="recipientAddress" type="string" required>
+  Beneficiary wallet address that will receive the funds.
+</ParamField>
+
+<ParamField body="orderId" type="string">
+  Your order or reference ID for reconciliation. Maximum 255 characters.
+</ParamField>
+
+<ParamField body="currency" type="string" default="USD">
+  Currency of the withdrawal amount. Supports `USD`.
+</ParamField>
+
+<ParamField body="customMetadata" type="string">
+  Optional metadata as a JSON string. Maximum 2048 characters.
+</ParamField>
+
+## Response Fields
+
+<ResponseField name="id" type="string" required>
+  Unique withdrawal identifier.
+</ResponseField>
+
+<ResponseField name="merchantId" type="string" required>
+  ID of the merchant who created the withdrawal.
+</ResponseField>
+
+<ResponseField name="amountInCents" type="number" required>
+  Withdrawal amount in USD cents.
+</ResponseField>
+
+<ResponseField name="chainId" type="number" required>
+  EVM chain ID used for settlement.
+</ResponseField>
+
+<ResponseField name="recipientAddress" type="string" required>
+  Beneficiary wallet address that receives the funds.
+</ResponseField>
+
+<ResponseField name="status" type="string" required>
+  Initial status will be `pending`. Possible values: `pending`, `processing`, `completed`, `failed`, `cancelled`.
+</ResponseField>
+
+<ResponseField name="currency" type="string" required>
+  Withdrawal currency (`USD`).
+</ResponseField>
+
+<ResponseField name="orderId" type="string">
+  Merchant's order identifier, if provided.
+</ResponseField>
+
+<ResponseField name="customMetadata" type="string">
+  Custom metadata string, if provided.
+</ResponseField>
+
+<ResponseField name="errorMessage" type="string">
+  Error description. `null` on creation; populated if the withdrawal later fails.
+</ResponseField>
+
+<ResponseField name="receipt" type="object">
+  On-chain settlement details. `null` on creation; populated once the withdrawal is `completed`.
+</ResponseField>
+
+<ResponseField name="createdAt" type="string" required>
+  Timestamp when the withdrawal was created.
+</ResponseField>
+
+<ResponseField name="updatedAt" type="string" required>
+  Timestamp when the withdrawal was last updated.
+</ResponseField>
+
+## Error Responses
+
+<ResponseExample>
+```json Error Response (400)
+{
+  "error": {
+    "type": "invalid_request_error",
+    "message": "The amount must be greater than 100 cents",
+    "code": "invalid_amount",
+    "param": "amountInCents"
+  }
+}
+```
+</ResponseExample>
+
+<ResponseExample>
+```json Error Response (401)
+{
+  "error": {
+    "type": "authentication_error",
+    "message": "Invalid or missing X-SpacePay-Secret-Key header",
+    "code": "invalid_api_key"
+  }
+}
+```
+</ResponseExample>

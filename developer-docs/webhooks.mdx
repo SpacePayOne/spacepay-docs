@@ -19,65 +19,61 @@ SpacePay sends the following webhook events:
 
 - `payment.created`: Payment has been created and is ready for customer payment
 - `payment.updated`: Payment status has been updated (confirmed, failed, expired, etc.)
+- `withdrawal.created`: Withdrawal has been created and is ready for customer payment
+- `withdrawal.updated`: Withdrawal status has been updated (confirmed, failed, expired, etc.)
 
 ## Webhook Payload Structure
 
+<Note>
+  Webhook payloads contain a minimal snapshot of the resource. If you need full
+  details — such as quotes, deposit address, or receipt — call [Get
+  Payment](/api-reference/endpoint/external-payments-get) or [Get
+  Withdrawal](/api-reference/endpoint/external-withdrawals-get) using the `id`
+  from the payload.
+</Note>
+
+<Tabs>
+  <Tab title="Payment">
 ```json
 {
   "type": "payment.created",
   "data": {
     "payment": {
       "id": "4291f98b-d68c-4eb0-883e-6bc790a41c96",
+      "type": "payment",
       "merchantId": "4e29f55d-d6a8-42d7-8230-cb8efeded39e",
-      "merchantShortName": "Copycat Creations",
       "amountInCents": 250,
+      "amountDueCents": 250,
       "currency": "USD",
       "status": "pending",
-      "depositAddress": {
-        "id": "6c1c95e1-04f1-4881-b7cc-c2a529fbde76",
-        "paymentId": "4291f98b-d68c-4eb0-883e-6bc790a41c96",
-        "type": "EVM",
-        "address": "0xa35e74109b7040d0ee74cb7cb71bae35a2981254",
-        "createdAt": "2025-10-10T21:44:06.749Z"
-      },
-      "quotes": [
-        {
-          "id": "eb0e59b9-14d5-4324-a056-e87b74aa954f",
-          "paymentId": "4291f98b-d68c-4eb0-883e-6bc790a41c96",
-          "token": {
-            "id": "f9d14525-367d-4e16-b247-8d4ed23f1413",
-            "coingeckoApiId": "ethereum",
-            "chain": {
-              "chainId": 84532,
-              "name": "Base Sepolia",
-              "nativeSymbol": "ETH",
-              "nativeDecimals": 18,
-              "isEnabled": true
-            },
-            "symbol": "ETH",
-            "contractAddress": "0x0000000000000000000000000000000000000000",
-            "decimals": 18,
-            "type": "volatile",
-            "assetType": "native",
-            "status": "active"
-          },
-          "chainId": 84532,
-          "expectedAmountAsset": "668082370801162",
-          "rateUsdAsset": "3742.05353900",
-          "expiresAt": "2025-10-10T21:54:06.796Z",
-          "status": "active",
-          "createdAt": "2025-10-10T21:44:06.794Z"
-        }
-      ],
-      "receipt": null,
       "orderId": "Order_1234567890",
-      "redirectUrl": null,
       "createdAt": "2025-10-10T21:44:06.733Z"
     }
   },
   "timestamp": "2025-10-10T21:44:07.164Z"
 }
 ```
+  </Tab>
+  <Tab title="Withdrawal">
+```json
+{
+  "type": "withdrawal.created",
+  "data": {
+    "withdrawal": {
+      "id": "a1b2c3d4-e5f6-7890-abcd-ef1234567890",
+      "merchantId": "4e29f55d-d6a8-42d7-8230-cb8efeded39e",
+      "amountInCents": 5000,
+      "currency": "USD",
+      "status": "pending",
+      "orderId": "order_123",
+      "createdAt": "2025-10-10T21:44:06.733Z"
+    }
+  },
+  "timestamp": "2025-10-10T21:44:07.164Z"
+}
+```
+  </Tab>
+</Tabs>
 
 ## Webhook Headers
 
@@ -111,7 +107,7 @@ function verifyWebhookSignature(payload, signature, secret, timestamp) {
   // Compare signatures using constant-time comparison
   return crypto.timingSafeEqual(
     Buffer.from(signature, "hex"),
-    Buffer.from(expectedSignature, "hex")
+    Buffer.from(expectedSignature, "hex"),
   );
 }
 ```
@@ -139,10 +135,10 @@ app.post("/webhooks/spacepay", (req, res) => {
       console.log(`Payment created: ${event.data.payment.id}`);
       console.log(`Order ID: ${event.data.payment.orderId}`);
       console.log(
-        `Amount: ${event.data.payment.amountInCents} ${event.data.payment.currency}`
+        `Amount: ${event.data.payment.amountInCents} ${event.data.payment.currency}`,
       );
       console.log(
-        `Deposit Address: ${event.data.payment.depositAddress.address}`
+        `Deposit Address: ${event.data.payment.depositAddress.address}`,
       );
       break;
     case "payment.updated":

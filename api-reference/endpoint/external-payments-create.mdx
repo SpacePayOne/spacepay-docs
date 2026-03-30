@@ -1,12 +1,17 @@
 ---
-title: "Create Payment"
-description: "Create a new payment using secret key authentication"
+title: "Create payment or deposit"
+description: "Create a fixed-amount payment or a flexible deposit using secret key authentication"
 openapi: "POST /v1/external/secretkey-auth/payments"
 ---
 
-# Create Payment
+# Create payment or deposit
 
-Create a new payment intent with quotes and deposit address.
+Creates a **payment** (fixed fiat amount) or a **deposit** (customer chooses how much crypto to send). Both return a hosted flow URL, a `paymentId`, and a **payment secret**`.
+
+<Note>
+  **Deposits** require the merchant to have deposits enabled. If deposits are
+  disabled for your account, contact SpacePay support team.
+</Note>
 
 <RequestExample>
 ```bash cURL
@@ -15,8 +20,9 @@ curl -X POST https://api.spacepay.co.uk/v1/external/secretkey-auth/payments \
   -H "Content-Type: application/json" \
   -H "Idempotency-Key: unique-key-for-request" \
   -d '{
+    "type": "payment",
     "orderId": "order_123",
-    "amount": 100,
+    "amount": 250,
     "currency": "USD",
     "redirectUrl": "https://merchant.example.com/checkout/success",
     "customMetadata": "{\"cartId\":\"abc123\",\"promo\":\"SUMMER24\"}"
@@ -31,7 +37,7 @@ curl -X POST https://api.spacepay.co.uk/v1/external/secretkey-auth/payments \
     "id": "4291f98b-d68c-4eb0-883e-6bc790a41c96",
     "merchantId": "4e29f55d-d6a8-42d7-8230-cb8efeded39e",
     "merchantShortName": "Copycat Creations",
-    "amountInCents": 100,
+    "amountInCents": 250,
     "currency": "USD",
     "status": "pending",
     "depositAddress": {
@@ -82,40 +88,53 @@ curl -X POST https://api.spacepay.co.uk/v1/external/secretkey-auth/payments \
 ```
 </ResponseExample>
 
-## Request Parameters
+## Request parameters
 
-<ParamField body="orderId" type="string" required>
-  Unique identifier for the order. Used for tracking and reconciliation.
+<ParamField body="type" type="string" default="payment">
+  `payment` (default) or `deposit`. For `payment`, you must send `amount`. For
+  `deposit`, `amount` is optional; the customer can send a variable amount
+  on-chain.
 </ParamField>
 
-<ParamField body="amount" type="number" required>
-  Payment amount in cents. For example, 100 = $1.00. Minimum: 100 cents, Maximum: 100000000 cents.
+<ParamField body="amount" type="number">
+  Amount in cents (for example, 250 = $2.50). **Required** when `type` is
+  `payment` or omitted (defaults to `payment`). **Optional** when `type` is
+  `deposit`. Minimum: **250** cents, maximum: 100000000 cents.
 </ParamField>
 
 <ParamField body="currency" type="string" required>
-  Payment currency. Currently supports "USD".
+  Payment currency. Supports `USD`.
+</ParamField>
+
+<ParamField body="orderId" type="string" required>
+  Your order or reference id for reconciliation.
 </ParamField>
 
 <ParamField body="redirectUrl" type="string">
-  URL to redirect the customer after payment completion.
+  URL to send the customer after the payment completes.
 </ParamField>
 
 <ParamField body="customMetadata" type="string">
-  Custom metadata as a JSON string for additional order information.
+  Optional metadata as a JSON string (passed through to redirects as
+  configured).
 </ParamField>
 
-## Response Fields
+## Response fields
 
 <ResponseField name="payment" type="object" required>
-Complete payment object with all details.
+Complete payment object including `type` (`payment` \| `deposit`), status, quotes, and deposit address when applicable.
 
 <Expandable title="Payment properties">
   <ResponseField name="id" type="string">
   Unique payment identifier.
   </ResponseField>
+
+  <ResponseField name="type" type="string">
+  `payment` or `deposit`.
+  </ResponseField>
   
   <ResponseField name="status" type="string">
-  Current payment status: pending, processing, completed, failed, expired, cancelled.
+  Current payment status: `pending`, `processing`, `completed`, `failed`, `expired`, or `cancelled`.
   </ResponseField>
   
   <ResponseField name="amountInCents" type="number">
@@ -123,33 +142,33 @@ Complete payment object with all details.
   </ResponseField>
   
   <ResponseField name="currency" type="string">
-  Payment currency.
+  Currency code.
   </ResponseField>
   
   <ResponseField name="depositAddress" type="object">
-  Cryptocurrency deposit address for the payment.
-  
+  Deposit address for crypto settlement.
+
   <Expandable title="Deposit address properties">
     <ResponseField name="address" type="string">
-    The cryptocurrency address where customers should send payment.
+    Chain address where the customer sends funds.
     </ResponseField>
     
     <ResponseField name="type" type="string">
-    Address type (e.g., "EVM" for Ethereum-compatible chains).
+    Address type (for example `EVM`).
     </ResponseField>
   </Expandable>
   </ResponseField>
   
   <ResponseField name="quotes" type="array">
-  Available cryptocurrency quotes for the payment.
-  
+  Active or initial cryptocurrency quotes.
+
   <Expandable title="Quote properties">
     <ResponseField name="token" type="object">
-    Token information including symbol, decimals, and contract address.
+    Token metadata (symbol, decimals, contract, chain).
     </ResponseField>
     
     <ResponseField name="expectedAmountAsset" type="string">
-    Expected amount to send in the smallest token unit.
+    Expected amount in the token's smallest unit.
     </ResponseField>
     
     <ResponseField name="rateUsdAsset" type="string">
@@ -157,7 +176,7 @@ Complete payment object with all details.
     </ResponseField>
     
     <ResponseField name="expiresAt" type="string">
-    Quote expiration timestamp.
+    Quote expiry time.
     </ResponseField>
   </Expandable>
   </ResponseField>
@@ -165,18 +184,19 @@ Complete payment object with all details.
 </ResponseField>
 
 <ResponseField name="paymentUrl" type="string">
-  URL for the hosted payment page.
+  Hosted payment URL for the customer.
 </ResponseField>
 
 <ResponseField name="paymentId" type="string">
-  Payment identifier for API calls.
+  Payment id (same as `payment.id`).
 </ResponseField>
 
 <ResponseField name="secret" type="string">
-  Secret key for payment verification.
+  **Payment secret** — use with `X-SpacePay-Payment-Secret` on payment-secret
+  endpoints (never treat this like your merchant secret key).
 </ResponseField>
 
-## Error Responses
+## Error responses
 
 <ResponseExample>
 ```json Error Response (400)
@@ -196,7 +216,7 @@ Complete payment object with all details.
 {
   "error": {
     "type": "authentication_error",
-    "message": "Invalid or missing x-spacepay-secret-key header",
+    "message": "Invalid or missing X-SpacePay-Secret-Key header",
     "code": "invalid_api_key"
   }
 }

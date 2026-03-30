@@ -1,0 +1,228 @@
+---
+title: "List withdrawals"
+description: "List and filter your merchant's withdrawals with pagination, using secret key authentication"
+openapi: "GET /v1/external/secretkey-auth/withdrawals"
+---
+
+# List withdrawals
+
+Returns a paginated list of withdrawals for the merchant tied to your secret key. You can filter by `status` and control pagination with `limit` and `offset`.
+
+<RequestExample>
+  ```bash cURL
+  curl -X GET \
+    "https://api.spacepay.co.uk/v1/external/secretkey-auth/withdrawals?status=completed&limit=50&offset=0" \
+    -H "X-SpacePay-Secret-Key: sk_test_your_secret_key"
+  ```
+</RequestExample>
+
+<ResponseExample>
+```json Success Response (200)
+{
+  "data": [
+    {
+      "id": "a1b2c3d4-e5f6-7890-abcd-ef1234567890",
+      "merchantId": "4e29f55d-d6a8-42d7-8230-cb8efeded39e",
+      "amountInCents": 5000,
+      "chainId": 84532,
+      "recipientAddress": "0xRecipientAddressHere",
+      "status": "completed",
+      "currency": "USD",
+      "orderId": "order_123",
+      "customMetadata": "{\"note\":\"payout for March\"}",
+      "errorMessage": null,
+      "receipt": {
+        "withdrawalId": "a1b2c3d4-e5f6-7890-abcd-ef1234567890",
+        "settledToken": {
+          "symbol": "ETH",
+          "decimals": 18,
+          "contractAddress": "0x0000000000000000000000000000000000000000"
+        },
+        "settledChain": {
+          "chainId": 84532,
+          "name": "Base Sepolia"
+        },
+        "settledAmountAsset": "1336164741602324",
+        "settledAmountUsd": "50.00",
+        "txHash": "0xda3be87732110de6c1354c83770aae630ede9ac308d9f7b399ecfba23d923384",
+        "txBlockNumber": 18500000,
+        "txTimestamp": "2025-10-10T21:50:00.000Z",
+        "txSenderAddress": "0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+        "txGasUsed": 21000,
+        "txTotalCost": "441000000000000",
+        "txTotalCostUsdFractions": 118,
+        "txIsSponsored": false,
+        "processedBy": "cron",
+        "createdAt": "2025-10-10T21:50:05.000Z"
+      },
+      "createdAt": "2025-10-10T21:44:06.733Z",
+      "updatedAt": "2025-10-10T21:50:05.000Z"
+    }
+  ],
+  "pagination": {
+    "total": 42,
+    "limit": 50,
+    "offset": 0,
+    "hasMore": false,
+    "totalPages": 1,
+    "currentPage": 1
+  }
+}
+```
+</ResponseExample>
+
+## Query Parameters
+
+<ParamField query="status" type="string">
+  Filter by withdrawal status. Possible values: `pending`, `processing`, `completed`, `failed`, `cancelled`.
+</ParamField>
+
+<ParamField query="limit" type="number" default="100">
+  Number of withdrawals to return. Minimum: **1**, maximum: **1000**.
+</ParamField>
+
+<ParamField query="offset" type="number" default="0">
+  Number of withdrawals to skip for pagination.
+</ParamField>
+
+## Response Fields
+
+<ResponseField name="data" type="array" required>
+  Array of withdrawal objects.
+
+<Expandable title="Withdrawal properties">
+  <ResponseField name="id" type="string">
+    Unique withdrawal identifier.
+  </ResponseField>
+
+  <ResponseField name="merchantId" type="string">
+    ID of the merchant who created the withdrawal.
+  </ResponseField>
+
+  <ResponseField name="amountInCents" type="number">
+    Withdrawal amount in USD cents.
+  </ResponseField>
+
+  <ResponseField name="chainId" type="number">
+    EVM chain ID used for settlement.
+  </ResponseField>
+
+  <ResponseField name="recipientAddress" type="string">
+    Beneficiary wallet address.
+  </ResponseField>
+
+  <ResponseField name="status" type="string">
+    Current withdrawal status: `pending`, `processing`, `completed`, `failed`, or `cancelled`.
+  </ResponseField>
+
+  <ResponseField name="currency" type="string">
+    Withdrawal currency (`USD`).
+  </ResponseField>
+
+  <ResponseField name="orderId" type="string">
+    Merchant's order identifier, if provided.
+  </ResponseField>
+
+  <ResponseField name="customMetadata" type="string">
+    Custom metadata, if provided.
+  </ResponseField>
+
+  <ResponseField name="errorMessage" type="string">
+    Error description. Only present when `status` is `failed`.
+  </ResponseField>
+
+  <ResponseField name="receipt" type="object">
+    On-chain settlement details. Only present for `completed` withdrawals.
+
+  <Expandable title="Receipt properties">
+    <ResponseField name="settledToken" type="object">
+      Token used to settle the withdrawal.
+    </ResponseField>
+
+    <ResponseField name="settledChain" type="object">
+      Chain on which the withdrawal was settled.
+    </ResponseField>
+
+    <ResponseField name="settledAmountAsset" type="string">
+      Amount sent in the token's smallest unit.
+    </ResponseField>
+
+    <ResponseField name="settledAmountUsd" type="string">
+      USD value of the settled amount.
+    </ResponseField>
+
+    <ResponseField name="txHash" type="string">
+      Blockchain transaction hash.
+    </ResponseField>
+
+    <ResponseField name="txBlockNumber" type="integer">
+      Block number where the transaction was confirmed.
+    </ResponseField>
+
+    <ResponseField name="txTimestamp" type="string">
+      Timestamp of the on-chain transaction.
+    </ResponseField>
+
+    <ResponseField name="txIsSponsored" type="boolean">
+      Whether the transaction gas was sponsored by SpacePay.
+    </ResponseField>
+
+    <ResponseField name="processedBy" type="string">
+      Internal processor that submitted the transaction.
+    </ResponseField>
+  </Expandable>
+  </ResponseField>
+
+  <ResponseField name="createdAt" type="string">
+    Timestamp when the withdrawal was created.
+  </ResponseField>
+
+  <ResponseField name="updatedAt" type="string">
+    Timestamp when the withdrawal was last updated.
+  </ResponseField>
+</Expandable>
+</ResponseField>
+
+<ResponseField name="pagination" type="object" required>
+  Pagination metadata.
+
+<Expandable title="Pagination properties">
+  <ResponseField name="total" type="number">
+    Total number of withdrawals matching the filter.
+  </ResponseField>
+
+  <ResponseField name="limit" type="number">
+    Number of items requested per page.
+  </ResponseField>
+
+  <ResponseField name="offset" type="number">
+    Number of items skipped.
+  </ResponseField>
+
+  <ResponseField name="hasMore" type="boolean">
+    Whether there are more pages after this one.
+  </ResponseField>
+
+  <ResponseField name="totalPages" type="number">
+    Total number of pages.
+  </ResponseField>
+
+  <ResponseField name="currentPage" type="number">
+    Current page number.
+  </ResponseField>
+</Expandable>
+</ResponseField>
+
+## Error Responses
+
+<ResponseExample>
+```json Error Response (401)
+{
+  "error": {
+    "type": "authentication_error",
+    "message": "Invalid or missing X-SpacePay-Secret-Key header",
+    "code": "invalid_api_key"
+  }
+}
+```
+</ResponseExample>

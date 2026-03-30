@@ -113,7 +113,7 @@ Now you're ready to integrate SpacePay into your application:
     },
     body: JSON.stringify({
       orderId: 'order_123',
-      amount: 100, // $1.00 in cents (minimum: 100, maximum: 100000000)
+      amount: 250, // $2.50 in cents (minimum: 250 for fixed payments; use type "deposit" for flexible amounts)
       currency: 'USD',
       redirectUrl: 'https://merchant.example.com/checkout/success', // Optional
       customMetadata: '{"cartId":"abc123","promo":"SUMMER24"}' // Optional

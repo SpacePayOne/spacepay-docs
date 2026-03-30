@@ -455,6 +455,16 @@
             }
           },
           {
+            "name": "hasNonZeroBalance",
+            "required": false,
+            "in": "query",
+            "description": "Filter merchants that have a non-zero balance",
+            "schema": {
+              "example": true,
+              "type": "boolean"
+            }
+          },
+          {
             "name": "limit",
             "required": false,
             "in": "query",
@@ -552,6 +562,60 @@
           }
         ],
         "summary": "Update merchant status (Super Admin only)",
+        "tags": ["Admin"]
+      }
+    },
+    "/v1/admin/merchants/{merchantId}/features": {
+      "post": {
+        "operationId": "AdminMerchantsController_updateMerchantFeatures",
+        "parameters": [
+          {
+            "name": "merchantId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateMerchantFeaturesDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Merchant feature flags updated successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MerchantDto"
+                }
+              }
+            }
+          },
+          "201": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MerchantDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Update merchant feature flags (Super Admin only)",
         "tags": ["Admin"]
       }
     },
@@ -698,6 +762,211 @@
           }
         ],
         "summary": "Create a payout for a merchant",
+        "tags": ["Admin"]
+      }
+    },
+    "/v1/admin/merchants/{merchantId}/offramp-address": {
+      "get": {
+        "operationId": "AdminMerchantsController_getOfframpAddress",
+        "parameters": [
+          {
+            "name": "merchantId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Active off-ramp address returned",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MerchantOfframpAddressDto"
+                }
+              }
+            }
+          },
+          "204": {
+            "description": "No off-ramp address set"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Get active off-ramp address for a merchant",
+        "tags": ["Admin"]
+      },
+      "post": {
+        "operationId": "AdminMerchantsController_upsertOfframpAddress",
+        "parameters": [
+          {
+            "name": "merchantId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateMerchantOfframpAddressDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Off-ramp address upserted successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MerchantOfframpAddressDto"
+                }
+              }
+            }
+          },
+          "201": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MerchantOfframpAddressDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Set or replace the active off-ramp address for a merchant",
+        "tags": ["Admin"]
+      }
+    },
+    "/v1/admin/merchants/{merchantId}/fees": {
+      "get": {
+        "operationId": "AdminMerchantsController_getMerchantFees",
+        "parameters": [
+          {
+            "name": "merchantId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MerchantFeesDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Get effective fees for a merchant",
+        "tags": ["Admin"]
+      },
+      "post": {
+        "operationId": "AdminMerchantsController_upsertMerchantFees",
+        "parameters": [
+          {
+            "name": "merchantId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpsertMerchantFeeOverrideDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MerchantFeesDto"
+                }
+              }
+            }
+          },
+          "201": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MerchantFeesDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Upsert merchant fee override",
+        "tags": ["Admin"]
+      }
+    },
+    "/v1/admin/merchants/{merchantId}/fees/delete": {
+      "post": {
+        "operationId": "AdminMerchantsController_deleteMerchantFees",
+        "parameters": [
+          {
+            "name": "merchantId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": ""
+          },
+          "204": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Delete merchant fee override (fallback to global)",
         "tags": ["Admin"]
       }
     },
@@ -947,11 +1216,22 @@
                 "payment.received",
                 "payment.confirmed",
                 "payment.failed",
-                "user.created",
-                "user.updated",
+                "payment.transaction.risk.changed",
+                "withdrawal.created",
+                "withdrawal.updated",
                 "merchant.created",
                 "merchant.updated",
-                "payout.created"
+                "merchant.status.changed",
+                "merchant.offramp_address.updated",
+                "merchant.payout_account.created",
+                "payout.created",
+                "payout.completed",
+                "transfer.offramp.created",
+                "transfer.refund.created",
+                "transfer.offramp.completed",
+                "transfer.refund.completed",
+                "transfer.offramp.failed",
+                "transfer.refund.failed"
               ]
             }
           },
@@ -1757,6 +2037,85 @@
         "tags": ["Email Endpoints"]
       }
     },
+    "/v1/merchants/{merchantId}/wallet": {
+      "get": {
+        "operationId": "MerchantsWalletsController_getMerchantWallet",
+        "parameters": [
+          {
+            "name": "merchantId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Wallet retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MerchantWalletDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Get merchant wallet",
+        "tags": ["Merchants Wallets"]
+      },
+      "post": {
+        "operationId": "MerchantsWalletsController_setMerchantWallet",
+        "parameters": [
+          {
+            "name": "merchantId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateMerchantWalletDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Wallet set successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MerchantWalletDto"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Wallet has already been set"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Set merchant wallet (only once)",
+        "tags": ["Merchants Wallets"]
+      }
+    },
     "/v1/merchants/{merchantId}/payments": {
       "get": {
         "operationId": "PaymentsController_getAllPayments",
@@ -1767,6 +2126,17 @@
             "in": "path",
             "schema": {
               "type": "string"
+            }
+          },
+          {
+            "name": "type",
+            "required": false,
+            "in": "query",
+            "description": "Filter by payment type",
+            "schema": {
+              "example": "payment",
+              "type": "string",
+              "enum": ["payment", "deposit"]
             }
           },
           {
@@ -1785,6 +2155,38 @@
                 "expired",
                 "cancelled"
               ]
+            }
+          },
+          {
+            "name": "search",
+            "required": false,
+            "in": "query",
+            "description": "Search by partial match of payment ID, deposit wallet address, merchant short name, receipt tx hash, receipt tx sender address",
+            "schema": {
+              "example": "Merchant name",
+              "type": "string"
+            }
+          },
+          {
+            "name": "sortBy",
+            "required": false,
+            "in": "query",
+            "description": "Field to sort by",
+            "schema": {
+              "example": "createdAt",
+              "type": "string",
+              "enum": ["createdAt", "amountInCents"]
+            }
+          },
+          {
+            "name": "sortOrder",
+            "required": false,
+            "in": "query",
+            "description": "Sort order",
+            "schema": {
+              "example": "DESC",
+              "type": "string",
+              "enum": ["ASC", "DESC"]
             }
           },
           {
@@ -1847,6 +2249,17 @@
             }
           },
           {
+            "name": "type",
+            "required": false,
+            "in": "query",
+            "description": "Filter by payment type",
+            "schema": {
+              "example": "payment",
+              "type": "string",
+              "enum": ["payment", "deposit"]
+            }
+          },
+          {
             "name": "status",
             "required": false,
             "in": "query",
@@ -1862,6 +2275,38 @@
                 "expired",
                 "cancelled"
               ]
+            }
+          },
+          {
+            "name": "search",
+            "required": false,
+            "in": "query",
+            "description": "Search by partial match of payment ID, deposit wallet address, merchant short name, receipt tx hash, receipt tx sender address",
+            "schema": {
+              "example": "Merchant name",
+              "type": "string"
+            }
+          },
+          {
+            "name": "sortBy",
+            "required": false,
+            "in": "query",
+            "description": "Field to sort by",
+            "schema": {
+              "example": "createdAt",
+              "type": "string",
+              "enum": ["createdAt", "amountInCents"]
+            }
+          },
+          {
+            "name": "sortOrder",
+            "required": false,
+            "in": "query",
+            "description": "Sort order",
+            "schema": {
+              "example": "DESC",
+              "type": "string",
+              "enum": ["ASC", "DESC"]
             }
           }
         ],
@@ -1953,7 +2398,7 @@
             "description": "Invalid input data"
           },
           "401": {
-            "description": "Invalid or missing x-spacepay-secret-key header"
+            "description": "Invalid or missing X-SpacePay-Secret-Key header"
           }
         },
         "security": [
@@ -1962,6 +2407,116 @@
           }
         ],
         "summary": "Create a new payment using secret key (external API)",
+        "tags": ["External - Payments (Secret Key)"]
+      },
+      "get": {
+        "operationId": "ExternalPaymentsBySecretKeyController_getPayments",
+        "parameters": [
+          {
+            "name": "type",
+            "required": false,
+            "in": "query",
+            "description": "Filter by payment type",
+            "schema": {
+              "example": "payment",
+              "type": "string",
+              "enum": ["payment", "deposit"]
+            }
+          },
+          {
+            "name": "status",
+            "required": false,
+            "in": "query",
+            "description": "Filter by payment status",
+            "schema": {
+              "example": "pending",
+              "type": "string",
+              "enum": [
+                "pending",
+                "processing",
+                "completed",
+                "failed",
+                "expired",
+                "cancelled"
+              ]
+            }
+          },
+          {
+            "name": "search",
+            "required": false,
+            "in": "query",
+            "description": "Search by partial match of payment ID, deposit wallet address, merchant short name, receipt tx hash, receipt tx sender address",
+            "schema": {
+              "example": "Merchant name",
+              "type": "string"
+            }
+          },
+          {
+            "name": "sortBy",
+            "required": false,
+            "in": "query",
+            "description": "Field to sort by",
+            "schema": {
+              "example": "createdAt",
+              "type": "string",
+              "enum": ["createdAt", "amountInCents"]
+            }
+          },
+          {
+            "name": "sortOrder",
+            "required": false,
+            "in": "query",
+            "description": "Sort order",
+            "schema": {
+              "example": "DESC",
+              "type": "string",
+              "enum": ["ASC", "DESC"]
+            }
+          },
+          {
+            "name": "limit",
+            "required": false,
+            "in": "query",
+            "description": "Number of items to return",
+            "schema": {
+              "minimum": 1,
+              "maximum": 1000,
+              "default": 100,
+              "example": 50,
+              "type": "number"
+            }
+          },
+          {
+            "name": "offset",
+            "required": false,
+            "in": "query",
+            "description": "Number of items to skip",
+            "schema": {
+              "minimum": 0,
+              "default": 0,
+              "example": 0,
+              "type": "number"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Payments retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PaginatedPaymentDtoResult"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "Secret Key": []
+          }
+        ],
+        "summary": "Get all payments for a merchant",
         "tags": ["External - Payments (Secret Key)"]
       }
     },
@@ -1990,7 +2545,7 @@
             }
           },
           "401": {
-            "description": "Invalid or missing x-spacepay-secret-key header"
+            "description": "Invalid or missing X-SpacePay-Secret-Key header"
           },
           "404": {
             "description": "Payment not found"
@@ -2030,7 +2585,7 @@
             }
           },
           "401": {
-            "description": "Invalid or missing x-spacepay-payment-secret header"
+            "description": "Invalid or missing X-SpacePay-Payment-Secret header"
           },
           "404": {
             "description": "Payment not found"
@@ -2070,7 +2625,7 @@
             }
           },
           "401": {
-            "description": "Invalid or missing x-spacepay-payment-secret header"
+            "description": "Invalid or missing X-SpacePay-Payment-Secret header"
           },
           "404": {
             "description": "Payment not found"
@@ -2113,7 +2668,7 @@
             }
           },
           "401": {
-            "description": "Invalid or missing x-spacepay-payment-secret header"
+            "description": "Invalid or missing X-SpacePay-Payment-Secret header"
           }
         },
         "security": [
@@ -2161,7 +2716,7 @@
             "description": "Payment is not pending, cannot create or update a quote"
           },
           "401": {
-            "description": "Invalid or missing x-spacepay-payment-secret header"
+            "description": "Invalid or missing X-SpacePay-Payment-Secret header"
           }
         },
         "security": [
@@ -2171,6 +2726,471 @@
         ],
         "summary": "Create or update a quote by contract address and chain using Payment Secret. If neither contractAddress nor chainId is provided, a default quote will be created.",
         "tags": ["External - Payments (Payment Secret)"]
+      }
+    },
+    "/v1/external/payment-secret-auth/payments/{paymentId}/refresh-status": {
+      "post": {
+        "operationId": "ExternalPaymentsByPaymentSecretController_refreshPaymentStatus",
+        "parameters": [
+          {
+            "name": "paymentId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RefreshPaymentStatusDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Payment status refresh initiated successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PaymentStatusDto"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Invalid or missing X-SpacePay-Payment-Secret header"
+          },
+          "403": {
+            "description": "Payment does not belong to the merchant"
+          },
+          "404": {
+            "description": "Payment not found"
+          }
+        },
+        "security": [
+          {
+            "Payment Secret": []
+          }
+        ],
+        "summary": "Force refresh payment status verification using Payment Secret",
+        "tags": ["External - Payments (Payment Secret)"]
+      }
+    },
+    "/v1/admin/payments/{paymentId}/transfer-preview": {
+      "get": {
+        "description": "Returns recipient address, deposit address balance, token, and chain information for a transfer",
+        "operationId": "AdminPaymentsController_getTransferPreview",
+        "parameters": [
+          {
+            "name": "paymentId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "transferType",
+            "required": true,
+            "in": "query",
+            "description": "Type of transfer",
+            "schema": {
+              "example": "offramp",
+              "type": "string",
+              "enum": ["refund", "offramp"]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Transfer preview retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TransferPreviewDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Get preview of a transfer before executing it",
+        "tags": ["Admin"]
+      }
+    },
+    "/v1/admin/payments/transfers": {
+      "get": {
+        "description": "Retrieves paginated offramp and refund transfers filtered by payment ID, merchant ID, or both",
+        "operationId": "AdminPaymentsController_getTransfers",
+        "parameters": [
+          {
+            "name": "paymentId",
+            "required": false,
+            "in": "query",
+            "description": "Filter by payment ID",
+            "schema": {
+              "format": "uuid",
+              "type": "string"
+            }
+          },
+          {
+            "name": "merchantId",
+            "required": false,
+            "in": "query",
+            "description": "Filter by merchant ID",
+            "schema": {
+              "format": "uuid",
+              "type": "string"
+            }
+          },
+          {
+            "name": "offrampAddress",
+            "required": false,
+            "in": "query",
+            "description": "Filter by full recipient/offramp address (case-insensitive)",
+            "schema": {
+              "example": "0x742d35cc6634c0532925a3b844bc9e7595f0bebe",
+              "type": "string"
+            }
+          },
+          {
+            "name": "transferType",
+            "required": false,
+            "in": "query",
+            "description": "Filter by transfer type",
+            "schema": {
+              "type": "string",
+              "enum": ["refund", "offramp"]
+            }
+          },
+          {
+            "name": "initiator",
+            "required": false,
+            "in": "query",
+            "description": "Filter by initiator",
+            "schema": {
+              "type": "string",
+              "enum": ["system", "admin", "cron"]
+            }
+          },
+          {
+            "name": "chainId",
+            "required": false,
+            "in": "query",
+            "description": "Filter by chain ID",
+            "schema": {
+              "example": 137,
+              "type": "number"
+            }
+          },
+          {
+            "name": "limit",
+            "required": false,
+            "in": "query",
+            "description": "Number of items to return",
+            "schema": {
+              "minimum": 1,
+              "maximum": 1000,
+              "default": 100,
+              "example": 50,
+              "type": "number"
+            }
+          },
+          {
+            "name": "offset",
+            "required": false,
+            "in": "query",
+            "description": "Number of items to skip",
+            "schema": {
+              "minimum": 0,
+              "default": 0,
+              "example": 0,
+              "type": "number"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Paginated transfers matching the filters",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PaginatedOfframpTransferDtoResult"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Get transfers by payment or merchant filter",
+        "tags": ["Admin"]
+      }
+    },
+    "/v1/admin/payments/transfers/{transferId}/refresh-tx-cost": {
+      "post": {
+        "description": "Re-fetches tx cost from the chain for the given completed offramp/refund transfer and updates txGasUsed, txTotalCost, txTotalCostUsdFractions.",
+        "operationId": "AdminPaymentsController_refreshTransferTxCostByTransferId",
+        "parameters": [
+          {
+            "name": "transferId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Transfer transaction cost refreshed successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OfframpTransferDto"
+                }
+              }
+            }
+          },
+          "201": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OfframpTransferDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Transfer is not completed or has no tx hash or chain"
+          },
+          "404": {
+            "description": "Transfer not found"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Load and save transaction cost for a completed transfer by ID",
+        "tags": ["Admin"]
+      }
+    },
+    "/v1/admin/payments/{paymentId}/manual-transfer": {
+      "post": {
+        "description": "For offramp: sends tokens to merchant's active offramp address. For refund: sends tokens back to the sender of the settlement transaction.",
+        "operationId": "AdminPaymentsController_manualTransfer",
+        "parameters": [
+          {
+            "name": "paymentId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ManualTransferRequestDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Manual transfer initiated successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OfframpTransferDto"
+                }
+              }
+            }
+          },
+          "201": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OfframpTransferDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Manually transfer tokens (offramp or refund)",
+        "tags": ["Admin"]
+      }
+    },
+    "/v1/admin/payments/{paymentId}/refresh-receipt": {
+      "post": {
+        "description": "For a completed payment, re-fetches and updates tx hash, gas usage, sponsorship and cost metadata on the payment receipt.",
+        "operationId": "AdminPaymentsController_refreshReceipt",
+        "parameters": [
+          {
+            "name": "paymentId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Payment receipt refreshed successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PaymentReceiptDto"
+                }
+              }
+            }
+          },
+          "201": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PaymentReceiptDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Manually refresh payment receipt transaction metadata",
+        "tags": ["Admin"]
+      }
+    },
+    "/v1/admin/payments/{paymentId}/refresh-transfers-tx-cost": {
+      "post": {
+        "description": "Re-fetches tx cost from the chain for each completed offramp/refund transfer of the payment and updates txGasUsed, txTotalCost, txTotalCostUsdFractions. Returns the list of refreshed transfers.",
+        "operationId": "AdminPaymentsController_refreshTransfersTxCost",
+        "parameters": [
+          {
+            "name": "paymentId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Transfers refreshed (may be empty if none are completed with tx hash)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/OfframpTransferDto"
+                  }
+                }
+              }
+            }
+          },
+          "201": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/OfframpTransferDto"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Load and save transaction cost for all completed transfers of a payment",
+        "tags": ["Admin"]
+      }
+    },
+    "/v1/admin/payments/requires-attention": {
+      "get": {
+        "description": "Returns payments that are old but not expired, out of supported amount range, or completed without a sender address on the receipt.",
+        "operationId": "AdminPaymentsController_getPaymentsRequiringAttention",
+        "parameters": [
+          {
+            "name": "limit",
+            "required": false,
+            "in": "query",
+            "description": "Number of items to return",
+            "schema": {
+              "minimum": 1,
+              "maximum": 1000,
+              "default": 100,
+              "example": 50,
+              "type": "number"
+            }
+          },
+          {
+            "name": "offset",
+            "required": false,
+            "in": "query",
+            "description": "Number of items to skip",
+            "schema": {
+              "minimum": 0,
+              "default": 0,
+              "example": 0,
+              "type": "number"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Paginated list of payments requiring attention",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PaginatedPaymentAttentionItemDtoResult"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "List payments that require manual admin attention",
+        "tags": ["Admin"]
       }
     },
     "/v1/external/chains": {
@@ -2286,6 +3306,28 @@
             }
           },
           {
+            "name": "assetType",
+            "required": false,
+            "in": "query",
+            "description": "Filter by asset type",
+            "schema": {
+              "example": "erc20",
+              "type": "string",
+              "enum": ["native", "erc20"]
+            }
+          },
+          {
+            "name": "tokenType",
+            "required": false,
+            "in": "query",
+            "description": "Filter by token type",
+            "schema": {
+              "example": "stablecoin",
+              "type": "string",
+              "enum": ["stablecoin", "volatile"]
+            }
+          },
+          {
             "name": "limit",
             "required": false,
             "in": "query",
@@ -2359,6 +3401,35 @@
         "tags": ["External - Token Registry (Public)"]
       }
     },
+    "/v1/admin/chains": {
+      "get": {
+        "description": "Returns all chains with their tokens, RPC URLs, delegation addresses, and backend wallet balances",
+        "operationId": "AdminChainsController_getAllChainsWithDetails",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Chains retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/AdminChainDetailDto"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Get all chains with detailed information (Super Admin only)",
+        "tags": ["Admin"]
+      }
+    },
     "/v1/tatum/webhook": {
       "post": {
         "operationId": "TatumWebhookController_handleWebhook",
@@ -2379,6 +3450,479 @@
           }
         },
         "tags": ["Thirdparty Webhooks"]
+      }
+    },
+    "/v1/admin/transaction-monitoring/transaction": {
+      "post": {
+        "description": "Invokes the transaction monitoring service for a given txHash and chainId using the configured provider (Scorechain).",
+        "operationId": "AdminTransactionMonitoringController_testTransaction",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AdminTransactionMonitoringTestDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Risk analysis result",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          },
+          "201": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Test transaction risk analysis (Super Admin only)",
+        "tags": ["Admin"]
+      }
+    },
+    "/v1/admin/transaction-monitoring/address": {
+      "post": {
+        "description": "Invokes the transaction monitoring service for a given address and chainId using the configured provider (Scorechain).",
+        "operationId": "AdminTransactionMonitoringController_testAddress",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AdminAddressMonitoringTestDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Address risk analysis result",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          },
+          "201": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Test address risk analysis (Super Admin only)",
+        "tags": ["Admin"]
+      }
+    },
+    "/v1/admin/transaction-monitoring/wallet": {
+      "post": {
+        "description": "Invokes the transaction monitoring service for a given wallet address and chainId using the configured provider (Scorechain).",
+        "operationId": "AdminTransactionMonitoringController_testWallet",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AdminWalletMonitoringTestDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Wallet risk analysis result",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          },
+          "201": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Test wallet risk analysis (Super Admin only)",
+        "tags": ["Admin"]
+      }
+    },
+    "/v1/merchants/{merchantId}/withdrawals": {
+      "post": {
+        "operationId": "WithdrawalsController_createWithdrawal",
+        "parameters": [
+          {
+            "name": "merchantId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateWithdrawalDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Withdrawal created successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/WithdrawalDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Create a withdrawal (merchant bearer)",
+        "tags": ["Withdrawals"]
+      },
+      "get": {
+        "operationId": "WithdrawalsController_getWithdrawals",
+        "parameters": [
+          {
+            "name": "merchantId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "status",
+            "required": false,
+            "in": "query",
+            "description": "Filter by withdrawal status",
+            "schema": {
+              "example": "processing",
+              "type": "string",
+              "enum": [
+                "pending",
+                "processing",
+                "completed",
+                "failed",
+                "cancelled"
+              ]
+            }
+          },
+          {
+            "name": "limit",
+            "required": false,
+            "in": "query",
+            "description": "Number of items to return",
+            "schema": {
+              "minimum": 1,
+              "maximum": 1000,
+              "default": 100,
+              "example": 50,
+              "type": "number"
+            }
+          },
+          {
+            "name": "offset",
+            "required": false,
+            "in": "query",
+            "description": "Number of items to skip",
+            "schema": {
+              "minimum": 0,
+              "default": 0,
+              "example": 0,
+              "type": "number"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Withdrawals retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PaginatedWithdrawalDtoResult"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Get all withdrawals for a merchant",
+        "tags": ["Withdrawals"]
+      }
+    },
+    "/v1/merchants/{merchantId}/withdrawals/config": {
+      "get": {
+        "operationId": "WithdrawalsController_getWithdrawalsConfig",
+        "parameters": [
+          {
+            "name": "merchantId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Withdrawals configuration retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/WithdrawalConfigDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Get withdrawals configuration",
+        "tags": ["Withdrawals"]
+      }
+    },
+    "/v1/merchants/{merchantId}/withdrawals/{withdrawalId}": {
+      "get": {
+        "operationId": "WithdrawalsController_getWithdrawal",
+        "parameters": [
+          {
+            "name": "merchantId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "withdrawalId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Withdrawal found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/WithdrawalDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Get withdrawal by ID",
+        "tags": ["Withdrawals"]
+      }
+    },
+    "/v1/external/secretkey-auth/withdrawals": {
+      "post": {
+        "operationId": "ExternalWithdrawalsBySecretKeyController_createWithdrawal",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateWithdrawalDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Withdrawal created successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/WithdrawalDto"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Invalid or missing X-SpacePay-Secret-Key header"
+          }
+        },
+        "security": [
+          {
+            "Secret Key": []
+          }
+        ],
+        "summary": "Create a withdrawal using secret key (external API)",
+        "tags": ["External - Withdrawals (Secret Key)"]
+      },
+      "get": {
+        "operationId": "ExternalWithdrawalsBySecretKeyController_getWithdrawals",
+        "parameters": [
+          {
+            "name": "status",
+            "required": false,
+            "in": "query",
+            "description": "Filter by withdrawal status",
+            "schema": {
+              "example": "processing",
+              "type": "string",
+              "enum": [
+                "pending",
+                "processing",
+                "completed",
+                "failed",
+                "cancelled"
+              ]
+            }
+          },
+          {
+            "name": "limit",
+            "required": false,
+            "in": "query",
+            "description": "Number of items to return",
+            "schema": {
+              "minimum": 1,
+              "maximum": 1000,
+              "default": 100,
+              "example": 50,
+              "type": "number"
+            }
+          },
+          {
+            "name": "offset",
+            "required": false,
+            "in": "query",
+            "description": "Number of items to skip",
+            "schema": {
+              "minimum": 0,
+              "default": 0,
+              "example": 0,
+              "type": "number"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Withdrawals retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PaginatedWithdrawalDtoResult"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "Secret Key": []
+          }
+        ],
+        "summary": "Get all withdrawals for a merchant",
+        "tags": ["External - Withdrawals (Secret Key)"]
+      }
+    },
+    "/v1/external/secretkey-auth/withdrawals/{withdrawalId}": {
+      "get": {
+        "operationId": "ExternalWithdrawalsBySecretKeyController_getWithdrawalDetails",
+        "parameters": [
+          {
+            "name": "withdrawalId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Withdrawal retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/WithdrawalDto"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Invalid or missing X-SpacePay-Secret-Key header"
+          }
+        },
+        "security": [
+          {
+            "Secret Key": []
+          }
+        ],
+        "summary": "Get withdrawal details by ID using secret key (external API)",
+        "tags": ["External - Withdrawals (Secret Key)"]
       }
     },
     "/v1/merchants/{merchantId}/analytics/summary-stats": {
@@ -2624,7 +4168,7 @@
         },
         "security": [
           {
-            "x-spacepay-thirdweb-jwt": []
+            "X-SpacePay-Thirdweb-Jwt": []
           }
         ],
         "summary": "Check if user is logged in",
@@ -2686,6 +4230,16 @@
             }
           },
           {
+            "name": "search",
+            "required": false,
+            "in": "query",
+            "description": "Search by partial match of payment ID, deposit wallet address, merchant short name, receipt tx hash, receipt tx sender address",
+            "schema": {
+              "example": "Merchant name",
+              "type": "string"
+            }
+          },
+          {
             "name": "limit",
             "required": false,
             "in": "query",
@@ -2731,7 +4285,7 @@
             "Accounts JWT": []
           },
           {
-            "x-spacepay-thirdweb-jwt": []
+            "X-SpacePay-Thirdweb-Jwt": []
           }
         ],
         "summary": "Get payment history for an account",
@@ -2781,7 +4335,7 @@
             "Accounts JWT": []
           },
           {
-            "x-spacepay-thirdweb-jwt": []
+            "X-SpacePay-Thirdweb-Jwt": []
           }
         ],
         "summary": "Get single payment detail for an account",
@@ -2842,11 +4396,272 @@
             "Accounts JWT": []
           },
           {
-            "x-spacepay-thirdweb-jwt": []
+            "X-SpacePay-Thirdweb-Jwt": []
           }
         ],
         "summary": "Get payment statistics for an account",
         "tags": ["Accounts Payments"]
+      }
+    },
+    "/v1/accounts/payments/{accountId}/preflight/{paymentId}": {
+      "get": {
+        "operationId": "AccountsPaymentsController_preflightPayment",
+        "parameters": [
+          {
+            "name": "paymentId",
+            "required": true,
+            "in": "path",
+            "description": "Payment ID",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "accountId",
+            "required": true,
+            "in": "path",
+            "description": "Account ID (wallet address)",
+            "schema": {}
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Preflight response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PreflightResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "Accounts JWT": []
+          },
+          {
+            "X-SpacePay-Thirdweb-Jwt": []
+          }
+        ],
+        "summary": "Preflight check for payment daily spending limit",
+        "tags": ["Accounts Payments"]
+      }
+    },
+    "/v1/accounts/payments/{accountId}/daily-limit": {
+      "get": {
+        "operationId": "AccountsPaymentsController_getDailyLimit",
+        "parameters": [
+          {
+            "name": "accountId",
+            "required": true,
+            "in": "path",
+            "description": "Account ID (wallet address)",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Daily limit retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DailyLimitInfoDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Account not found"
+          }
+        },
+        "security": [
+          {
+            "Accounts JWT": []
+          },
+          {
+            "X-SpacePay-Thirdweb-Jwt": []
+          }
+        ],
+        "summary": "Get daily spending limit for an account",
+        "tags": ["Accounts Payments"]
+      },
+      "post": {
+        "operationId": "AccountsPaymentsController_updateDailyLimit",
+        "parameters": [
+          {
+            "name": "accountId",
+            "required": true,
+            "in": "path",
+            "description": "Account ID (wallet address)",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateDailyLimitDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Daily limit updated successfully"
+          },
+          "201": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "Accounts JWT": []
+          },
+          {
+            "X-SpacePay-Thirdweb-Jwt": []
+          }
+        ],
+        "summary": "Update daily spending limit for the current account",
+        "tags": ["Accounts Payments"]
+      }
+    },
+    "/v1/accounts/{accountId}/wallets": {
+      "get": {
+        "operationId": "AccountsWalletsController_getWallets",
+        "parameters": [
+          {
+            "name": "accountId",
+            "required": true,
+            "in": "path",
+            "description": "Account ID",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "List of wallets retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/AccountWalletDto"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "Accounts JWT": []
+          },
+          {
+            "X-SpacePay-Thirdweb-Jwt": []
+          }
+        ],
+        "summary": "Get all wallets for an account",
+        "tags": ["Accounts Wallets"]
+      },
+      "post": {
+        "operationId": "AccountsWalletsController_addWallet",
+        "parameters": [
+          {
+            "name": "accountId",
+            "required": true,
+            "in": "path",
+            "description": "Account ID",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateAccountWalletDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Wallet added successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AccountWalletDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Account not found"
+          }
+        },
+        "security": [
+          {
+            "Accounts JWT": []
+          },
+          {
+            "X-SpacePay-Thirdweb-Jwt": []
+          }
+        ],
+        "summary": "Add a new wallet to an account",
+        "tags": ["Accounts Wallets"]
+      }
+    },
+    "/v1/accounts/{accountId}/wallets/{walletId}": {
+      "delete": {
+        "operationId": "AccountsWalletsController_deleteWallet",
+        "parameters": [
+          {
+            "name": "accountId",
+            "required": true,
+            "in": "path",
+            "description": "Account ID",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "walletId",
+            "required": true,
+            "in": "path",
+            "description": "Wallet ID",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Wallet deleted successfully"
+          },
+          "404": {
+            "description": "Wallet not found"
+          }
+        },
+        "security": [
+          {
+            "Accounts JWT": []
+          },
+          {
+            "X-SpacePay-Thirdweb-Jwt": []
+          }
+        ],
+        "summary": "Delete a wallet from an account",
+        "tags": ["Accounts Wallets"]
       }
     }
   },
@@ -2869,25 +4684,25 @@
       "Secret Key": {
         "type": "apiKey",
         "in": "header",
-        "name": "x-spacepay-secret-key",
+        "name": "X-SpacePay-Secret-Key",
         "description": "Secret key for authentication of external API."
       },
       "Payment Secret": {
         "type": "apiKey",
         "in": "header",
-        "name": "x-spacepay-payment-secret",
+        "name": "X-SpacePay-Payment-Secret",
         "description": "Payment secret for authentication of external API."
       },
       "Accounts JWT": {
         "type": "apiKey",
         "in": "header",
-        "name": "x-spacepay-thirdweb-jwt",
+        "name": "X-SpacePay-Thirdweb-Jwt",
         "description": "Account JWT token for authentication of customers/users."
       },
       "cookie": {
         "type": "apiKey",
         "in": "cookie",
-        "name": "x-spacepay-thirdweb-jwt",
+        "name": "X-SpacePay-Thirdweb-Jwt",
         "description": "Account JWT token for authentication of customers/users."
       }
     },
@@ -3054,8 +4869,9 @@
             "type": "string",
             "nullable": true
           },
-          "isActive": {
-            "type": "boolean"
+          "logoUrl": {
+            "type": "string",
+            "nullable": true
           },
           "status": {
             "enum": ["pending", "onboarding", "approved", "rejected"],
@@ -3063,6 +4879,14 @@
           },
           "rejectionReason": {
             "type": "string",
+            "nullable": true
+          },
+          "depositsEnabled": {
+            "type": "boolean",
+            "nullable": true
+          },
+          "withdrawalsEnabled": {
+            "type": "boolean",
             "nullable": true
           },
           "balanceInCents": {
@@ -3078,7 +4902,6 @@
           "clerkOrganizationId",
           "shortName",
           "businessName",
-          "isActive",
           "status",
           "balanceInCents",
           "createdAt"
@@ -3106,7 +4929,7 @@
           },
           "countryCode": {
             "type": "string",
-            "maxLength": 3
+            "minLength": 3
           },
           "fieldOfOperation": {
             "type": "string",
@@ -3131,8 +4954,9 @@
             "type": "string",
             "maxLength": 500
           },
-          "isActive": {
-            "type": "boolean"
+          "logoUrl": {
+            "type": "string",
+            "maxLength": 500
           }
         }
       },
@@ -3355,6 +5179,21 @@
         },
         "required": ["status"]
       },
+      "UpdateMerchantFeaturesDto": {
+        "type": "object",
+        "properties": {
+          "depositsEnabled": {
+            "type": "boolean",
+            "description": "Enable/disable deposits for this merchant",
+            "example": true
+          },
+          "withdrawalsEnabled": {
+            "type": "boolean",
+            "description": "Enable/disable withdrawals for this merchant",
+            "example": false
+          }
+        }
+      },
       "CreateMerchantPayoutAccountDto": {
         "type": "object",
         "properties": {
@@ -3408,7 +5247,7 @@
           },
           "payoutDate": {
             "type": "string",
-            "description": "Payout date"
+            "description": "Payout date and time (ISO 8601 format)"
           }
         },
         "required": [
@@ -3418,6 +5257,103 @@
           "payoutCurrency",
           "payoutDate"
         ]
+      },
+      "MerchantOfframpAddressDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "merchantId": {
+            "type": "string"
+          },
+          "address": {
+            "type": "string",
+            "description": "Ethereum address (lowercase)",
+            "example": "0xabc123..."
+          },
+          "isActive": {
+            "type": "boolean"
+          },
+          "createdAt": {
+            "format": "date-time",
+            "type": "string"
+          }
+        },
+        "required": ["id", "merchantId", "address", "isActive", "createdAt"]
+      },
+      "UpdateMerchantOfframpAddressDto": {
+        "type": "object",
+        "properties": {
+          "address": {
+            "type": "string",
+            "description": "Ethereum address to send tokens to"
+          }
+        },
+        "required": ["address"]
+      },
+      "MerchantFeesDto": {
+        "type": "object",
+        "properties": {
+          "buyerPercentBps": {
+            "type": "number",
+            "description": "Buyer fee percent in basis points (0-10000)"
+          },
+          "buyerFixedCents": {
+            "type": "number",
+            "description": "Buyer fee fixed in cents (\u003E=0)"
+          },
+          "businessPercentBps": {
+            "type": "number",
+            "description": "Business fee percent in basis points (0-10000)"
+          },
+          "businessFixedCents": {
+            "type": "number",
+            "description": "Business fee fixed in cents (\u003E=0)"
+          },
+          "hasOverrides": {
+            "type": "boolean",
+            "description": "Whether the merchant has fee overrides or is using default fees"
+          }
+        },
+        "required": [
+          "buyerPercentBps",
+          "buyerFixedCents",
+          "businessPercentBps",
+          "businessFixedCents",
+          "hasOverrides"
+        ]
+      },
+      "UpsertMerchantFeeOverrideDto": {
+        "type": "object",
+        "properties": {
+          "buyerPercentBps": {
+            "type": "number",
+            "nullable": true,
+            "minimum": 0,
+            "maximum": 10000,
+            "description": "Buyer fee percent in basis points"
+          },
+          "buyerFixedCents": {
+            "type": "number",
+            "nullable": true,
+            "minimum": 0,
+            "description": "Buyer fee fixed in cents"
+          },
+          "businessPercentBps": {
+            "type": "number",
+            "nullable": true,
+            "minimum": 0,
+            "maximum": 10000,
+            "description": "Business fee percent in basis points"
+          },
+          "businessFixedCents": {
+            "type": "number",
+            "nullable": true,
+            "minimum": 0,
+            "description": "Business fee fixed in cents"
+          }
+        }
       },
       "ApiKeyDto": {
         "type": "object",
@@ -3534,11 +5470,22 @@
               "payment.received",
               "payment.confirmed",
               "payment.failed",
-              "user.created",
-              "user.updated",
+              "payment.transaction.risk.changed",
+              "withdrawal.created",
+              "withdrawal.updated",
               "merchant.created",
               "merchant.updated",
-              "payout.created"
+              "merchant.status.changed",
+              "merchant.offramp_address.updated",
+              "merchant.payout_account.created",
+              "payout.created",
+              "payout.completed",
+              "transfer.offramp.created",
+              "transfer.refund.created",
+              "transfer.offramp.completed",
+              "transfer.refund.completed",
+              "transfer.offramp.failed",
+              "transfer.refund.failed"
             ],
             "type": "string"
           },
@@ -3580,12 +5527,19 @@
           "emailSubscribedEvents": {
             "nullable": true,
             "type": "array",
-            "description": "List of event types the merchant is subscribed to for email notifications",
-            "example": ["payment.succeeded", "payout.succeeded"],
             "items": {
               "type": "string",
-              "enum": ["payment.succeeded", "payout.succeeded"]
-            }
+              "enum": [
+                "payment.created",
+                "payment.succeeded",
+                "payment.failed",
+                "withdrawal.created",
+                "withdrawal.succeeded",
+                "withdrawal.failed"
+              ]
+            },
+            "description": "List of event types the merchant is subscribed to for email notifications",
+            "example": ["payment.succeeded", "payment.failed"]
           },
           "updatedAt": {
             "format": "date-time",
@@ -3607,7 +5561,14 @@
             "type": "array",
             "items": {
               "type": "string",
-              "enum": ["payment.succeeded", "payout.succeeded"]
+              "enum": [
+                "payment.created",
+                "payment.succeeded",
+                "payment.failed",
+                "withdrawal.created",
+                "withdrawal.succeeded",
+                "withdrawal.failed"
+              ]
             },
             "description": "List of event types to subscribe to for email notifications"
           }
@@ -3798,6 +5759,54 @@
         "type": "object",
         "properties": {}
       },
+      "MerchantWalletDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "merchantId": {
+            "type": "string"
+          },
+          "address": {
+            "type": "string",
+            "nullable": true,
+            "description": "Wallet address (lowercase)"
+          },
+          "ownerEmail": {
+            "type": "string",
+            "description": "Owner email"
+          },
+          "createdAt": {
+            "format": "date-time",
+            "type": "string"
+          },
+          "updatedAt": {
+            "format": "date-time",
+            "type": "string"
+          }
+        },
+        "required": ["id", "merchantId", "ownerEmail", "createdAt", "updatedAt"]
+      },
+      "CreateMerchantWalletDto": {
+        "type": "object",
+        "properties": {
+          "address": {
+            "type": "string",
+            "maxLength": 255,
+            "description": "Wallet address",
+            "example": "0x742d35cc6634c0532925a3b844bc9e7595f0beb"
+          },
+          "ownerEmail": {
+            "type": "string",
+            "maxLength": 255,
+            "format": "email",
+            "description": "Owner email",
+            "example": "owner@example.com"
+          }
+        },
+        "required": ["address", "ownerEmail"]
+      },
       "DepositAddressDto": {
         "type": "object",
         "properties": {
@@ -3853,6 +5862,11 @@
             "type": "boolean",
             "description": "Whether the chain is enabled",
             "example": true
+          },
+          "isTestnet": {
+            "type": "boolean",
+            "description": "Whether the chain is a testnet",
+            "example": false
           }
         },
         "required": [
@@ -3860,7 +5874,8 @@
           "name",
           "nativeSymbol",
           "nativeDecimals",
-          "isEnabled"
+          "isEnabled",
+          "isTestnet"
         ]
       },
       "TokenDto": {
@@ -4063,7 +6078,63 @@
             "type": "string",
             "nullable": true,
             "description": "Sender address",
-            "example": "0x0000000000000000000000000000000000000000"
+            "example": "0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee"
+          },
+          "txGasUsed": {
+            "type": "number",
+            "nullable": true,
+            "description": "Gas used",
+            "example": 100000
+          },
+          "txTotalCost": {
+            "type": "string",
+            "nullable": true,
+            "description": "Total cost",
+            "example": "1000000000000000000"
+          },
+          "txTotalCostUsdFractions": {
+            "type": "number",
+            "nullable": true,
+            "description": "Total cost in USD, 6 decimals of precision",
+            "example": 1000000
+          },
+          "txIsSponsored": {
+            "type": "boolean",
+            "nullable": true,
+            "description": "Is transaction sponsored",
+            "example": true
+          },
+          "processedBy": {
+            "nullable": true,
+            "enum": ["webhook", "frontend", "cron", "manual"],
+            "type": "string",
+            "description": "Who processed the transaction (webhook, frontend, cron)",
+            "example": "webhook"
+          },
+          "txRiskScore": {
+            "type": "number",
+            "nullable": true,
+            "description": "Transaction risk score (1-100, higher is safer)",
+            "example": 85
+          },
+          "txRiskSeverity": {
+            "nullable": true,
+            "enum": [
+              "CRITICAL_RISK",
+              "HIGH_RISK",
+              "MEDIUM_RISK",
+              "LOW_RISK",
+              "NO_RISK"
+            ],
+            "type": "string",
+            "description": "Transaction risk severity label",
+            "example": "LOW_RISK"
+          },
+          "txRiskProvider": {
+            "type": "string",
+            "nullable": true,
+            "description": "Transaction risk provider identifier",
+            "example": "scorechain"
           },
           "createdAt": {
             "format": "date-time",
@@ -4082,6 +6153,14 @@
           "txBlockNumber",
           "txTimestamp",
           "txSenderAddress",
+          "txGasUsed",
+          "txTotalCost",
+          "txTotalCostUsdFractions",
+          "txIsSponsored",
+          "processedBy",
+          "txRiskScore",
+          "txRiskSeverity",
+          "txRiskProvider",
           "createdAt"
         ]
       },
@@ -4102,9 +6181,27 @@
             "type": "string",
             "description": "Merchant short name"
           },
+          "merchantLogoUrl": {
+            "type": "string",
+            "nullable": true,
+            "description": "Merchant logo URL"
+          },
+          "type": {
+            "enum": ["payment", "deposit"],
+            "type": "string",
+            "description": "Payment type"
+          },
           "amountInCents": {
             "type": "number",
             "description": "Payment amount in cents"
+          },
+          "amountDueCents": {
+            "type": "number",
+            "description": "Amount due in cents"
+          },
+          "amountMerchantNetCents": {
+            "type": "number",
+            "description": "Merchant net in cents"
           },
           "currency": {
             "type": "string",
@@ -4168,7 +6265,11 @@
           "id",
           "merchantId",
           "merchantShortName",
+          "merchantLogoUrl",
+          "type",
           "amountInCents",
+          "amountDueCents",
+          "amountMerchantNetCents",
           "currency",
           "status",
           "depositAddress",
@@ -4197,11 +6298,17 @@
       "CreatePaymentRequestDto": {
         "type": "object",
         "properties": {
+          "type": {
+            "enum": ["payment", "deposit"],
+            "type": "string",
+            "description": "Type of the payment. \"payment\" requires a fixed amount; \"deposit\" accepts any amount sent by the customer.",
+            "default": "payment"
+          },
           "amount": {
             "type": "number",
-            "minimum": 100,
+            "minimum": 250,
             "maximum": 100000000,
-            "description": "Payment amount in cents (e.g., 100 = $1.00). Minimum: 100 cents, Maximum: 100000000 cents.",
+            "description": "Payment amount in cents (e.g., 100 = $1.00). Required for type \"payment\", ignored for type \"deposit\". Minimum: 250 cents, Maximum: 100000000 cents.",
             "example": 100
           },
           "currency": {
@@ -4230,7 +6337,7 @@
             "example": "{\"cartId\":\"abc123\",\"promo\":\"SUMMER24\"}"
           }
         },
-        "required": ["amount", "currency", "orderId"]
+        "required": ["currency", "orderId"]
       },
       "CreatePaymentResponseDto": {
         "type": "object",
@@ -4287,6 +6394,12 @@
       "CreateQuoteByContractDto": {
         "type": "object",
         "properties": {
+          "forceDepositAmount": {
+            "type": "number",
+            "minimum": 1,
+            "description": "Force a specific amount (in cents) for deposit-type payments. Only allowed when payment type is \"deposit\". The quote will be priced based on this amount.",
+            "example": 1000
+          },
           "contractAddress": {
             "type": "string"
           },
@@ -4294,6 +6407,317 @@
             "type": "number"
           }
         }
+      },
+      "RefreshPaymentStatusDto": {
+        "type": "object",
+        "properties": {
+          "transactionHash": {
+            "type": "string",
+            "description": "Transaction hash (optional)",
+            "example": "0xda3be87732110de6c1354c83770aae630ede9ac308d9f7b399ecfba23d923384"
+          },
+          "chainId": {
+            "type": "number",
+            "description": "Chain ID (optional)",
+            "example": 1
+          },
+          "tokenContractAddress": {
+            "type": "string",
+            "description": "Token contract address (optional)",
+            "example": "0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee"
+          }
+        }
+      },
+      "TransferPreviewDto": {
+        "type": "object",
+        "properties": {
+          "recipientAddress": {
+            "type": "string",
+            "description": "Recipient address for the transfer",
+            "example": "0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb"
+          },
+          "depositAddressBalance": {
+            "type": "string",
+            "description": "Deposit address balance in token smallest units",
+            "example": "1000000000000000000"
+          },
+          "token": {
+            "description": "Token to be transferred",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/TokenDto"
+              }
+            ]
+          },
+          "chain": {
+            "description": "Chain where the transfer will occur",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/ChainDto"
+              }
+            ]
+          },
+          "txTotalCostEstimateWei": {
+            "type": "string",
+            "nullable": true,
+            "description": "Total cost in wei (native token)",
+            "example": "1000000000000000000"
+          },
+          "txTotalCostEstimateToken": {
+            "type": "string",
+            "nullable": true,
+            "description": "Total cost in token smallest units of the token that will be transferred",
+            "example": "1000000000000000000"
+          },
+          "txTotalCostEstimateUsdFractions": {
+            "type": "string",
+            "nullable": true,
+            "description": "Total cost in USD, 6 decimals of precision",
+            "example": 1000000
+          },
+          "gasEstimate": {
+            "type": "string",
+            "nullable": true,
+            "description": "Gas estimate",
+            "example": "1000000000000000000"
+          }
+        },
+        "required": [
+          "recipientAddress",
+          "depositAddressBalance",
+          "token",
+          "chain",
+          "txTotalCostEstimateWei",
+          "txTotalCostEstimateToken",
+          "txTotalCostEstimateUsdFractions",
+          "gasEstimate"
+        ]
+      },
+      "OfframpTransferDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "paymentId": {
+            "type": "string"
+          },
+          "depositAddressId": {
+            "type": "string",
+            "nullable": true
+          },
+          "merchantId": {
+            "type": "string"
+          },
+          "recipientAddress": {
+            "type": "string",
+            "description": "Recipient address",
+            "example": "0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb"
+          },
+          "transferType": {
+            "enum": ["refund", "offramp"],
+            "type": "string"
+          },
+          "reason": {
+            "type": "string",
+            "nullable": true
+          },
+          "initiator": {
+            "enum": ["system", "admin", "cron"],
+            "type": "string"
+          },
+          "initiatorId": {
+            "type": "string",
+            "nullable": true
+          },
+          "token": {
+            "nullable": true,
+            "description": "Token",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/TokenDto"
+              }
+            ]
+          },
+          "chain": {
+            "nullable": true,
+            "description": "Chain",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/ChainDto"
+              }
+            ]
+          },
+          "amount": {
+            "type": "string",
+            "description": "Amount in token units (as string)"
+          },
+          "status": {
+            "enum": [
+              "pending",
+              "processing",
+              "completed",
+              "failed",
+              "retrying"
+            ],
+            "type": "string"
+          },
+          "txHash": {
+            "type": "string",
+            "nullable": true
+          },
+          "txGasUsed": {
+            "type": "number",
+            "nullable": true,
+            "description": "Gas used",
+            "example": 100000
+          },
+          "txTotalCost": {
+            "type": "string",
+            "nullable": true,
+            "description": "Total cost",
+            "example": "1000000000000000000"
+          },
+          "txTotalCostUsdFractions": {
+            "type": "number",
+            "nullable": true,
+            "description": "Total cost in USD, 6 decimals of precision",
+            "example": 1000000
+          },
+          "errorMessage": {
+            "type": "string",
+            "nullable": true
+          },
+          "retryCount": {
+            "type": "number"
+          },
+          "createdAt": {
+            "format": "date-time",
+            "type": "string"
+          },
+          "updatedAt": {
+            "format": "date-time",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "paymentId",
+          "depositAddressId",
+          "merchantId",
+          "recipientAddress",
+          "transferType",
+          "reason",
+          "initiator",
+          "initiatorId",
+          "token",
+          "chain",
+          "amount",
+          "status",
+          "txHash",
+          "txGasUsed",
+          "txTotalCost",
+          "txTotalCostUsdFractions",
+          "errorMessage",
+          "retryCount",
+          "createdAt",
+          "updatedAt"
+        ]
+      },
+      "PaginatedOfframpTransferDtoResult": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/OfframpTransferDto"
+            }
+          },
+          "pagination": {
+            "$ref": "#/components/schemas/PaginationMetaDto"
+          }
+        },
+        "required": ["data", "pagination"]
+      },
+      "ManualTransferRequestDto": {
+        "type": "object",
+        "properties": {
+          "transferType": {
+            "enum": ["refund", "offramp"],
+            "type": "string",
+            "description": "Type of transfer",
+            "example": "offramp"
+          },
+          "amountToTransfer": {
+            "type": "string",
+            "nullable": true,
+            "description": "Amount in asset units"
+          },
+          "reason": {
+            "type": "string",
+            "description": "Reason for manual transfer (required for manual transfers)",
+            "example": "Customer requested refund"
+          }
+        },
+        "required": ["transferType", "reason"]
+      },
+      "PaymentAttentionReasonItemDto": {
+        "type": "object",
+        "properties": {
+          "reason": {
+            "enum": [
+              "status_not_expired_but_too_old",
+              "amount_out_of_supported_range",
+              "status_completed_but_missing_sender",
+              "status_completed_but_no_offramp_transfer",
+              "completed_offramp_but_no_tx_cost"
+            ],
+            "type": "string",
+            "description": "Reason code"
+          },
+          "description": {
+            "type": "string",
+            "description": "Human-readable description of the reason",
+            "example": "Payment is older than the expiration window but not marked expired"
+          }
+        },
+        "required": ["reason", "description"]
+      },
+      "PaymentAttentionItemDto": {
+        "type": "object",
+        "properties": {
+          "reasons": {
+            "description": "Reasons why this payment requires admin attention",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/PaymentAttentionReasonItemDto"
+            }
+          },
+          "payment": {
+            "description": "Payment details",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/PaymentDto"
+              }
+            ]
+          }
+        },
+        "required": ["reasons", "payment"]
+      },
+      "PaginatedPaymentAttentionItemDtoResult": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/PaymentAttentionItemDto"
+            }
+          },
+          "pagination": {
+            "$ref": "#/components/schemas/PaginationMetaDto"
+          }
+        },
+        "required": ["data", "pagination"]
       },
       "PaginatedChainDtoResult": {
         "type": "object",
@@ -4324,6 +6748,166 @@
           }
         },
         "required": ["data", "pagination"]
+      },
+      "BackendWalletBalanceDto": {
+        "type": "object",
+        "properties": {
+          "amount": {
+            "type": "string",
+            "description": "Raw native token balance amount in wei/smallest unit",
+            "example": "1000000000000000000"
+          },
+          "formatted": {
+            "type": "string",
+            "description": "Formatted native token balance amount (human-readable)",
+            "example": "1.0"
+          }
+        },
+        "required": ["amount", "formatted"]
+      },
+      "AdminTokenDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Token ID",
+            "example": "123e4567-e89b-12d3-a456-426614174000"
+          },
+          "coingeckoApiId": {
+            "type": "string",
+            "description": "Coingecko API ID",
+            "example": "ethereum"
+          },
+          "chain": {
+            "description": "Chain information",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/ChainDto"
+              }
+            ]
+          },
+          "symbol": {
+            "type": "string",
+            "description": "Token symbol",
+            "example": "USDC"
+          },
+          "contractAddress": {
+            "type": "string",
+            "description": "Token contract address (lowercase)",
+            "example": "0xa0b86a33e6441b8c4c8c0c0c0c0c0c0c0c0c0c0"
+          },
+          "decimals": {
+            "type": "number",
+            "description": "Token decimals",
+            "example": 6
+          },
+          "type": {
+            "enum": ["stablecoin", "volatile"],
+            "type": "string",
+            "description": "Token type",
+            "example": "stablecoin"
+          },
+          "assetType": {
+            "enum": ["native", "erc20"],
+            "type": "string",
+            "description": "Token asset type",
+            "example": "native"
+          },
+          "status": {
+            "enum": ["active", "deprecated", "blocked"],
+            "type": "string",
+            "description": "Token status",
+            "example": "active"
+          },
+          "tokenPriceUsd": {
+            "type": "number",
+            "nullable": true,
+            "description": "Token price in USD",
+            "example": 1
+          },
+          "swapTokenOut": {
+            "nullable": true,
+            "description": "Swap token out (stablecoin to swap to)",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/AdminTokenDto"
+              }
+            ]
+          },
+          "swapPoolFee": {
+            "type": "number",
+            "nullable": true,
+            "description": "Uniswap pool fee for swap (100, 500, or 3000)",
+            "example": 3000
+          }
+        },
+        "required": [
+          "id",
+          "coingeckoApiId",
+          "chain",
+          "symbol",
+          "contractAddress",
+          "decimals",
+          "type",
+          "assetType",
+          "status",
+          "tokenPriceUsd",
+          "swapTokenOut",
+          "swapPoolFee"
+        ]
+      },
+      "AdminChainDetailDto": {
+        "type": "object",
+        "properties": {
+          "chain": {
+            "description": "Chain information",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/ChainDto"
+              }
+            ]
+          },
+          "rpcUrl": {
+            "type": "string",
+            "nullable": true,
+            "description": "RPC URL for the chain",
+            "example": "https://eth-mainnet.g.alchemy.com/v2/..."
+          },
+          "delegationAddress": {
+            "type": "string",
+            "nullable": true,
+            "description": "EIP-7702 delegation address for the chain",
+            "example": "0x1234567890123456789012345678901234567890"
+          },
+          "backendWalletAddress": {
+            "type": "string",
+            "description": "Backend wallet address (same across all chains)",
+            "example": "0xabcdefabcdefabcdefabcdefabcdefabcdefabcd"
+          },
+          "backendWalletBalance": {
+            "description": "Backend wallet balances on this chain",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/BackendWalletBalanceDto"
+              }
+            ]
+          },
+          "tokens": {
+            "description": "All tokens registered for this chain",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/AdminTokenDto"
+            }
+          }
+        },
+        "required": [
+          "chain",
+          "rpcUrl",
+          "delegationAddress",
+          "backendWalletAddress",
+          "backendWalletBalance",
+          "tokens"
+        ]
       },
       "TatumFungibleWebhookDto": {
         "type": "object",
@@ -4386,6 +6970,357 @@
           "txId"
         ]
       },
+      "AdminTransactionMonitoringTestDto": {
+        "type": "object",
+        "properties": {
+          "txHash": {
+            "type": "string",
+            "description": "Transaction hash to analyze",
+            "example": "0x1234abcd..."
+          },
+          "chainId": {
+            "type": "number",
+            "minimum": 1,
+            "description": "EVM chain ID corresponding to the transaction",
+            "example": 1
+          }
+        },
+        "required": ["txHash", "chainId"]
+      },
+      "AdminAddressMonitoringTestDto": {
+        "type": "object",
+        "properties": {
+          "address": {
+            "type": "string",
+            "description": "Address to analyze",
+            "example": "0x1234abcd..."
+          },
+          "chainId": {
+            "type": "number",
+            "minimum": 1,
+            "description": "EVM chain ID corresponding to the address",
+            "example": 1
+          }
+        },
+        "required": ["address", "chainId"]
+      },
+      "AdminWalletMonitoringTestDto": {
+        "type": "object",
+        "properties": {
+          "address": {
+            "type": "string",
+            "description": "Wallet address to analyze",
+            "example": "0x1234abcd..."
+          },
+          "chainId": {
+            "type": "number",
+            "minimum": 1,
+            "description": "EVM chain ID corresponding to the wallet",
+            "example": 1
+          }
+        },
+        "required": ["address", "chainId"]
+      },
+      "CreateWithdrawalDto": {
+        "type": "object",
+        "properties": {
+          "amountInCents": {
+            "type": "number",
+            "minimum": 100,
+            "maximum": 100000000,
+            "description": "Withdrawal amount in cents (e.g., 100 = $1.00). Minimum: 100 cents, Maximum: 100000000 cents.",
+            "example": 100
+          },
+          "chainId": {
+            "type": "number",
+            "description": "EVM chain id"
+          },
+          "recipientAddress": {
+            "type": "string",
+            "description": "Beneficiary address"
+          },
+          "orderId": {
+            "type": "string",
+            "maxLength": 255,
+            "description": "Order ID from the merchant",
+            "example": "Order_1234567890"
+          },
+          "customMetadata": {
+            "type": "string",
+            "maxLength": 2048,
+            "description": "Arbitrary metadata to attach to the withdrawal",
+            "example": "{\"cartId\":\"abc123\",\"promo\":\"SUMMER24\"}"
+          },
+          "currency": {
+            "type": "string",
+            "enum": ["USD"],
+            "description": "Currency of the withdrawal (defaults to USD)"
+          }
+        },
+        "required": ["amountInCents", "chainId", "recipientAddress"]
+      },
+      "WithdrawalReceiptDto": {
+        "type": "object",
+        "properties": {
+          "withdrawalId": {
+            "type": "string",
+            "format": "uuid",
+            "description": "Withdrawal ID"
+          },
+          "settledToken": {
+            "nullable": true,
+            "description": "Settled token",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/TokenDto"
+              }
+            ]
+          },
+          "settledChain": {
+            "nullable": true,
+            "description": "Settled chain",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/ChainDto"
+              }
+            ]
+          },
+          "settledAmountAsset": {
+            "type": "string",
+            "nullable": true,
+            "description": "Settled amount in asset",
+            "example": "100"
+          },
+          "settledAmountUsd": {
+            "type": "string",
+            "nullable": true,
+            "description": "Settled amount in USD",
+            "example": "100.00"
+          },
+          "txHash": {
+            "type": "string",
+            "nullable": true,
+            "description": "Transaction hash",
+            "example": "0xda3be87732110de6c1354c83770aae630ede9ac308d9f7b399ecfba23d923384"
+          },
+          "txBlockNumber": {
+            "type": "number",
+            "nullable": true,
+            "description": "Block number",
+            "example": 123456
+          },
+          "txTimestamp": {
+            "format": "date-time",
+            "type": "string",
+            "nullable": true,
+            "description": "Timestamp",
+            "example": "2021-01-01T00:00:00.000Z"
+          },
+          "txSenderAddress": {
+            "type": "string",
+            "nullable": true,
+            "description": "Sender address",
+            "example": "0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee"
+          },
+          "txGasUsed": {
+            "type": "number",
+            "nullable": true,
+            "description": "Gas used",
+            "example": 100000
+          },
+          "txTotalCost": {
+            "type": "string",
+            "nullable": true,
+            "description": "Total cost",
+            "example": "1000000000000000000"
+          },
+          "txTotalCostUsdFractions": {
+            "type": "number",
+            "nullable": true,
+            "description": "Total cost in USD, 6 decimals of precision",
+            "example": 1000000
+          },
+          "txIsSponsored": {
+            "type": "boolean",
+            "nullable": true,
+            "description": "Is transaction sponsored",
+            "example": true
+          },
+          "processedBy": {
+            "nullable": true,
+            "enum": ["webhook", "frontend", "cron", "manual"],
+            "type": "string",
+            "description": "Who processed the transaction"
+          },
+          "createdAt": {
+            "format": "date-time",
+            "type": "string",
+            "description": "Created at"
+          }
+        },
+        "required": [
+          "withdrawalId",
+          "settledToken",
+          "settledChain",
+          "settledAmountAsset",
+          "settledAmountUsd",
+          "txBlockNumber",
+          "txTimestamp",
+          "txSenderAddress",
+          "txGasUsed",
+          "txTotalCost",
+          "txTotalCostUsdFractions",
+          "txIsSponsored",
+          "processedBy",
+          "createdAt"
+        ]
+      },
+      "WithdrawalDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "description": "Withdrawal ID"
+          },
+          "merchantId": {
+            "type": "string",
+            "format": "uuid",
+            "description": "Merchant ID"
+          },
+          "amountInCents": {
+            "type": "number",
+            "description": "Withdrawal amount in USD cents"
+          },
+          "chainId": {
+            "type": "number",
+            "description": "Chain id"
+          },
+          "recipientAddress": {
+            "type": "string",
+            "description": "Beneficiary address"
+          },
+          "status": {
+            "enum": [
+              "pending",
+              "processing",
+              "completed",
+              "failed",
+              "cancelled"
+            ],
+            "type": "string",
+            "description": "Withdrawal status"
+          },
+          "currency": {
+            "type": "string",
+            "enum": ["USD"],
+            "description": "Currency of the withdrawal"
+          },
+          "orderId": {
+            "type": "string",
+            "nullable": true,
+            "description": "Optional order ID"
+          },
+          "customMetadata": {
+            "type": "string",
+            "nullable": true,
+            "description": "Optional custom metadata"
+          },
+          "errorMessage": {
+            "type": "string",
+            "nullable": true,
+            "description": "Error message (if failed)"
+          },
+          "receipt": {
+            "nullable": true,
+            "description": "Withdrawal receipt",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/WithdrawalReceiptDto"
+              }
+            ]
+          },
+          "createdAt": {
+            "format": "date-time",
+            "type": "string",
+            "description": "Created at"
+          },
+          "updatedAt": {
+            "format": "date-time",
+            "type": "string",
+            "description": "Updated at"
+          }
+        },
+        "required": [
+          "id",
+          "merchantId",
+          "amountInCents",
+          "chainId",
+          "recipientAddress",
+          "status",
+          "currency",
+          "orderId",
+          "customMetadata",
+          "errorMessage",
+          "receipt",
+          "createdAt",
+          "updatedAt"
+        ]
+      },
+      "PaginatedWithdrawalDtoResult": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/WithdrawalDto"
+            }
+          },
+          "pagination": {
+            "$ref": "#/components/schemas/PaginationMetaDto"
+          }
+        },
+        "required": ["data", "pagination"]
+      },
+      "WithdrawalLimitsDto": {
+        "type": "object",
+        "properties": {
+          "minAmountInCents": {
+            "type": "number",
+            "description": "Minimum withdrawal amount in cents"
+          },
+          "maxAmountInCents": {
+            "type": "number",
+            "description": "Maximum withdrawal amount in cents"
+          }
+        },
+        "required": ["minAmountInCents", "maxAmountInCents"]
+      },
+      "WithdrawalConfigDto": {
+        "type": "object",
+        "properties": {
+          "backendWallet": {
+            "type": "string",
+            "description": "Backend wallet address (spender)"
+          },
+          "supported": {
+            "description": "Supported withdrawal tokens",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/TokenDto"
+            }
+          },
+          "limits": {
+            "description": "Withdrawal amount limits in cents",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/WithdrawalLimitsDto"
+              }
+            ]
+          }
+        },
+        "required": ["backendWallet", "supported", "limits"]
+      },
       "SummaryStatsDto": {
         "type": "object",
         "properties": {
@@ -4420,9 +7355,14 @@
       "AggregatedStatsDto": {
         "type": "object",
         "properties": {
-          "totalRevenueUsd": {
+          "totalGrossRevenueUsd": {
             "type": "number",
-            "description": "Total revenue in USD dollars",
+            "description": "Total gross revenue in USD dollars",
+            "example": 1234.56
+          },
+          "totalNetRevenueUsd": {
+            "type": "number",
+            "description": "Total net revenue in USD dollars",
             "example": 1234.56
           },
           "numTransactions": {
@@ -4440,9 +7380,14 @@
             "description": "Average Transaction Value in USD dollars",
             "example": 12.34
           },
-          "previousTotalRevenueUsd": {
+          "previousTotalGrossRevenueUsd": {
             "type": "number",
-            "description": "Previous period total revenue in USD dollars",
+            "description": "Previous period total gross revenue in USD dollars",
+            "example": 1000
+          },
+          "previousTotalNetRevenueUsd": {
+            "type": "number",
+            "description": "Previous period total net revenue in USD dollars",
             "example": 1000
           },
           "previousNumTransactions": {
@@ -4460,10 +7405,16 @@
             "description": "Previous period average transaction value in USD dollars",
             "example": 10
           },
-          "totalRevenueChangePercent": {
+          "totalGrossRevenueChangePercent": {
             "type": "number",
             "nullable": true,
-            "description": "Percentage change in total revenue",
+            "description": "Percentage change in total gross revenue",
+            "example": 23.46
+          },
+          "totalNetRevenueChangePercent": {
+            "type": "number",
+            "nullable": true,
+            "description": "Percentage change in total net revenue",
             "example": 23.46
           },
           "numTransactionsChangePercent": {
@@ -4486,15 +7437,18 @@
           }
         },
         "required": [
-          "totalRevenueUsd",
+          "totalGrossRevenueUsd",
+          "totalNetRevenueUsd",
           "numTransactions",
           "numCustomers",
           "averageTransactionUsd",
-          "previousTotalRevenueUsd",
+          "previousTotalGrossRevenueUsd",
+          "previousTotalNetRevenueUsd",
           "previousNumTransactions",
           "previousNumCustomers",
           "previousAverageTransactionUsd",
-          "totalRevenueChangePercent",
+          "totalGrossRevenueChangePercent",
+          "totalNetRevenueChangePercent",
           "numTransactionsChangePercent",
           "numCustomersChangePercent",
           "averageTransactionChangePercent"
@@ -4706,6 +7660,110 @@
           }
         },
         "required": ["numTransactions", "totalAmountUsd"]
+      },
+      "DailyLimitInfoDto": {
+        "type": "object",
+        "properties": {
+          "limitCents": {
+            "type": "number",
+            "nullable": true,
+            "description": "Configured daily spending limit in cents"
+          },
+          "usedCents": {
+            "type": "number",
+            "nullable": true,
+            "description": "Amount spent today in cents (UTC)"
+          },
+          "remainingCents": {
+            "type": "number",
+            "nullable": true,
+            "description": "Remaining available spend today in cents (UTC)"
+          }
+        },
+        "required": ["limitCents", "usedCents", "remainingCents"]
+      },
+      "PreflightResponseDto": {
+        "type": "object",
+        "properties": {
+          "allowed": {
+            "type": "boolean",
+            "example": true
+          },
+          "requestedAmountCents": {
+            "type": "number"
+          },
+          "dailyLimit": {
+            "$ref": "#/components/schemas/DailyLimitInfoDto"
+          }
+        },
+        "required": ["allowed"]
+      },
+      "UpdateDailyLimitDto": {
+        "type": "object",
+        "properties": {
+          "dailySpendingLimitCents": {
+            "type": "number",
+            "nullable": true,
+            "minimum": 0,
+            "description": "Daily spending limit in cents. Null means unlimited. 0 blocks all.",
+            "example": 10000
+          }
+        }
+      },
+      "AccountWalletDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "accountId": {
+            "type": "string"
+          },
+          "address": {
+            "type": "string",
+            "description": "Wallet address (lowercase)",
+            "example": "0x742d35cc6634c0532925a3b844bc9e7595f0beb"
+          },
+          "type": {
+            "type": "string",
+            "description": "Wallet type",
+            "example": "Metamask"
+          },
+          "createdAt": {
+            "format": "date-time",
+            "type": "string"
+          },
+          "updatedAt": {
+            "format": "date-time",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "accountId",
+          "address",
+          "type",
+          "createdAt",
+          "updatedAt"
+        ]
+      },
+      "CreateAccountWalletDto": {
+        "type": "object",
+        "properties": {
+          "address": {
+            "type": "string",
+            "maxLength": 255,
+            "description": "Wallet address",
+            "example": "0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb"
+          },
+          "type": {
+            "type": "string",
+            "maxLength": 255,
+            "description": "Wallet type",
+            "example": "Metamask"
+          }
+        },
+        "required": ["address", "type"]
       }
     }
   }
