@@ -9,11 +9,12 @@ openapi: "GET /v1/external/secretkey-auth/withdrawals/:withdrawalId"
 Retrieve full withdrawal details by ID, including status, recipient address, chain, and optional receipt (populated once the withdrawal is settled on-chain).
 
 <RequestExample>
-  ```bash cURL
-  curl -X GET \
-    "https://api.spacepay.co.uk/v1/external/secretkey-auth/withdrawals/a1b2c3d4-e5f6-7890-abcd-ef1234567890" \
-    -H "X-SpacePay-Secret-Key: sk_test_your_secret_key"
-  ```
+```bash cURL
+curl -X GET \
+"https://api.spacepay.co.uk/v1/external/secretkey-auth/withdrawals/a1b2c3d4-e5f6-7890-abcd-ef1234567890"
+\ -H "X-SpacePay-Secret-Key: sk_test_your_secret_key"
+```
+
 </RequestExample>
 
 <ResponseExample>
@@ -95,12 +96,10 @@ Retrieve full withdrawal details by ID, including status, recipient address, cha
 </ResponseField>
 
 <ResponseField name="status" type="string" required>
-  Current withdrawal status. Possible values:
-  - `pending`: Withdrawal created, waiting to be processed
-  - `processing`: Withdrawal is being submitted on-chain
-  - `completed`: Withdrawal confirmed and settled
-  - `failed`: Withdrawal failed (see `errorMessage`)
-  - `cancelled`: Withdrawal cancelled
+  Current withdrawal status. Possible values: - `pending`: Withdrawal created,
+  waiting to be processed - `processing`: Withdrawal is being submitted on-chain
+  - `completed`: Withdrawal confirmed and settled - `failed`: Withdrawal failed
+  (see `errorMessage`) - `cancelled`: Withdrawal cancelled
 </ResponseField>
 
 <ResponseField name="currency" type="string" required>
@@ -127,53 +126,54 @@ Retrieve full withdrawal details by ID, including status, recipient address, cha
     Token used to settle the withdrawal (symbol, decimals, contract address, chain).
   </ResponseField>
 
-  <ResponseField name="settledChain" type="object">
-    Chain on which the withdrawal was settled.
-  </ResponseField>
+<ResponseField name="settledChain" type="object">
+  Chain on which the withdrawal was settled.
+</ResponseField>
 
-  <ResponseField name="settledAmountAsset" type="string">
-    Amount sent in the token's smallest unit.
-  </ResponseField>
+<ResponseField name="settledAmountAsset" type="string">
+  Amount sent in the token's smallest unit.
+</ResponseField>
 
-  <ResponseField name="settledAmountUsd" type="string">
-    USD value of the settled amount.
-  </ResponseField>
+<ResponseField name="settledAmountUsd" type="string">
+  USD value of the settled amount.
+</ResponseField>
 
-  <ResponseField name="txHash" type="string">
-    Blockchain transaction hash.
-  </ResponseField>
+<ResponseField name="txHash" type="string">
+  Blockchain transaction hash.
+</ResponseField>
 
-  <ResponseField name="txBlockNumber" type="integer">
-    Block number where the transaction was confirmed.
-  </ResponseField>
+<ResponseField name="txBlockNumber" type="integer">
+  Block number where the transaction was confirmed.
+</ResponseField>
 
-  <ResponseField name="txTimestamp" type="string">
-    Timestamp of the on-chain transaction.
-  </ResponseField>
+<ResponseField name="txTimestamp" type="string">
+  Timestamp of the on-chain transaction.
+</ResponseField>
 
-  <ResponseField name="txSenderAddress" type="string">
-    Address that sent the on-chain transaction.
-  </ResponseField>
+<ResponseField name="txSenderAddress" type="string">
+  Address that sent the on-chain transaction.
+</ResponseField>
 
-  <ResponseField name="txGasUsed" type="integer">
-    Gas units consumed by the transaction.
-  </ResponseField>
+<ResponseField name="txGasUsed" type="integer">
+  Gas units consumed by the transaction.
+</ResponseField>
 
-  <ResponseField name="txTotalCost" type="string">
-    Total gas cost in the native token's smallest unit.
-  </ResponseField>
+<ResponseField name="txTotalCost" type="string">
+  Total gas cost in the native token's smallest unit.
+</ResponseField>
 
-  <ResponseField name="txTotalCostUsdFractions" type="number">
-    Total gas cost in USD, with 6 decimal places of precision.
-  </ResponseField>
+<ResponseField name="txTotalCostUsdFractions" type="number">
+  Total gas cost in USD, with 6 decimal places of precision.
+</ResponseField>
 
-  <ResponseField name="txIsSponsored" type="boolean">
-    Whether the transaction gas was sponsored by SpacePay.
-  </ResponseField>
+<ResponseField name="txIsSponsored" type="boolean">
+  Whether the transaction gas was sponsored by SpacePay.
+</ResponseField>
 
-  <ResponseField name="processedBy" type="string">
-    Internal processor that submitted the transaction (`webhook`, `frontend`, `cron`, or `manual`).
-  </ResponseField>
+<ResponseField name="processedBy" type="string">
+  Internal processor that submitted the transaction (`webhook`, `frontend`,
+  `cron`, or `manual`).
+</ResponseField>
 
   <ResponseField name="createdAt" type="string">
     Timestamp when the receipt record was created.

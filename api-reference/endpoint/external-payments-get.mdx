@@ -9,9 +9,12 @@ openapi: "GET /v1/external/secretkey-auth/payments/:paymentId"
 Retrieve full payment details by id, including `type` (`payment` or `deposit`), quotes, and optional receipt.
 
 <RequestExample>
-  ```bash cURL curl -X GET
+```bash cURL
+  curl -X GET
   "https://api.spacepay.co.uk/v1/external/secretkey-auth/payments/4291f98b-d68c-4eb0-883e-6bc790a41c96"
-  \ -H "X-SpacePay-Secret-Key: sk_test_your_secret_key" ```
+  \ -H "X-SpacePay-Secret-Key: sk_test_your_secret_key"
+```
+
 </RequestExample>
 
 <ResponseExample>

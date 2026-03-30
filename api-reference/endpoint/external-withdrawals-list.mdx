@@ -9,11 +9,12 @@ openapi: "GET /v1/external/secretkey-auth/withdrawals"
 Returns a paginated list of withdrawals for the merchant tied to your secret key. You can filter by `status` and control pagination with `limit` and `offset`.
 
 <RequestExample>
-  ```bash cURL
+```bash cURL
   curl -X GET \
-    "https://api.spacepay.co.uk/v1/external/secretkey-auth/withdrawals?status=completed&limit=50&offset=0" \
-    -H "X-SpacePay-Secret-Key: sk_test_your_secret_key"
-  ```
+  "https://api.spacepay.co.uk/v1/external/secretkey-auth/withdrawals?status=completed&limit=50&offset=0"
+  \ -H "X-SpacePay-Secret-Key: sk_test_your_secret_key"
+```
+
 </RequestExample>
 
 <ResponseExample>
@@ -74,7 +75,8 @@ Returns a paginated list of withdrawals for the merchant tied to your secret key
 ## Query Parameters
 
 <ParamField query="status" type="string">
-  Filter by withdrawal status. Possible values: `pending`, `processing`, `completed`, `failed`, `cancelled`.
+  Filter by withdrawal status. Possible values: `pending`, `processing`,
+  `completed`, `failed`, `cancelled`.
 </ParamField>
 
 <ParamField query="limit" type="number" default="100">
@@ -95,41 +97,42 @@ Returns a paginated list of withdrawals for the merchant tied to your secret key
     Unique withdrawal identifier.
   </ResponseField>
 
-  <ResponseField name="merchantId" type="string">
-    ID of the merchant who created the withdrawal.
-  </ResponseField>
+<ResponseField name="merchantId" type="string">
+  ID of the merchant who created the withdrawal.
+</ResponseField>
 
-  <ResponseField name="amountInCents" type="number">
-    Withdrawal amount in USD cents.
-  </ResponseField>
+<ResponseField name="amountInCents" type="number">
+  Withdrawal amount in USD cents.
+</ResponseField>
 
-  <ResponseField name="chainId" type="number">
-    EVM chain ID used for settlement.
-  </ResponseField>
+<ResponseField name="chainId" type="number">
+  EVM chain ID used for settlement.
+</ResponseField>
 
-  <ResponseField name="recipientAddress" type="string">
-    Beneficiary wallet address.
-  </ResponseField>
+<ResponseField name="recipientAddress" type="string">
+  Beneficiary wallet address.
+</ResponseField>
 
-  <ResponseField name="status" type="string">
-    Current withdrawal status: `pending`, `processing`, `completed`, `failed`, or `cancelled`.
-  </ResponseField>
+<ResponseField name="status" type="string">
+  Current withdrawal status: `pending`, `processing`, `completed`, `failed`, or
+  `cancelled`.
+</ResponseField>
 
-  <ResponseField name="currency" type="string">
-    Withdrawal currency (`USD`).
-  </ResponseField>
+<ResponseField name="currency" type="string">
+  Withdrawal currency (`USD`).
+</ResponseField>
 
-  <ResponseField name="orderId" type="string">
-    Merchant's order identifier, if provided.
-  </ResponseField>
+<ResponseField name="orderId" type="string">
+  Merchant's order identifier, if provided.
+</ResponseField>
 
-  <ResponseField name="customMetadata" type="string">
-    Custom metadata, if provided.
-  </ResponseField>
+<ResponseField name="customMetadata" type="string">
+  Custom metadata, if provided.
+</ResponseField>
 
-  <ResponseField name="errorMessage" type="string">
-    Error description. Only present when `status` is `failed`.
-  </ResponseField>
+<ResponseField name="errorMessage" type="string">
+  Error description. Only present when `status` is `failed`.
+</ResponseField>
 
   <ResponseField name="receipt" type="object">
     On-chain settlement details. Only present for `completed` withdrawals.
@@ -170,12 +173,13 @@ Returns a paginated list of withdrawals for the merchant tied to your secret key
     <ResponseField name="processedBy" type="string">
       Internal processor that submitted the transaction.
     </ResponseField>
+
   </Expandable>
   </ResponseField>
 
-  <ResponseField name="createdAt" type="string">
-    Timestamp when the withdrawal was created.
-  </ResponseField>
+<ResponseField name="createdAt" type="string">
+  Timestamp when the withdrawal was created.
+</ResponseField>
 
   <ResponseField name="updatedAt" type="string">
     Timestamp when the withdrawal was last updated.
@@ -191,21 +195,21 @@ Returns a paginated list of withdrawals for the merchant tied to your secret key
     Total number of withdrawals matching the filter.
   </ResponseField>
 
-  <ResponseField name="limit" type="number">
-    Number of items requested per page.
-  </ResponseField>
+<ResponseField name="limit" type="number">
+  Number of items requested per page.
+</ResponseField>
 
-  <ResponseField name="offset" type="number">
-    Number of items skipped.
-  </ResponseField>
+<ResponseField name="offset" type="number">
+  Number of items skipped.
+</ResponseField>
 
-  <ResponseField name="hasMore" type="boolean">
-    Whether there are more pages after this one.
-  </ResponseField>
+<ResponseField name="hasMore" type="boolean">
+  Whether there are more pages after this one.
+</ResponseField>
 
-  <ResponseField name="totalPages" type="number">
-    Total number of pages.
-  </ResponseField>
+<ResponseField name="totalPages" type="number">
+  Total number of pages.
+</ResponseField>
 
   <ResponseField name="currentPage" type="number">
     Current page number.

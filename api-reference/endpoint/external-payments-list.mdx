@@ -9,9 +9,12 @@ openapi: "GET /v1/external/secretkey-auth/payments"
 Returns a paginated list of payments for the merchant tied to your secret key. You can filter by `type` (`payment` or `deposit`), `status`, free-text `search`, and control sort order.
 
 <RequestExample>
-  ```bash cURL curl -X GET \
+```bash cURL
+  curl -X GET \
   "https://api.spacepay.co.uk/v1/external/secretkey-auth/payments?type=payment&status=completed&limit=50&offset=0"
-  \ -H "X-SpacePay-Secret-Key: sk_test_your_secret_key" ```
+  \ -H "X-SpacePay-Secret-Key: sk_test_your_secret_key"
+```
+
 </RequestExample>
 
 <ResponseExample>

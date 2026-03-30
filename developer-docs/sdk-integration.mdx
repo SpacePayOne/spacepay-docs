@@ -66,6 +66,7 @@ async function checkPaymentStatus(paymentId: string) {
   - **Universal**: Works in Node.js 18+ and modern browsers
   - **Modern**: Uses native fetch API and modern JavaScript features
   - **Robust**: Built-in error handling, timeout management, and retry logic
+
 </Card>
 
 ## Client Configuration
@@ -102,7 +103,7 @@ The SDK provides structured error handling:
 import { ApiError } from "spacepay-client-sdk";
 
 try {
-    const payment = await client.createPayment({
+  const payment = await client.createPayment({
     orderId: "order_123",
     amount: 250,
     currency: "USD",

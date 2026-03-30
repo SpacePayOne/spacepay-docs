@@ -52,11 +52,13 @@ curl -X POST https://api.spacepay.co.uk/v1/external/secretkey-auth/withdrawals \
 ## Request Parameters
 
 <ParamField body="amountInCents" type="number" required>
-  Withdrawal amount in cents (for example, 5000 = $50.00). Minimum: **100** cents, maximum: **100000000** cents.
+  Withdrawal amount in cents (for example, 5000 = $50.00). Minimum: **100**
+  cents, maximum: **100000000** cents.
 </ParamField>
 
 <ParamField body="chainId" type="number" required>
-  EVM chain ID to settle the withdrawal on. Use your withdrawal config endpoint to get supported chain IDs.
+  EVM chain ID to settle the withdrawal on. Use your withdrawal config endpoint
+  to get supported chain IDs.
 </ParamField>
 
 <ParamField body="recipientAddress" type="string" required>
@@ -98,7 +100,8 @@ curl -X POST https://api.spacepay.co.uk/v1/external/secretkey-auth/withdrawals \
 </ResponseField>
 
 <ResponseField name="status" type="string" required>
-  Initial status will be `pending`. Possible values: `pending`, `processing`, `completed`, `failed`, `cancelled`.
+  Initial status will be `pending`. Possible values: `pending`, `processing`,
+  `completed`, `failed`, `cancelled`.
 </ResponseField>
 
 <ResponseField name="currency" type="string" required>
@@ -114,11 +117,13 @@ curl -X POST https://api.spacepay.co.uk/v1/external/secretkey-auth/withdrawals \
 </ResponseField>
 
 <ResponseField name="errorMessage" type="string">
-  Error description. `null` on creation; populated if the withdrawal later fails.
+  Error description. `null` on creation; populated if the withdrawal later
+  fails.
 </ResponseField>
 
 <ResponseField name="receipt" type="object">
-  On-chain settlement details. `null` on creation; populated once the withdrawal is `completed`.
+  On-chain settlement details. `null` on creation; populated once the withdrawal
+  is `completed`.
 </ResponseField>
 
 <ResponseField name="createdAt" type="string" required>
