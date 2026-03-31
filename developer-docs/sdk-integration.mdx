@@ -10,7 +10,7 @@ The SpacePay SDK provides a simple way to integrate payments with minimal code a
 ## Installation
 
 ```bash
-npm install spacepay-client-sdk
+yarn add @spacepay/client-sdk
 ```
 
 <Note>
@@ -20,13 +20,12 @@ npm install spacepay-client-sdk
 ## Basic Usage
 
 ```typescript
-import { SpacePayClient } from "spacepay-client-sdk";
+import { createBackendClient } from "@spacepay/client-sdk/backend";
 
 // Initialize the client
-const client = new SpacePayClient({
-  baseUrl: "https://api.spacepay.co.uk",
+const client = createBackendClient({
   publicKey: "pk_test_your_public_key",
-  secretKey: "sk_test_your_secret_key",
+  secretKey: "sk_test_your_secret_key", // never expose this on the frontend
 });
 
 // Create a payment
@@ -47,11 +46,11 @@ async function createPayment() {
   }
 }
 
-// Check payment status
-async function checkPaymentStatus(paymentId: string) {
+// Get payment details
+async function getPayment(paymentId: string) {
   try {
-    const status = await client.getPaymentStatus(paymentId);
-    console.log("Payment status:", status.status);
+    const payment = await client.getPaymentDetails(paymentId);
+    console.log("Payment status:", payment.status);
   } catch (error) {
     console.error("Error:", error.message);
   }
@@ -74,13 +73,11 @@ async function checkPaymentStatus(paymentId: string) {
 You can configure the client with additional options:
 
 ```typescript
-const client = new SpacePayClient({
-  baseUrl: "https://api.spacepay.co.uk",
+const client = createBackendClient({
   publicKey: "pk_test_your_public_key",
   secretKey: "sk_test_your_secret_key",
-  config: {
-    timeoutMs: 30000, // Request timeout in milliseconds (default: 30000)
-  },
+  apiBaseUrl: "https://api.spacepay.co.uk", // optional, shown for reference
+  timeoutMs: 30000, // optional, default: 30000
 });
 ```
 
@@ -100,7 +97,7 @@ The SDK returns payment statuses with the following values:
 The SDK provides structured error handling:
 
 ```typescript
-import { ApiError } from "spacepay-client-sdk";
+import { ApiError } from "@spacepay/client-sdk";
 
 try {
   const payment = await client.createPayment({
