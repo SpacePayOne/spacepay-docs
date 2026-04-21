@@ -82,12 +82,12 @@
       "anchors": [
         {
           "anchor": "Merchant Dashboard",
-          "href": "https://dashboard.spacepay.co.uk",
+          "href": "https://dashboard.spacepay.solutions",
           "icon": "gauge"
         },
         {
           "anchor": "Website",
-          "href": "https://spacepay.co.uk/",
+          "href": "https://spacepay.solutions",
           "icon": "globe"
         }
       ]
@@ -101,11 +101,11 @@
     "links": [
       {
         "label": "Support",
-        "href": "mailto:support@spacepay.co.uk"
+        "href": "mailto:support@spacepay.solutions"
       },
       {
         "label": "Contact Us",
-        "href": "https://spacepay.co.uk/contact-us/"
+        "href": "https://spacepay.solutions"
       }
     ]
   },

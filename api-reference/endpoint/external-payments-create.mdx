@@ -15,7 +15,7 @@ Creates a **payment** (fixed fiat amount) or a **deposit** (customer chooses how
 
 <RequestExample>
 ```bash cURL
-curl -X POST https://api.spacepay.co.uk/v1/external/secretkey-auth/payments \
+curl -X POST https://api.spacepay.solutions/v1/external/secretkey-auth/payments \
   -H "X-SpacePay-Secret-Key: sk_test_your_secret_key" \
   -H "Content-Type: application/json" \
   -H "Idempotency-Key: unique-key-for-request" \
@@ -81,7 +81,7 @@ curl -X POST https://api.spacepay.co.uk/v1/external/secretkey-auth/payments \
     "redirectUrl": "https://merchant.example.com/checkout/success",
     "createdAt": "2025-10-10T21:44:06.733Z"
   },
-  "paymentUrl": "https://pay.spacepay.co.uk/payment/4291f98b-d68c-4eb0-883e-6bc790a41c96",
+  "paymentUrl": "https://pay.spacepay.solutions/payment/4291f98b-d68c-4eb0-883e-6bc790a41c96",
   "secret": "payment_secret_key",
   "paymentId": "4291f98b-d68c-4eb0-883e-6bc790a41c96"
 }
