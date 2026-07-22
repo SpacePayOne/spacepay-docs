@@ -33,7 +33,7 @@
               "developer-docs/api-integration",
               "developer-docs/webhooks",
               "developer-docs/testing",
-              "developer-docs/blockchain-concepts"
+              "developer-docs/supported-chains"
             ]
           },
           {
@@ -59,16 +59,11 @@
             "pages": [
               "POST /v1/external/secretkey-auth/payments",
               "GET /v1/external/secretkey-auth/payments",
-              "GET /v1/external/secretkey-auth/payments/{paymentId}",
-              "GET /v1/external/payment-secret-auth/payments/{paymentId}",
-              "GET /v1/external/payment-secret-auth/payments/{paymentId}/status",
-              "GET /v1/external/payment-secret-auth/payments/{paymentId}/quotes",
-              "POST /v1/external/payment-secret-auth/payments/{paymentId}/quotes",
-              "POST /v1/external/payment-secret-auth/payments/{paymentId}/refresh-status"
+              "GET /v1/external/secretkey-auth/payments/{paymentId}"
             ]
           },
           {
-            "group": "Withdrawals",
+            "group": "Withdrawals (alpha)",
             "openapi": "api-reference/openapi.json",
             "pages": [
               "POST /v1/external/secretkey-auth/withdrawals",

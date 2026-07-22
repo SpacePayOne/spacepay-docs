@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 /**
- * Sync supported chains/tokens into developer-docs/blockchain-concepts.mdx.
+ * Sync supported chains/tokens into developer-docs/supported-chains.mdx.
  *
  * Default source (until public APIs return the full registry):
  *   data/token-registry/chains.json
@@ -22,7 +22,7 @@ import { fileURLToPath } from 'node:url'
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
 const ROOT = path.resolve(__dirname, '..')
-const TARGET = path.join(ROOT, 'developer-docs/blockchain-concepts.mdx')
+const TARGET = path.join(ROOT, 'developer-docs/supported-chains.mdx')
 const START = '{/* supported-chains:start */}'
 const END = '{/* supported-chains:end */}'
 

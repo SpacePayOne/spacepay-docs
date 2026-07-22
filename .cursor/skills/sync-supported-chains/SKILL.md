@@ -1,11 +1,11 @@
 ---
 name: sync-supported-chains
-description: Sync SpacePay supported chains and tokens into developer-docs/blockchain-concepts.mdx from local token-registry dumps or public APIs. Use when updating supported networks/tokens, refreshing blockchain concepts, or when the user asks to sync chains from the API or data files.
+description: Sync SpacePay supported chains and tokens into developer-docs/supported-chains.mdx from local token-registry dumps or public APIs. Use when updating supported networks/tokens or when the user asks to sync chains from the API or data files.
 ---
 
 # Sync supported chains and tokens
 
-Canonical docs page: `developer-docs/blockchain-concepts.mdx` (section between `{/* supported-chains:start */}` and `{/* supported-chains:end */}`).
+Canonical docs page: `developer-docs/supported-chains.mdx` (section between `{/* supported-chains:start */}` and `{/* supported-chains:end */}`).
 
 Other pages must **link** to that page — do not duplicate chain/token lists.
 
@@ -34,8 +34,8 @@ Optional env:
 
 1. If the registry dump changed, replace files under `data/token-registry/` (or point `CHAINS_JSON` / `TOKENS_JSON` at new files).
 2. Run `yarn sync:chains`.
-3. Review the diff in `developer-docs/blockchain-concepts.mdx`.
-4. Keep other pages pointing at `/developer-docs/blockchain-concepts`.
+3. Review the diff in `developer-docs/supported-chains.mdx`.
+4. Keep other pages pointing at `/developer-docs/supported-chains`.
 5. When public APIs expose the full set, switch to `yarn sync:chains --source=api`.
 
 ## Formatting rules (script applies)

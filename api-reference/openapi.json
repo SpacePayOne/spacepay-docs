@@ -23,9 +23,6 @@
       "name": "External - Payments (Secret Key)"
     },
     {
-      "name": "External - Payments (Payment Secret)"
-    },
-    {
       "name": "External - Withdrawals (Secret Key)"
     },
     {
@@ -75,8 +72,10 @@
             }
           }
         },
-        "summary": "Get all chains. Returns only active chains.",
-        "tags": ["External - Token Registry (Public)"]
+        "summary": "List chains",
+        "tags": [
+          "External - Token Registry (Public)"
+        ]
       }
     },
     "/v1/external/chains/{chainId}": {
@@ -107,8 +106,10 @@
             "description": "Chain not found"
           }
         },
-        "summary": "Get a chain by ID. Returns only active chains.",
-        "tags": ["External - Token Registry (Public)"]
+        "summary": "Get a chain",
+        "tags": [
+          "External - Token Registry (Public)"
+        ]
       }
     },
     "/v1/external/tokens": {
@@ -154,7 +155,10 @@
             "schema": {
               "example": "erc20",
               "type": "string",
-              "enum": ["native", "erc20"]
+              "enum": [
+                "native",
+                "erc20"
+              ]
             }
           },
           {
@@ -165,7 +169,10 @@
             "schema": {
               "example": "stablecoin",
               "type": "string",
-              "enum": ["stablecoin", "volatile"]
+              "enum": [
+                "stablecoin",
+                "volatile"
+              ]
             }
           },
           {
@@ -206,8 +213,10 @@
             }
           }
         },
-        "summary": "Get all tokens. Returns only active tokens for enabled chains. Includes price in USD.",
-        "tags": ["External - Token Registry (Public)"]
+        "summary": "List tokens",
+        "tags": [
+          "External - Token Registry (Public)"
+        ]
       }
     },
     "/v1/external/tokens/{tokenId}": {
@@ -238,8 +247,10 @@
             "description": "Token not found"
           }
         },
-        "summary": "Get a token by ID, including price in USD. Returns only active tokens for enabled chains.",
-        "tags": ["External - Token Registry (Public)"]
+        "summary": "Get a token",
+        "tags": [
+          "External - Token Registry (Public)"
+        ]
       }
     },
     "/v1/external/secretkey-auth/payments": {
@@ -282,8 +293,10 @@
             "Secret Key": []
           }
         ],
-        "summary": "Create a new payment using secret key (external API)",
-        "tags": ["External - Payments (Secret Key)"]
+        "summary": "Create a payment or deposit",
+        "tags": [
+          "External - Payments (Secret Key)"
+        ]
       },
       "get": {
         "operationId": "ExternalPaymentsBySecretKeyController_getPayments",
@@ -296,7 +309,10 @@
             "schema": {
               "example": "payment",
               "type": "string",
-              "enum": ["payment", "deposit"]
+              "enum": [
+                "payment",
+                "deposit"
+              ]
             }
           },
           {
@@ -307,7 +323,14 @@
             "schema": {
               "example": "pending",
               "type": "string",
-              "enum": ["pending", "processing", "completed", "failed", "expired", "cancelled"]
+              "enum": [
+                "pending",
+                "processing",
+                "completed",
+                "failed",
+                "expired",
+                "cancelled"
+              ]
             }
           },
           {
@@ -328,7 +351,10 @@
             "schema": {
               "example": "createdAt",
               "type": "string",
-              "enum": ["createdAt", "amountInCents"]
+              "enum": [
+                "createdAt",
+                "amountInCents"
+              ]
             }
           },
           {
@@ -339,7 +365,10 @@
             "schema": {
               "example": "DESC",
               "type": "string",
-              "enum": ["ASC", "DESC"]
+              "enum": [
+                "ASC",
+                "DESC"
+              ]
             }
           },
           {
@@ -385,8 +414,10 @@
             "Secret Key": []
           }
         ],
-        "summary": "Get all payments for a merchant",
-        "tags": ["External - Payments (Secret Key)"]
+        "summary": "List payments",
+        "tags": [
+          "External - Payments (Secret Key)"
+        ]
       }
     },
     "/v1/external/secretkey-auth/payments/{paymentId}": {
@@ -425,229 +456,10 @@
             "Secret Key": []
           }
         ],
-        "summary": "Get payment details by ID using secret key (external API)",
-        "tags": ["External - Payments (Secret Key)"]
-      }
-    },
-    "/v1/external/payment-secret-auth/payments/{paymentId}": {
-      "get": {
-        "operationId": "ExternalPaymentsByPaymentSecretController_getPaymentDetails",
-        "parameters": [
-          {
-            "name": "paymentId",
-            "required": true,
-            "in": "path",
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Payment retrieved successfully",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/PaymentDto"
-                }
-              }
-            }
-          },
-          "401": {
-            "description": "Invalid or missing x-spacepay-payment-secret header"
-          },
-          "404": {
-            "description": "Payment not found"
-          }
-        },
-        "security": [
-          {
-            "Payment Secret": []
-          }
-        ],
-        "summary": "Get payment details by ID using Payment Secret.",
-        "tags": ["External - Payments (Payment Secret)"]
-      }
-    },
-    "/v1/external/payment-secret-auth/payments/{paymentId}/status": {
-      "get": {
-        "operationId": "ExternalPaymentsByPaymentSecretController_getPaymentStatus",
-        "parameters": [
-          {
-            "name": "paymentId",
-            "required": true,
-            "in": "path",
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Payment status retrieved successfully",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/PaymentStatusDto"
-                }
-              }
-            }
-          },
-          "401": {
-            "description": "Invalid or missing x-spacepay-payment-secret header"
-          },
-          "404": {
-            "description": "Payment not found"
-          }
-        },
-        "security": [
-          {
-            "Payment Secret": []
-          }
-        ],
-        "summary": "Get payment status by ID using Payment Secret, for polling",
-        "tags": ["External - Payments (Payment Secret)"]
-      }
-    },
-    "/v1/external/payment-secret-auth/payments/{paymentId}/quotes": {
-      "get": {
-        "operationId": "ExternalPaymentsByPaymentSecretController_getActiveQuotes",
-        "parameters": [
-          {
-            "name": "paymentId",
-            "required": true,
-            "in": "path",
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "List of active quotes",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/PaymentQuoteDto"
-                  }
-                }
-              }
-            }
-          },
-          "401": {
-            "description": "Invalid or missing x-spacepay-payment-secret header"
-          }
-        },
-        "security": [
-          {
-            "Payment Secret": []
-          }
-        ],
-        "summary": "Get active quotes for a payment using Payment Secret",
-        "tags": ["External - Payments (Payment Secret)"]
-      },
-      "post": {
-        "operationId": "ExternalPaymentsByPaymentSecretController_createOrUpdateQuote",
-        "parameters": [
-          {
-            "name": "paymentId",
-            "required": true,
-            "in": "path",
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/CreateQuoteByContractDto"
-              }
-            }
-          }
-        },
-        "responses": {
-          "201": {
-            "description": "Quote created or updated successfully",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/PaymentQuoteDto"
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "Payment is not pending, cannot create or update a quote"
-          },
-          "401": {
-            "description": "Invalid or missing x-spacepay-payment-secret header"
-          }
-        },
-        "security": [
-          {
-            "Payment Secret": []
-          }
-        ],
-        "summary": "Create or update a quote by contract address and chain using Payment Secret. If neither contractAddress nor chainId is provided, a default quote will be created.",
-        "tags": ["External - Payments (Payment Secret)"]
-      }
-    },
-    "/v1/external/payment-secret-auth/payments/{paymentId}/refresh-status": {
-      "post": {
-        "operationId": "ExternalPaymentsByPaymentSecretController_refreshPaymentStatus",
-        "parameters": [
-          {
-            "name": "paymentId",
-            "required": true,
-            "in": "path",
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/RefreshPaymentStatusDto"
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "Payment status refresh initiated successfully",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/PaymentStatusDto"
-                }
-              }
-            }
-          },
-          "401": {
-            "description": "Invalid or missing x-spacepay-payment-secret header"
-          },
-          "403": {
-            "description": "Payment does not belong to the merchant"
-          },
-          "404": {
-            "description": "Payment not found"
-          }
-        },
-        "security": [
-          {
-            "Payment Secret": []
-          }
-        ],
-        "summary": "Force refresh payment status using Payment Secret. Polls the provider for partner-custody rails (e.g. Shout, for missed webhooks), on-chain verification otherwise.",
-        "tags": ["External - Payments (Payment Secret)"]
+        "summary": "Get a payment",
+        "tags": [
+          "External - Payments (Secret Key)"
+        ]
       }
     },
     "/v1/external/secretkey-auth/withdrawals": {
@@ -687,8 +499,10 @@
             "Secret Key": []
           }
         ],
-        "summary": "Create a withdrawal using secret key (external API)",
-        "tags": ["External - Withdrawals (Secret Key)"]
+        "summary": "Create a withdrawal",
+        "tags": [
+          "External - Withdrawals (Secret Key)"
+        ]
       },
       "get": {
         "operationId": "ExternalWithdrawalsBySecretKeyController_getWithdrawals",
@@ -701,7 +515,13 @@
             "schema": {
               "example": "processing",
               "type": "string",
-              "enum": ["pending", "processing", "completed", "failed", "cancelled"]
+              "enum": [
+                "pending",
+                "processing",
+                "completed",
+                "failed",
+                "cancelled"
+              ]
             }
           },
           {
@@ -747,8 +567,10 @@
             "Secret Key": []
           }
         ],
-        "summary": "Get all withdrawals for a merchant",
-        "tags": ["External - Withdrawals (Secret Key)"]
+        "summary": "List withdrawals",
+        "tags": [
+          "External - Withdrawals (Secret Key)"
+        ]
       }
     },
     "/v1/external/secretkey-auth/withdrawals/{withdrawalId}": {
@@ -784,8 +606,10 @@
             "Secret Key": []
           }
         ],
-        "summary": "Get withdrawal details by ID using secret key (external API)",
-        "tags": ["External - Withdrawals (Secret Key)"]
+        "summary": "Get a withdrawal",
+        "tags": [
+          "External - Withdrawals (Secret Key)"
+        ]
       }
     },
     "/v1/external/secretkey-auth/wallet/balances": {
@@ -815,8 +639,10 @@
             "Secret Key": []
           }
         ],
-        "summary": "Get on-chain balances for the default withdrawal token per chain (secret key)",
-        "tags": ["External - Wallet (Secret Key)"]
+        "summary": "Get wallet balances",
+        "tags": [
+          "External - Wallet (Secret Key)"
+        ]
       }
     }
   },
@@ -833,12 +659,6 @@
         "in": "header",
         "name": "x-spacepay-secret-key",
         "description": "Secret key for authentication of external API."
-      },
-      "Payment Secret": {
-        "type": "apiKey",
-        "in": "header",
-        "name": "x-spacepay-payment-secret",
-        "description": "Payment secret for authentication of external API."
       },
       "cookie": {
         "type": "apiKey",
@@ -873,7 +693,12 @@
             "example": "admin"
           }
         },
-        "required": ["id", "name", "slug", "role"]
+        "required": [
+          "id",
+          "name",
+          "slug",
+          "role"
+        ]
       },
       "SimpleMerchantDto": {
         "type": "object",
@@ -899,7 +724,12 @@
             "example": "pending"
           }
         },
-        "required": ["id", "shortName", "clerkOrganizationId", "status"]
+        "required": [
+          "id",
+          "shortName",
+          "clerkOrganizationId",
+          "status"
+        ]
       },
       "AuthBusinessUserDto": {
         "type": "object",
@@ -943,13 +773,24 @@
             ]
           },
           "role": {
-            "enum": ["business_member", "superadmin"],
+            "enum": [
+              "business_member",
+              "superadmin"
+            ],
             "type": "string",
             "description": "User role. If user is super admin, this will be SUPER_ADMIN. If user is a business member, this will be BUSINESS_MEMBER.",
             "example": "business_member"
           }
         },
-        "required": ["id", "email", "firstName", "lastName", "organizations", "merchant", "role"]
+        "required": [
+          "id",
+          "email",
+          "firstName",
+          "lastName",
+          "organizations",
+          "merchant",
+          "role"
+        ]
       },
       "MerchantDto": {
         "type": "object",
@@ -1007,7 +848,12 @@
             "nullable": true
           },
           "status": {
-            "enum": ["pending", "onboarding", "approved", "rejected"],
+            "enum": [
+              "pending",
+              "onboarding",
+              "approved",
+              "rejected"
+            ],
             "type": "string"
           },
           "rejectionReason": {
@@ -1117,7 +963,12 @@
             "example": false
           }
         },
-        "required": ["merchantVerified", "payoutsSetUp", "integrationSetUp", "firstPayment"]
+        "required": [
+          "merchantVerified",
+          "payoutsSetUp",
+          "integrationSetUp",
+          "firstPayment"
+        ]
       },
       "MerchantPayoutAccountDto": {
         "type": "object",
@@ -1138,7 +989,11 @@
             "type": "string"
           },
           "currency": {
-            "enum": ["USD", "EUR", "GBP"],
+            "enum": [
+              "USD",
+              "EUR",
+              "GBP"
+            ],
             "type": "string"
           },
           "isActive": {
@@ -1174,7 +1029,11 @@
             "type": "string"
           }
         },
-        "required": ["id", "balanceInCents", "updatedAt"]
+        "required": [
+          "id",
+          "balanceInCents",
+          "updatedAt"
+        ]
       },
       "MerchantPayoutDto": {
         "type": "object",
@@ -1195,7 +1054,11 @@
             "type": "number"
           },
           "payoutCurrency": {
-            "enum": ["USD", "EUR", "GBP"],
+            "enum": [
+              "USD",
+              "EUR",
+              "GBP"
+            ],
             "type": "string"
           },
           "payoutDate": {
@@ -1203,7 +1066,11 @@
             "type": "string"
           },
           "status": {
-            "enum": ["pending", "completed", "failed"],
+            "enum": [
+              "pending",
+              "completed",
+              "failed"
+            ],
             "type": "string"
           },
           "createdAt": {
@@ -1250,7 +1117,14 @@
             "type": "number"
           }
         },
-        "required": ["total", "limit", "offset", "hasMore", "totalPages", "currentPage"]
+        "required": [
+          "total",
+          "limit",
+          "offset",
+          "hasMore",
+          "totalPages",
+          "currentPage"
+        ]
       },
       "PaginatedMerchantPayoutDtoResult": {
         "type": "object",
@@ -1265,7 +1139,10 @@
             "$ref": "#/components/schemas/PaginationMetaDto"
           }
         },
-        "required": ["data", "pagination"]
+        "required": [
+          "data",
+          "pagination"
+        ]
       },
       "PaginatedMerchantDtoResult": {
         "type": "object",
@@ -1280,13 +1157,21 @@
             "$ref": "#/components/schemas/PaginationMetaDto"
           }
         },
-        "required": ["data", "pagination"]
+        "required": [
+          "data",
+          "pagination"
+        ]
       },
       "UpdateMerchantStatusDto": {
         "type": "object",
         "properties": {
           "status": {
-            "enum": ["pending", "onboarding", "approved", "rejected"],
+            "enum": [
+              "pending",
+              "onboarding",
+              "approved",
+              "rejected"
+            ],
             "type": "string",
             "description": "New status for the merchant",
             "example": "approved"
@@ -1298,7 +1183,9 @@
             "example": "Incomplete documentation"
           }
         },
-        "required": ["status"]
+        "required": [
+          "status"
+        ]
       },
       "UpdateMerchantFeaturesDto": {
         "type": "object",
@@ -1333,7 +1220,11 @@
             "description": "IBAN"
           },
           "currency": {
-            "enum": ["USD", "EUR", "GBP"],
+            "enum": [
+              "USD",
+              "EUR",
+              "GBP"
+            ],
             "type": "string",
             "description": "Currency"
           },
@@ -1342,7 +1233,12 @@
             "description": "Whether this account should be active"
           }
         },
-        "required": ["bankName", "bankAddress", "iban", "currency"]
+        "required": [
+          "bankName",
+          "bankAddress",
+          "iban",
+          "currency"
+        ]
       },
       "CreateMerchantPayoutDto": {
         "type": "object",
@@ -1362,7 +1258,11 @@
             "description": "Payout amount in cents in the payout currency"
           },
           "payoutCurrency": {
-            "enum": ["USD", "EUR", "GBP"],
+            "enum": [
+              "USD",
+              "EUR",
+              "GBP"
+            ],
             "type": "string",
             "description": "Currency in which the payout was made"
           },
@@ -1401,7 +1301,13 @@
             "type": "string"
           }
         },
-        "required": ["id", "merchantId", "address", "isActive", "createdAt"]
+        "required": [
+          "id",
+          "merchantId",
+          "address",
+          "isActive",
+          "createdAt"
+        ]
       },
       "UpdateMerchantOfframpAddressDto": {
         "type": "object",
@@ -1411,7 +1317,9 @@
             "description": "Ethereum address to send tokens to"
           }
         },
-        "required": ["address"]
+        "required": [
+          "address"
+        ]
       },
       "ChainDto": {
         "type": "object",
@@ -1447,7 +1355,14 @@
             "example": false
           }
         },
-        "required": ["chainId", "name", "nativeSymbol", "nativeDecimals", "isEnabled", "isTestnet"]
+        "required": [
+          "chainId",
+          "name",
+          "nativeSymbol",
+          "nativeDecimals",
+          "isEnabled",
+          "isTestnet"
+        ]
       },
       "TokenDto": {
         "type": "object",
@@ -1486,19 +1401,29 @@
             "example": 6
           },
           "type": {
-            "enum": ["stablecoin", "volatile"],
+            "enum": [
+              "stablecoin",
+              "volatile"
+            ],
             "type": "string",
             "description": "Token type",
             "example": "stablecoin"
           },
           "assetType": {
-            "enum": ["native", "erc20"],
+            "enum": [
+              "native",
+              "erc20"
+            ],
             "type": "string",
             "description": "Token asset type",
             "example": "native"
           },
           "status": {
-            "enum": ["active", "deprecated", "blocked"],
+            "enum": [
+              "active",
+              "deprecated",
+              "blocked"
+            ],
             "type": "string",
             "description": "Token status",
             "example": "active"
@@ -1544,7 +1469,12 @@
             "type": "string"
           },
           "status": {
-            "enum": ["pending", "approved", "rejected", "deactivated"],
+            "enum": [
+              "pending",
+              "approved",
+              "rejected",
+              "deactivated"
+            ],
             "type": "string"
           },
           "createdAt": {
@@ -1552,7 +1482,14 @@
             "type": "string"
           }
         },
-        "required": ["id", "merchantId", "token", "address", "status", "createdAt"]
+        "required": [
+          "id",
+          "merchantId",
+          "token",
+          "address",
+          "status",
+          "createdAt"
+        ]
       },
       "CreateMerchantWithdrawalAddressDto": {
         "type": "object",
@@ -1575,7 +1512,11 @@
             "description": "One-time code emailed via POST /merchants/:merchantId/email-otc with purpose add_withdrawal_address"
           }
         },
-        "required": ["tokenId", "address", "emailOtcCode"]
+        "required": [
+          "tokenId",
+          "address",
+          "emailOtcCode"
+        ]
       },
       "ApiKeyDto": {
         "type": "object",
@@ -1591,7 +1532,10 @@
             "nullable": true
           },
           "type": {
-            "enum": ["public", "secret"],
+            "enum": [
+              "public",
+              "secret"
+            ],
             "type": "string"
           },
           "keyPrefix": {
@@ -1644,7 +1588,9 @@
             "maxLength": 1000
           }
         },
-        "required": ["name"]
+        "required": [
+          "name"
+        ]
       },
       "CreateSecretKeyResponseDto": {
         "type": "object",
@@ -1656,7 +1602,10 @@
             "$ref": "#/components/schemas/ApiKeyDto"
           }
         },
-        "required": ["secretKeyOnlyOnce", "apiKey"]
+        "required": [
+          "secretKeyOnlyOnce",
+          "apiKey"
+        ]
       },
       "UpdateApiKeyDto": {
         "type": "object",
@@ -1723,7 +1672,12 @@
             "type": "string"
           }
         },
-        "required": ["id", "merchantId", "type", "occurredAt"]
+        "required": [
+          "id",
+          "merchantId",
+          "type",
+          "occurredAt"
+        ]
       },
       "PaginatedApplicationEventDtoResult": {
         "type": "object",
@@ -1738,7 +1692,10 @@
             "$ref": "#/components/schemas/PaginationMetaDto"
           }
         },
-        "required": ["data", "pagination"]
+        "required": [
+          "data",
+          "pagination"
+        ]
       },
       "MerchantNotificationSettingsDto": {
         "type": "object",
@@ -1768,7 +1725,10 @@
               ]
             },
             "description": "List of event types the merchant is subscribed to for email notifications",
-            "example": ["payment.succeeded", "payment.failed"]
+            "example": [
+              "payment.succeeded",
+              "payment.failed"
+            ]
           },
           "updatedAt": {
             "format": "date-time",
@@ -1777,7 +1737,12 @@
             "example": "2024-01-01T00:00:00.000Z"
           }
         },
-        "required": ["id", "emailEnabled", "emailSubscribedEvents", "updatedAt"]
+        "required": [
+          "id",
+          "emailEnabled",
+          "emailSubscribedEvents",
+          "updatedAt"
+        ]
       },
       "UpdateMerchantNotificationSettingsDto": {
         "type": "object",
@@ -1823,7 +1788,10 @@
             "type": "string"
           },
           "status": {
-            "enum": ["ACTIVE", "INACTIVE"],
+            "enum": [
+              "ACTIVE",
+              "INACTIVE"
+            ],
             "type": "string"
           },
           "secretPrefix": {
@@ -1871,7 +1839,10 @@
             "format": "uri"
           }
         },
-        "required": ["name", "url"]
+        "required": [
+          "name",
+          "url"
+        ]
       },
       "CreateWebhookEndpointResponseDto": {
         "type": "object",
@@ -1883,7 +1854,10 @@
             "$ref": "#/components/schemas/WebhookEndpointDto"
           }
         },
-        "required": ["secretKeyOnlyOnce", "webhook"]
+        "required": [
+          "secretKeyOnlyOnce",
+          "webhook"
+        ]
       },
       "UpdateWebhookEndpointRequestDto": {
         "type": "object",
@@ -1903,7 +1877,10 @@
           },
           "status": {
             "type": "string",
-            "enum": ["ACTIVE", "INACTIVE"]
+            "enum": [
+              "ACTIVE",
+              "INACTIVE"
+            ]
           }
         }
       },
@@ -1911,12 +1888,17 @@
         "type": "object",
         "properties": {
           "purpose": {
-            "enum": ["add_withdrawal_address", "add_beneficiary"],
+            "enum": [
+              "add_withdrawal_address",
+              "add_beneficiary"
+            ],
             "type": "string",
             "description": "The sensitive action the code will authorize. Scopes the one-time code."
           }
         },
-        "required": ["purpose"]
+        "required": [
+          "purpose"
+        ]
       },
       "EmailOtcRequestedDto": {
         "type": "object",
@@ -1927,7 +1909,9 @@
             "description": "When the emailed one-time code expires."
           }
         },
-        "required": ["expiresAt"]
+        "required": [
+          "expiresAt"
+        ]
       },
       "FeeValuesDto": {
         "type": "object",
@@ -1941,7 +1925,10 @@
             "description": "Fee fixed in cents (>=0)"
           }
         },
-        "required": ["percentBps", "fixedCents"]
+        "required": [
+          "percentBps",
+          "fixedCents"
+        ]
       },
       "ScopeOverridesDto": {
         "type": "object",
@@ -1976,7 +1963,10 @@
             }
           }
         },
-        "required": ["global", "chains"]
+        "required": [
+          "global",
+          "chains"
+        ]
       },
       "CustomizedMerchantsDto": {
         "type": "object",
@@ -1999,12 +1989,19 @@
             },
             "description": "Merchants with a merchant+chain override, keyed by CAIP-2 chainId string",
             "example": {
-              "eip155:1": ["merchant-uuid-3"],
-              "eip155:137": ["merchant-uuid-4"]
+              "eip155:1": [
+                "merchant-uuid-3"
+              ],
+              "eip155:137": [
+                "merchant-uuid-4"
+              ]
             }
           }
         },
-        "required": ["global", "chains"]
+        "required": [
+          "global",
+          "chains"
+        ]
       },
       "SimpleFeeDto": {
         "type": "object",
@@ -2019,7 +2016,12 @@
           },
           "source": {
             "type": "string",
-            "enum": ["merchant_chain", "merchant", "chain", "global"],
+            "enum": [
+              "merchant_chain",
+              "merchant",
+              "chain",
+              "global"
+            ],
             "description": "Where the resolved value came from"
           },
           "isInherited": {
@@ -2027,7 +2029,12 @@
             "description": "True when the fee resolved from a parent of the requested scope"
           }
         },
-        "required": ["percentBps", "fixedCents", "source", "isInherited"]
+        "required": [
+          "percentBps",
+          "fixedCents",
+          "source",
+          "isInherited"
+        ]
       },
       "UpsertFeeDto": {
         "type": "object",
@@ -2062,10 +2069,18 @@
         "properties": {
           "direction": {
             "type": "string",
-            "enum": ["debit", "credit"]
+            "enum": [
+              "debit",
+              "credit"
+            ]
           },
           "ownerType": {
-            "enum": ["organization", "provider", "platform", "system"],
+            "enum": [
+              "organization",
+              "provider",
+              "platform",
+              "system"
+            ],
             "type": "string"
           },
           "ownerId": {
@@ -2089,7 +2104,14 @@
             "type": "string"
           },
           "balanceState": {
-            "enum": ["available", "reserved", "pending_in", "pending_out", "settled", "suspense"],
+            "enum": [
+              "available",
+              "reserved",
+              "pending_in",
+              "pending_out",
+              "settled",
+              "suspense"
+            ],
             "type": "string"
           },
           "assetId": {
@@ -2102,7 +2124,14 @@
             "description": "Positive magnitude in base units (integer string)"
           }
         },
-        "required": ["direction", "ownerType", "accountClass", "balanceState", "assetId", "amount"]
+        "required": [
+          "direction",
+          "ownerType",
+          "accountClass",
+          "balanceState",
+          "assetId",
+          "amount"
+        ]
       },
       "CreateManualAdjustmentDto": {
         "type": "object",
@@ -2128,7 +2157,11 @@
             }
           }
         },
-        "required": ["reason", "idempotencyKey", "legs"]
+        "required": [
+          "reason",
+          "idempotencyKey",
+          "legs"
+        ]
       },
       "EmailEndpointDto": {
         "type": "object",
@@ -2147,11 +2180,19 @@
             "type": "string"
           },
           "status": {
-            "enum": ["ACTIVE", "INACTIVE"],
+            "enum": [
+              "ACTIVE",
+              "INACTIVE"
+            ],
             "type": "string"
           }
         },
-        "required": ["id", "name", "emailAddress", "status"]
+        "required": [
+          "id",
+          "name",
+          "emailAddress",
+          "status"
+        ]
       },
       "CreateEmailEndpointRequestDto": {
         "type": "object",
@@ -2169,14 +2210,19 @@
             "format": "email"
           }
         },
-        "required": ["emailAddress"]
+        "required": [
+          "emailAddress"
+        ]
       },
       "SyncEmailAddressesDto": {
         "type": "object",
         "properties": {
           "emailAddresses": {
             "description": "Array of email addresses to sync",
-            "example": ["user1@example.com", "user2@example.com"],
+            "example": [
+              "user1@example.com",
+              "user2@example.com"
+            ],
             "type": "array",
             "items": {
               "type": "string",
@@ -2184,7 +2230,9 @@
             }
           }
         },
-        "required": ["emailAddresses"]
+        "required": [
+          "emailAddresses"
+        ]
       },
       "SyncEmailAddressesResponseDto": {
         "type": "object",
@@ -2205,7 +2253,11 @@
             "example": 3
           }
         },
-        "required": ["added", "deleted", "total"]
+        "required": [
+          "added",
+          "deleted",
+          "total"
+        ]
       },
       "UpdateEmailEndpointRequestDto": {
         "type": "object",
@@ -2226,7 +2278,10 @@
             "description": "Wallet address (lowercase)"
           },
           "provider": {
-            "enum": ["internal_hd", "shout"],
+            "enum": [
+              "internal_hd",
+              "shout"
+            ],
             "type": "string",
             "description": "Custody provider that holds this wallet"
           },
@@ -2248,7 +2303,14 @@
             "type": "string"
           }
         },
-        "required": ["id", "merchantId", "provider", "settlementToken", "createdAt", "updatedAt"]
+        "required": [
+          "id",
+          "merchantId",
+          "provider",
+          "settlementToken",
+          "createdAt",
+          "updatedAt"
+        ]
       },
       "UpsertShoutCredentialsDto": {
         "type": "object",
@@ -2263,10 +2325,17 @@
           },
           "environment": {
             "type": "string",
-            "enum": ["sandbox", "production"]
+            "enum": [
+              "sandbox",
+              "production"
+            ]
           }
         },
-        "required": ["kid", "privateKeyPem", "environment"]
+        "required": [
+          "kid",
+          "privateKeyPem",
+          "environment"
+        ]
       },
       "ShoutCredentialsDto": {
         "type": "object",
@@ -2280,7 +2349,10 @@
           },
           "environment": {
             "type": "string",
-            "enum": ["sandbox", "production"]
+            "enum": [
+              "sandbox",
+              "production"
+            ]
           },
           "keyVersion": {
             "type": "number",
@@ -2329,7 +2401,12 @@
             "description": "Partner portal access status on Shout"
           }
         },
-        "required": ["name", "email", "customerId", "portalStatus"]
+        "required": [
+          "name",
+          "email",
+          "customerId",
+          "portalStatus"
+        ]
       },
       "ShoutConnectionTestDto": {
         "type": "object",
@@ -2340,7 +2417,10 @@
           },
           "environment": {
             "type": "string",
-            "enum": ["sandbox", "production"],
+            "enum": [
+              "sandbox",
+              "production"
+            ],
             "description": "Environment the tested credentials target"
           },
           "account": {
@@ -2356,7 +2436,10 @@
             "description": "Failure reason (present on failure)"
           }
         },
-        "required": ["ok", "environment"]
+        "required": [
+          "ok",
+          "environment"
+        ]
       },
       "PaginatedChainDtoResult": {
         "type": "object",
@@ -2371,7 +2454,10 @@
             "$ref": "#/components/schemas/PaginationMetaDto"
           }
         },
-        "required": ["data", "pagination"]
+        "required": [
+          "data",
+          "pagination"
+        ]
       },
       "PaginatedTokenDtoResult": {
         "type": "object",
@@ -2386,7 +2472,10 @@
             "$ref": "#/components/schemas/PaginationMetaDto"
           }
         },
-        "required": ["data", "pagination"]
+        "required": [
+          "data",
+          "pagination"
+        ]
       },
       "BackendWalletBalanceDto": {
         "type": "object",
@@ -2402,7 +2491,10 @@
             "example": "1.0"
           }
         },
-        "required": ["amount", "formatted"]
+        "required": [
+          "amount",
+          "formatted"
+        ]
       },
       "AdminTokenDto": {
         "type": "object",
@@ -2447,19 +2539,29 @@
             "example": 6
           },
           "type": {
-            "enum": ["stablecoin", "volatile"],
+            "enum": [
+              "stablecoin",
+              "volatile"
+            ],
             "type": "string",
             "description": "Token type",
             "example": "stablecoin"
           },
           "assetType": {
-            "enum": ["native", "erc20"],
+            "enum": [
+              "native",
+              "erc20"
+            ],
             "type": "string",
             "description": "Token asset type",
             "example": "native"
           },
           "status": {
-            "enum": ["active", "deprecated", "blocked"],
+            "enum": [
+              "active",
+              "deprecated",
+              "blocked"
+            ],
             "type": "string",
             "description": "Token status",
             "example": "active"
@@ -2569,7 +2671,9 @@
           },
           "type": {
             "type": "string",
-            "enum": ["EVM"]
+            "enum": [
+              "EVM"
+            ]
           },
           "address": {
             "type": "string",
@@ -2581,7 +2685,12 @@
             "type": "string"
           }
         },
-        "required": ["id", "type", "address", "createdAt"]
+        "required": [
+          "id",
+          "type",
+          "address",
+          "createdAt"
+        ]
       },
       "PaymentQuoteDto": {
         "type": "object",
@@ -2636,7 +2745,12 @@
             "description": "Expires at"
           },
           "status": {
-            "enum": ["active", "expired", "used", "failed"],
+            "enum": [
+              "active",
+              "expired",
+              "used",
+              "failed"
+            ],
             "type": "string",
             "description": "Status"
           },
@@ -2753,7 +2867,13 @@
           },
           "processedBy": {
             "nullable": true,
-            "enum": ["webhook", "frontend", "cron", "manual", "shout_webhook"],
+            "enum": [
+              "webhook",
+              "frontend",
+              "cron",
+              "manual",
+              "shout_webhook"
+            ],
             "type": "string",
             "description": "Who processed the transaction (webhook, frontend, cron)",
             "example": "webhook"
@@ -2766,7 +2886,13 @@
           },
           "txRiskSeverity": {
             "nullable": true,
-            "enum": ["CRITICAL_RISK", "HIGH_RISK", "MEDIUM_RISK", "LOW_RISK", "NO_RISK"],
+            "enum": [
+              "CRITICAL_RISK",
+              "HIGH_RISK",
+              "MEDIUM_RISK",
+              "LOW_RISK",
+              "NO_RISK"
+            ],
             "type": "string",
             "description": "Transaction risk severity label",
             "example": "LOW_RISK"
@@ -2828,7 +2954,10 @@
             "description": "Merchant logo URL"
           },
           "type": {
-            "enum": ["payment", "deposit"],
+            "enum": [
+              "payment",
+              "deposit"
+            ],
             "type": "string",
             "description": "Payment type"
           },
@@ -2857,11 +2986,20 @@
           },
           "currency": {
             "type": "string",
-            "enum": ["USD"],
+            "enum": [
+              "USD"
+            ],
             "description": "Currency of the payment"
           },
           "status": {
-            "enum": ["pending", "processing", "completed", "failed", "expired", "cancelled"],
+            "enum": [
+              "pending",
+              "processing",
+              "completed",
+              "failed",
+              "expired",
+              "cancelled"
+            ],
             "type": "string",
             "description": "Payment status"
           },
@@ -2935,13 +3073,19 @@
             "$ref": "#/components/schemas/PaginationMetaDto"
           }
         },
-        "required": ["data", "pagination"]
+        "required": [
+          "data",
+          "pagination"
+        ]
       },
       "CreatePaymentRequestDto": {
         "type": "object",
         "properties": {
           "type": {
-            "enum": ["payment", "deposit"],
+            "enum": [
+              "payment",
+              "deposit"
+            ],
             "type": "string",
             "description": "Type of the payment. \"payment\" requires a fixed amount; \"deposit\" accepts any amount sent by the customer.",
             "default": "payment"
@@ -2955,7 +3099,9 @@
           },
           "currency": {
             "type": "string",
-            "enum": ["USD"],
+            "enum": [
+              "USD"
+            ],
             "description": "The currency of the payment. Only USD is supported.",
             "example": "USD"
           },
@@ -2985,7 +3131,10 @@
             "example": "{\"cartId\":\"abc123\",\"promo\":\"SUMMER24\"}"
           }
         },
-        "required": ["currency", "orderId"]
+        "required": [
+          "currency",
+          "orderId"
+        ]
       },
       "CreatePaymentResponseDto": {
         "type": "object",
@@ -3014,7 +3163,12 @@
             ]
           }
         },
-        "required": ["paymentUrl", "secret", "paymentId", "payment"]
+        "required": [
+          "paymentUrl",
+          "secret",
+          "paymentId",
+          "payment"
+        ]
       },
       "PaymentDto": {
         "type": "object",
@@ -3039,7 +3193,10 @@
             "description": "Merchant logo URL"
           },
           "type": {
-            "enum": ["payment", "deposit"],
+            "enum": [
+              "payment",
+              "deposit"
+            ],
             "type": "string",
             "description": "Payment type"
           },
@@ -3068,11 +3225,20 @@
           },
           "currency": {
             "type": "string",
-            "enum": ["USD"],
+            "enum": [
+              "USD"
+            ],
             "description": "Currency of the payment"
           },
           "status": {
-            "enum": ["pending", "processing", "completed", "failed", "expired", "cancelled"],
+            "enum": [
+              "pending",
+              "processing",
+              "completed",
+              "failed",
+              "expired",
+              "cancelled"
+            ],
             "type": "string",
             "description": "Payment status"
           },
@@ -3137,12 +3303,22 @@
             "description": "Payment ID"
           },
           "status": {
-            "enum": ["pending", "processing", "completed", "failed", "expired", "cancelled"],
+            "enum": [
+              "pending",
+              "processing",
+              "completed",
+              "failed",
+              "expired",
+              "cancelled"
+            ],
             "type": "string",
             "description": "Payment status"
           }
         },
-        "required": ["id", "status"]
+        "required": [
+          "id",
+          "status"
+        ]
       },
       "CreateQuoteByContractDto": {
         "type": "object",
@@ -3272,7 +3448,10 @@
             "example": "0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb"
           },
           "transferType": {
-            "enum": ["refund", "offramp"],
+            "enum": [
+              "refund",
+              "offramp"
+            ],
             "type": "string"
           },
           "reason": {
@@ -3280,7 +3459,11 @@
             "nullable": true
           },
           "initiator": {
-            "enum": ["system", "admin", "cron"],
+            "enum": [
+              "system",
+              "admin",
+              "cron"
+            ],
             "type": "string"
           },
           "initiatorId": {
@@ -3310,7 +3493,13 @@
             "description": "Amount in token units (as string)"
           },
           "status": {
-            "enum": ["pending", "processing", "completed", "failed", "retrying"],
+            "enum": [
+              "pending",
+              "processing",
+              "completed",
+              "failed",
+              "retrying"
+            ],
             "type": "string"
           },
           "txHash": {
@@ -3388,13 +3577,19 @@
             "$ref": "#/components/schemas/PaginationMetaDto"
           }
         },
-        "required": ["data", "pagination"]
+        "required": [
+          "data",
+          "pagination"
+        ]
       },
       "ManualTransferRequestDto": {
         "type": "object",
         "properties": {
           "transferType": {
-            "enum": ["refund", "offramp"],
+            "enum": [
+              "refund",
+              "offramp"
+            ],
             "type": "string",
             "description": "Type of transfer",
             "example": "offramp"
@@ -3410,7 +3605,10 @@
             "example": "Customer requested refund"
           }
         },
-        "required": ["transferType", "reason"]
+        "required": [
+          "transferType",
+          "reason"
+        ]
       },
       "PaymentAttentionReasonItemDto": {
         "type": "object",
@@ -3432,7 +3630,10 @@
             "example": "Payment is older than the expiration window but not marked expired"
           }
         },
-        "required": ["reason", "description"]
+        "required": [
+          "reason",
+          "description"
+        ]
       },
       "PaymentAttentionItemDto": {
         "type": "object",
@@ -3453,7 +3654,10 @@
             ]
           }
         },
-        "required": ["reasons", "payment"]
+        "required": [
+          "reasons",
+          "payment"
+        ]
       },
       "PaginatedPaymentAttentionItemDtoResult": {
         "type": "object",
@@ -3468,7 +3672,10 @@
             "$ref": "#/components/schemas/PaginationMetaDto"
           }
         },
-        "required": ["data", "pagination"]
+        "required": [
+          "data",
+          "pagination"
+        ]
       },
       "TatumFungibleWebhookDto": {
         "type": "object",
@@ -3502,7 +3709,10 @@
           "subscriptionType": {
             "type": "string",
             "description": "The type of the transaction.",
-            "enum": ["INCOMING_NATIVE_TX", "INCOMING_FUNGIBLE_TX"],
+            "enum": [
+              "INCOMING_NATIVE_TX",
+              "INCOMING_FUNGIBLE_TX"
+            ],
             "example": "INCOMING_NATIVE_TX"
           },
           "blockNumber": {
@@ -3546,7 +3756,10 @@
             "example": "eip155:1"
           }
         },
-        "required": ["txHash", "chainId"]
+        "required": [
+          "txHash",
+          "chainId"
+        ]
       },
       "AdminAddressMonitoringTestDto": {
         "type": "object",
@@ -3563,7 +3776,10 @@
             "example": "eip155:1"
           }
         },
-        "required": ["address", "chainId"]
+        "required": [
+          "address",
+          "chainId"
+        ]
       },
       "AdminWalletMonitoringTestDto": {
         "type": "object",
@@ -3580,7 +3796,10 @@
             "example": "eip155:1"
           }
         },
-        "required": ["address", "chainId"]
+        "required": [
+          "address",
+          "chainId"
+        ]
       },
       "MerchantBeneficiaryDto": {
         "type": "object",
@@ -3592,7 +3811,10 @@
             "type": "string"
           },
           "beneficiaryType": {
-            "enum": ["individual", "corporate"],
+            "enum": [
+              "individual",
+              "corporate"
+            ],
             "type": "string"
           },
           "name": {
@@ -3649,7 +3871,12 @@
             "description": "Currency of the Shout fiat account the beneficiary is under"
           },
           "status": {
-            "enum": ["pending", "approved", "rejected", "deactivated"],
+            "enum": [
+              "pending",
+              "approved",
+              "rejected",
+              "deactivated"
+            ],
             "type": "string"
           },
           "createdAt": {
@@ -3703,13 +3930,21 @@
             "description": "ISO 3166-1 alpha-2 country code"
           }
         },
-        "required": ["streetLine1", "city", "postcode", "country"]
+        "required": [
+          "streetLine1",
+          "city",
+          "postcode",
+          "country"
+        ]
       },
       "CreateMerchantBeneficiaryDto": {
         "type": "object",
         "properties": {
           "beneficiaryType": {
-            "enum": ["individual", "corporate"],
+            "enum": [
+              "individual",
+              "corporate"
+            ],
             "type": "string",
             "description": "Beneficiary classification; controls which name fields are required"
           },
@@ -3811,11 +4046,17 @@
           },
           "currency": {
             "type": "string",
-            "enum": ["USD"],
+            "enum": [
+              "USD"
+            ],
             "description": "Currency of the withdrawal (defaults to USD)"
           }
         },
-        "required": ["amountInCents", "chainId", "recipientAddress"]
+        "required": [
+          "amountInCents",
+          "chainId",
+          "recipientAddress"
+        ]
       },
       "WithdrawalReceiptDto": {
         "type": "object",
@@ -3906,7 +4147,12 @@
           },
           "processedBy": {
             "nullable": true,
-            "enum": ["webhook", "frontend", "cron", "manual"],
+            "enum": [
+              "webhook",
+              "frontend",
+              "cron",
+              "manual"
+            ],
             "type": "string",
             "description": "Who processed the transaction"
           },
@@ -3960,13 +4206,21 @@
             "description": "Beneficiary address"
           },
           "status": {
-            "enum": ["pending", "processing", "completed", "failed", "cancelled"],
+            "enum": [
+              "pending",
+              "processing",
+              "completed",
+              "failed",
+              "cancelled"
+            ],
             "type": "string",
             "description": "Withdrawal status"
           },
           "currency": {
             "type": "string",
-            "enum": ["USD"],
+            "enum": [
+              "USD"
+            ],
             "description": "Currency of the withdrawal"
           },
           "orderId": {
@@ -4033,7 +4287,10 @@
             "$ref": "#/components/schemas/PaginationMetaDto"
           }
         },
-        "required": ["data", "pagination"]
+        "required": [
+          "data",
+          "pagination"
+        ]
       },
       "WithdrawalLimitsDto": {
         "type": "object",
@@ -4047,7 +4304,10 @@
             "description": "Maximum withdrawal amount in cents"
           }
         },
-        "required": ["minAmountInCents", "maxAmountInCents"]
+        "required": [
+          "minAmountInCents",
+          "maxAmountInCents"
+        ]
       },
       "WithdrawalConfigDto": {
         "type": "object",
@@ -4072,7 +4332,11 @@
             ]
           }
         },
-        "required": ["backendWallet", "supported", "limits"]
+        "required": [
+          "backendWallet",
+          "supported",
+          "limits"
+        ]
       },
       "MerchantWalletOnchainBalanceItemDto": {
         "type": "object",
@@ -4103,7 +4367,12 @@
             "example": "1.5"
           }
         },
-        "required": ["chainId", "token", "amountRaw", "amountFormatted"]
+        "required": [
+          "chainId",
+          "token",
+          "amountRaw",
+          "amountFormatted"
+        ]
       },
       "MerchantWalletOnchainBalancesResponseDto": {
         "type": "object",
@@ -4116,7 +4385,9 @@
             }
           }
         },
-        "required": ["balances"]
+        "required": [
+          "balances"
+        ]
       },
       "SummaryStatsDto": {
         "type": "object",
@@ -4270,13 +4541,24 @@
             "example": 123.45
           }
         },
-        "required": ["date", "count", "totalRevenueUsd"]
+        "required": [
+          "date",
+          "count",
+          "totalRevenueUsd"
+        ]
       },
       "StatusDistributionItemDto": {
         "type": "object",
         "properties": {
           "status": {
-            "enum": ["pending", "processing", "completed", "failed", "expired", "cancelled"],
+            "enum": [
+              "pending",
+              "processing",
+              "completed",
+              "failed",
+              "expired",
+              "cancelled"
+            ],
             "type": "string"
           },
           "count": {
@@ -4284,7 +4566,10 @@
             "example": 5
           }
         },
-        "required": ["status", "count"]
+        "required": [
+          "status",
+          "count"
+        ]
       },
       "ChainDistributionItemDto": {
         "type": "object",
@@ -4299,7 +4584,10 @@
             "example": 7
           }
         },
-        "required": ["chainId", "count"]
+        "required": [
+          "chainId",
+          "count"
+        ]
       },
       "TokenDistributionItemDto": {
         "type": "object",
@@ -4314,7 +4602,10 @@
             "example": 7
           }
         },
-        "required": ["symbol", "count"]
+        "required": [
+          "symbol",
+          "count"
+        ]
       },
       "DetailedAnalyticsDto": {
         "type": "object",
@@ -4381,7 +4672,9 @@
             "example": "7EcDhSYGxXyscszYAx35jpZjmUiW3FhtCTkMvM47mMEv"
           }
         },
-        "required": ["accountId"]
+        "required": [
+          "accountId"
+        ]
       },
       "PaginatedPaymentDtoResult": {
         "type": "object",
@@ -4396,7 +4689,10 @@
             "$ref": "#/components/schemas/PaginationMetaDto"
           }
         },
-        "required": ["data", "pagination"]
+        "required": [
+          "data",
+          "pagination"
+        ]
       },
       "AccountPaymentStatsDto": {
         "type": "object",
@@ -4412,7 +4708,10 @@
             "example": 1234.56
           }
         },
-        "required": ["numTransactions", "totalAmountUsd"]
+        "required": [
+          "numTransactions",
+          "totalAmountUsd"
+        ]
       },
       "DailyLimitInfoDto": {
         "type": "object",
@@ -4433,7 +4732,11 @@
             "description": "Remaining available spend today in cents (UTC)"
           }
         },
-        "required": ["limitCents", "usedCents", "remainingCents"]
+        "required": [
+          "limitCents",
+          "usedCents",
+          "remainingCents"
+        ]
       },
       "PreflightResponseDto": {
         "type": "object",
@@ -4449,7 +4752,9 @@
             "$ref": "#/components/schemas/DailyLimitInfoDto"
           }
         },
-        "required": ["allowed"]
+        "required": [
+          "allowed"
+        ]
       },
       "UpdateDailyLimitDto": {
         "type": "object",
@@ -4491,7 +4796,14 @@
             "type": "string"
           }
         },
-        "required": ["id", "accountId", "address", "type", "createdAt", "updatedAt"]
+        "required": [
+          "id",
+          "accountId",
+          "address",
+          "type",
+          "createdAt",
+          "updatedAt"
+        ]
       },
       "CreateAccountWalletDto": {
         "type": "object",
@@ -4509,7 +4821,10 @@
             "example": "Metamask"
           }
         },
-        "required": ["address", "type"]
+        "required": [
+          "address",
+          "type"
+        ]
       }
     }
   }

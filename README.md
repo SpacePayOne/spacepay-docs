@@ -26,7 +26,7 @@ yarn sync:chains   # refresh supported chains/tokens (local data/token-registry 
 yarn sync:openapi  # refresh filtered external OpenAPI from testnet
 ```
 
-Supported networks and tokens are maintained in `developer-docs/blockchain-concepts.mdx` only. Run `yarn sync:chains` (see `.cursor/skills/sync-supported-chains/SKILL.md`) after registry changes. Use `yarn sync:chains --source=api` once the public APIs expose the full enabled set.
+Supported networks and tokens are maintained in `developer-docs/supported-chains.mdx` only. Run `yarn sync:chains` (see `.cursor/skills/sync-supported-chains/SKILL.md`) after registry changes. Use `yarn sync:chains --source=api` once the public APIs expose the full enabled set.
 
 ## OpenAPI
 
