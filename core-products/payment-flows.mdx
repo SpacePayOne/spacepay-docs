@@ -1,6 +1,6 @@
 ---
-title: "Payment Flows"
-description: "Comprehensive guide to SpacePay payment processing, and off-ramping flows"
+title: 'Payment Flows'
+description: 'Comprehensive guide to SpacePay payment processing, and off-ramping flows'
 ---
 
 # Understanding Payment Processing
@@ -19,8 +19,7 @@ SpacePay handles the complete payment lifecycle from initiation to settlement, p
 </Step>
 
 <Step title="Payment Intent Creation">
-  SpacePay creates a payment intent with the specified amount, currency, and
-  customer details.
+  SpacePay creates a payment intent with the specified amount, currency, and customer details.
 </Step>
 
 <Step title="Customer Payment">
@@ -28,8 +27,7 @@ SpacePay handles the complete payment lifecycle from initiation to settlement, p
 </Step>
 
 <Step title="Confirmation Monitoring">
-  SpacePay monitors the blockchain for transaction confirmations and network
-  finality.
+  SpacePay monitors the blockchain for transaction confirmations and network finality.
 </Step>
 
 <Step title="Payment Completion">
@@ -104,23 +102,22 @@ Understanding payment states helps you provide better customer experience:
 </Accordion>
 
 <Accordion title="Processing">
-  Transaction is being processed on the blockchain. Waiting for network
-  confirmations.
+  Transaction is being processed on the blockchain. Waiting for network confirmations.
 </Accordion>
 
 <Accordion title="Completed">
-  Payment has been confirmed on the blockchain and is considered final. Funds
-  are available for settlement.
+  Payment has been confirmed on the blockchain and is considered final. Funds are available for
+  settlement.
 </Accordion>
 
 <Accordion title="Failed">
-  Payment failed due to network issues, insufficient funds, or other errors. No
-  funds were transferred.
+  Payment failed due to network issues, insufficient funds, or other errors. No funds were
+  transferred.
 </Accordion>
 
 <Accordion title="Expired">
-  Payment was not completed within the allowed time window and expired
-  automatically. Customer needs to initiate a new payment.
+  Payment was not completed within the allowed time window and expired automatically. Customer needs
+  to initiate a new payment.
 </Accordion>
 
 <Accordion title="Cancelled">
@@ -152,11 +149,7 @@ Now that you understand how SpacePay processes payments, explore these related t
   Detailed API documentation for all payment operations.
 </Card>
 
-<Card
-  title="SDK Integration"
-  icon="code"
-  href="/developer-docs/sdks-integration"
->
+<Card title="SDK Integration" icon="code" href="/developer-docs/sdk-integration">
   Use our SDKs for easier integration in your preferred language.
 </Card>
 

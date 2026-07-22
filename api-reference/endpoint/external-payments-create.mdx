@@ -1,7 +1,7 @@
 ---
-title: "Create payment or deposit"
-description: "Create a fixed-amount payment or a flexible deposit using secret key authentication"
-openapi: "POST /v1/external/secretkey-auth/payments"
+title: 'Create payment or deposit'
+description: 'Create a fixed-amount payment or a flexible deposit using secret key authentication'
+openapi: 'POST /v1/external/secretkey-auth/payments'
 ---
 
 # Create payment or deposit
@@ -9,8 +9,8 @@ openapi: "POST /v1/external/secretkey-auth/payments"
 Creates a **payment** (fixed fiat amount) or a **deposit** (customer chooses how much crypto to send). Both return a hosted flow URL, a `paymentId`, and a **payment secret**`.
 
 <Note>
-  **Deposits** require the merchant to have deposits enabled. If deposits are
-  disabled for your account, contact SpacePay support team.
+  **Deposits** require the merchant to have deposits enabled. If deposits are disabled for your
+  account, contact SpacePay support team.
 </Note>
 
 <RequestExample>
@@ -91,15 +91,14 @@ curl -X POST https://api.spacepay.solutions/v1/external/secretkey-auth/payments 
 ## Request parameters
 
 <ParamField body="type" type="string" default="payment">
-  `payment` (default) or `deposit`. For `payment`, you must send `amount`. For
-  `deposit`, `amount` is optional; the customer can send a variable amount
-  on-chain.
+  `payment` (default) or `deposit`. For `payment`, you must send `amount`. For `deposit`, `amount`
+  is optional; the customer can send a variable amount on-chain.
 </ParamField>
 
 <ParamField body="amount" type="number">
-  Amount in cents (for example, 250 = $2.50). **Required** when `type` is
-  `payment` or omitted (defaults to `payment`). **Optional** when `type` is
-  `deposit`. Minimum: **250** cents, maximum: 100000000 cents.
+  Amount in cents (for example, 250 = $2.50). **Required** when `type` is `payment` or omitted
+  (defaults to `payment`). **Optional** when `type` is `deposit`. Minimum: **250** cents, maximum:
+  100000000 cents.
 </ParamField>
 
 <ParamField body="currency" type="string" required>
@@ -115,8 +114,7 @@ curl -X POST https://api.spacepay.solutions/v1/external/secretkey-auth/payments 
 </ParamField>
 
 <ParamField body="customMetadata" type="string">
-  Optional metadata as a JSON string (passed through to redirects as
-  configured).
+  Optional metadata as a JSON string (passed through to redirects as configured).
 </ParamField>
 
 ## Response fields
@@ -192,8 +190,8 @@ Complete payment object including `type` (`payment` \| `deposit`), status, quote
 </ResponseField>
 
 <ResponseField name="secret" type="string">
-  **Payment secret** — use with `X-SpacePay-Payment-Secret` on payment-secret
-  endpoints (never treat this like your merchant secret key).
+  **Payment secret** — use with `X-SpacePay-Payment-Secret` on payment-secret endpoints (never treat
+  this like your merchant secret key).
 </ResponseField>
 
 ## Error responses

@@ -1,7 +1,7 @@
 ---
-title: "Get Withdrawal"
-description: "Retrieve withdrawal details and current status"
-openapi: "GET /v1/external/secretkey-auth/withdrawals/:withdrawalId"
+title: 'Get Withdrawal'
+description: 'Retrieve withdrawal details and current status'
+openapi: 'GET /v1/external/secretkey-auth/withdrawals/:withdrawalId'
 ---
 
 # Get Withdrawal
@@ -96,10 +96,10 @@ curl -X GET \
 </ResponseField>
 
 <ResponseField name="status" type="string" required>
-  Current withdrawal status. Possible values: - `pending`: Withdrawal created,
-  waiting to be processed - `processing`: Withdrawal is being submitted on-chain
-  - `completed`: Withdrawal confirmed and settled - `failed`: Withdrawal failed
-  (see `errorMessage`) - `cancelled`: Withdrawal cancelled
+  Current withdrawal status. Possible values: - `pending`: Withdrawal created, waiting to be
+  processed - `processing`: Withdrawal is being submitted on-chain - `completed`: Withdrawal
+  confirmed and settled - `failed`: Withdrawal failed (see `errorMessage`) - `cancelled`: Withdrawal
+  cancelled
 </ResponseField>
 
 <ResponseField name="currency" type="string" required>
@@ -171,8 +171,7 @@ curl -X GET \
 </ResponseField>
 
 <ResponseField name="processedBy" type="string">
-  Internal processor that submitted the transaction (`webhook`, `frontend`,
-  `cron`, or `manual`).
+  Internal processor that submitted the transaction (`webhook`, `frontend`, `cron`, or `manual`).
 </ResponseField>
 
   <ResponseField name="createdAt" type="string">

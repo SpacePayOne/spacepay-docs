@@ -1,6 +1,6 @@
 ---
-title: "API Reference"
-description: "Complete SpacePay API documentation with authentication, endpoints, and examples"
+title: 'API Reference'
+description: 'Complete SpacePay API documentation with authentication, endpoints, and examples'
 ---
 
 # SpacePay API Reference
@@ -35,15 +35,15 @@ All API requests require authentication using your secret key with the `X-SpaceP
 
 ```javascript
 const headers = {
-  "X-SpacePay-Secret-Key": "sk_test_your_secret_key",
-  "Content-Type": "application/json",
-  "Idempotency-Key": "unique-key-for-request", // Optional but recommended
+  'X-SpacePay-Secret-Key': 'sk_test_your_secret_key',
+  'Content-Type': 'application/json',
+  'Idempotency-Key': 'unique-key-for-request', // Optional but recommended
 };
 ```
 
 <Warning>
-  Never expose your API keys in client-side code or public repositories. Use
-  environment variables and server-side implementations only.
+  Never expose your API keys in client-side code or public repositories. Use environment variables
+  and server-side implementations only.
 </Warning>
 
 <Card title="Learn More" icon="book" href="/developer-docs/api-integration">
@@ -106,11 +106,7 @@ SpacePay payments progress through the following statuses:
 </Card>
 </CardGroup>
 
-<Card
-  title="Learn More"
-  icon="exchange-alt"
-  href="/core-products/payment-flows"
->
+<Card title="Learn More" icon="exchange-alt" href="/core-products/payment-flows">
   Detailed payment processing flow and status explanations
 </Card>
 
@@ -124,9 +120,8 @@ SpacePay sends webhooks for the following events:
 - `withdrawal.updated`: Withdrawal status has been updated (confirmed, failed, expired, etc.)
 
 <Note>
-  **Webhook Secret**: Each webhook endpoint gets its own unique secret key for
-  signature verification. Set up webhooks in your admin dashboard under Settings
-  → Developers → Webhooks.
+  **Webhook Secret**: Each webhook endpoint gets its own unique secret key for signature
+  verification. Set up webhooks in your admin dashboard under Settings → Developers → Webhooks.
 </Note>
 
 <Card title="Learn More" icon="webhook" href="/developer-docs/webhooks">
@@ -143,19 +138,15 @@ try {
 
   if (!response.ok) {
     const error = await response.json();
-    console.error("API Error:", error.message);
-    console.error("Error Code:", error.code);
+    console.error('API Error:', error.message);
+    console.error('Error Code:', error.code);
   }
 } catch (error) {
-  console.error("Network Error:", error.message);
+  console.error('Network Error:', error.message);
 }
 ```
 
-<Card
-  title="Learn More"
-  icon="exclamation-triangle"
-  href="/developer-docs/api-integration"
->
+<Card title="Learn More" icon="exclamation-triangle" href="/developer-docs/api-integration">
   Detailed error handling examples and troubleshooting guide
 </Card>
 
@@ -166,11 +157,7 @@ try {
   Use our official SDK for easier integration with built-in functionality.
 </Card>
 
-<Card
-  title="API Integration"
-  icon="terminal"
-  href="/developer-docs/api-integration"
->
+<Card title="API Integration" icon="terminal" href="/developer-docs/api-integration">
   Integrate directly with SpacePay's REST APIs for full control.
 </Card>
 

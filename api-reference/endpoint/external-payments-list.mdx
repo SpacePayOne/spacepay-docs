@@ -1,7 +1,7 @@
 ---
-title: "List payments"
+title: 'List payments'
 description: "List and filter your merchant's payments with pagination, using secret key authentication"
-openapi: "GET /v1/external/secretkey-auth/payments"
+openapi: 'GET /v1/external/secretkey-auth/payments'
 ---
 
 # List payments
@@ -88,13 +88,13 @@ Returns a paginated list of payments for the merchant tied to your secret key. Y
 </ParamField>
 
 <ParamField query="status" type="string">
-  Filter by payment status. Possible values: `pending`, `processing`,
-  `completed`, `failed`, `expired`, `cancelled`.
+  Filter by payment status. Possible values: `pending`, `processing`, `completed`, `failed`,
+  `expired`, `cancelled`.
 </ParamField>
 
 <ParamField query="search" type="string">
-  Free-text search across payment ID, deposit wallet address, merchant short
-  name, receipt transaction hash, and receipt sender address.
+  Free-text search across payment ID, deposit wallet address, merchant short name, receipt
+  transaction hash, and receipt sender address.
 </ParamField>
 
 <ParamField query="sortBy" type="string" default="createdAt">
@@ -144,8 +144,7 @@ Returns a paginated list of payments for the merchant tied to your secret key. Y
 </ResponseField>
 
 <ResponseField name="status" type="string">
-  Current payment status: `pending`, `processing`, `completed`, `failed`,
-  `expired`, or `cancelled`.
+  Current payment status: `pending`, `processing`, `completed`, `failed`, `expired`, or `cancelled`.
 </ResponseField>
 
   <ResponseField name="depositAddress" type="object">

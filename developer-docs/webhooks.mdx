@@ -1,6 +1,6 @@
 ---
-title: "Webhooks"
-description: "Real-time payment notifications with secure signature verification"
+title: 'Webhooks'
+description: 'Real-time payment notifications with secure signature verification'
 ---
 
 # Webhooks
@@ -8,9 +8,8 @@ description: "Real-time payment notifications with secure signature verification
 Set up webhooks to receive real-time payment notifications. SpacePay signs webhooks using HMAC-SHA256 with the format `timestamp + "." + rawBody`.
 
 <Note>
-  **Webhook Setup**: Webhooks are set up in your admin dashboard under Settings
-  → Developers → Webhooks. Each webhook endpoint gets its own unique secret key
-  for signature verification.
+  **Webhook Setup**: Webhooks are set up in your admin dashboard under Settings → Developers →
+  Webhooks. Each webhook endpoint gets its own unique secret key for signature verification.
 </Note>
 
 ## Webhook Event Types
@@ -25,11 +24,10 @@ SpacePay sends the following webhook events:
 ## Webhook Payload Structure
 
 <Note>
-  Webhook payloads contain a minimal snapshot of the resource. If you need full
-  details — such as quotes, deposit address, or receipt — call [Get
+  Webhook payloads contain a minimal snapshot of the resource. If you need full details — such as
+  quotes, deposit address, or receipt — call [Get
   Payment](/api-reference/endpoint/external-payments-get) or [Get
-  Withdrawal](/api-reference/endpoint/external-withdrawals-get) using the `id`
-  from the payload.
+  Withdrawal](/api-reference/endpoint/external-withdrawals-get) using the `id` from the payload.
 </Note>
 
 <Tabs>
@@ -88,26 +86,26 @@ SpacePay includes these headers with each webhook:
 ## Signature Verification
 
 ```javascript
-import crypto from "crypto";
+import crypto from 'crypto';
 
 function verifyWebhookSignature(payload, signature, secret, timestamp) {
   // Create the signed payload: timestamp + "." + rawBody
   const signedPayload = Buffer.concat([
     Buffer.from(timestamp),
-    Buffer.from("."),
-    Buffer.from(payload, "utf8"),
+    Buffer.from('.'),
+    Buffer.from(payload, 'utf8'),
   ]);
 
   // Generate HMAC-SHA256 signature
   const expectedSignature = crypto
-    .createHmac("sha256", Buffer.from(secret, "utf8"))
+    .createHmac('sha256', Buffer.from(secret, 'utf8'))
     .update(signedPayload)
-    .digest("hex");
+    .digest('hex');
 
   // Compare signatures using constant-time comparison
   return crypto.timingSafeEqual(
-    Buffer.from(signature, "hex"),
-    Buffer.from(expectedSignature, "hex"),
+    Buffer.from(signature, 'hex'),
+    Buffer.from(expectedSignature, 'hex')
   );
 }
 ```
@@ -115,15 +113,15 @@ function verifyWebhookSignature(payload, signature, secret, timestamp) {
 ## Webhook Handler Implementation
 
 ```javascript
-app.post("/webhooks/spacepay", (req, res) => {
-  const signature = req.headers["x-spacepay-signature"];
-  const timestamp = req.headers["x-spacepay-timestamp"];
+app.post('/webhooks/spacepay', (req, res) => {
+  const signature = req.headers['x-spacepay-signature'];
+  const timestamp = req.headers['x-spacepay-timestamp'];
   const payload = JSON.stringify(req.body);
   const webhookSecret = process.env.SPACEPAY_WEBHOOK_SECRET;
 
   // Verify signature
   if (!verifyWebhookSignature(payload, signature, webhookSecret, timestamp)) {
-    return res.status(400).json({ error: "Invalid signature" });
+    return res.status(400).json({ error: 'Invalid signature' });
   }
 
   // Handle the event
@@ -131,17 +129,13 @@ app.post("/webhooks/spacepay", (req, res) => {
   console.log(`Received event: ${event.type}`);
 
   switch (event.type) {
-    case "payment.created":
+    case 'payment.created':
       console.log(`Payment created: ${event.data.payment.id}`);
       console.log(`Order ID: ${event.data.payment.orderId}`);
-      console.log(
-        `Amount: ${event.data.payment.amountInCents} ${event.data.payment.currency}`,
-      );
-      console.log(
-        `Deposit Address: ${event.data.payment.depositAddress.address}`,
-      );
+      console.log(`Amount: ${event.data.payment.amountInCents} ${event.data.payment.currency}`);
+      console.log(`Deposit Address: ${event.data.payment.depositAddress.address}`);
       break;
-    case "payment.updated":
+    case 'payment.updated':
       console.log(`Payment updated: ${event.data.payment.id}`);
       console.log(`New status: ${event.data.payment.status}`);
       break;
@@ -200,11 +194,7 @@ app.post("/webhooks/spacepay", (req, res) => {
   Use our official SDK for easier integration.
 </Card>
 
-<Card
-  title="API Integration"
-  icon="terminal"
-  href="/developer-docs/api-integration"
->
+<Card title="API Integration" icon="terminal" href="/developer-docs/api-integration">
   Integrate directly with SpacePay's REST APIs.
 </Card>
 

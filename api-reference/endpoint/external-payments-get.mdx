@@ -1,7 +1,7 @@
 ---
-title: "Get Payment"
-description: "Retrieve payment details and current status"
-openapi: "GET /v1/external/secretkey-auth/payments/:paymentId"
+title: 'Get Payment'
+description: 'Retrieve payment details and current status'
+openapi: 'GET /v1/external/secretkey-auth/payments/:paymentId'
 ---
 
 # Get Payment
@@ -118,10 +118,10 @@ Retrieve full payment details by id, including `type` (`payment` or `deposit`), 
 </ResponseField>
 
 <ResponseField name="status" type="string" required>
-  Current payment status. Possible values: - `pending`: Payment created, waiting
-  for customer payment - `processing`: Payment received, waiting for
-  confirmations - `completed`: Payment confirmed and complete - `failed`:
-  Payment failed - `expired`: Payment expired - `cancelled`: Payment cancelled
+  Current payment status. Possible values: - `pending`: Payment created, waiting for customer
+  payment - `processing`: Payment received, waiting for confirmations - `completed`: Payment
+  confirmed and complete - `failed`: Payment failed - `expired`: Payment expired - `cancelled`:
+  Payment cancelled
 </ResponseField>
 
 <ResponseField name="depositAddress" type="object" required>

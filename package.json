@@ -1,0 +1,24 @@
+{
+  "name": "@spacepay/docs",
+  "version": "0.0.1",
+  "private": true,
+  "description": "SpacePay One public documentation (Mintlify).",
+  "packageManager": "yarn@1.22.22",
+  "engines": {
+    "node": ">=24"
+  },
+  "scripts": {
+    "dev": "mint dev",
+    "format": "prettier \"**/*.{css,js,json,md,mdx,ts,tsx}\" --write",
+    "format:check": "prettier \"**/*.{css,js,json,md,mdx,ts,tsx}\" --check",
+    "validate": "mint validate",
+    "broken-links": "mint broken-links"
+  },
+  "devDependencies": {
+    "@mintlify/prettier-config": "^1.0.6",
+    "@trivago/prettier-plugin-sort-imports": "^6.0.2",
+    "mint": "^4.2.728",
+    "prettier": "^3.8.3",
+    "prettier-plugin-tailwindcss": "^0.8.0"
+  }
+}

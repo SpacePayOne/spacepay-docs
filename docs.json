@@ -19,17 +19,11 @@
           },
           {
             "group": "Getting Started",
-            "pages": [
-              "getting-started/merchant-onboarding",
-              "getting-started/accept-payments"
-            ]
+            "pages": ["getting-started/merchant-onboarding", "getting-started/accept-payments"]
           },
           {
             "group": "Core Products",
-            "pages": [
-              "core-products/merchant-dashboard",
-              "core-products/payment-flows"
-            ]
+            "pages": ["core-products/merchant-dashboard", "core-products/payment-flows"]
           },
           {
             "group": "Developer Docs",
@@ -109,10 +103,20 @@
       }
     ]
   },
+  "api": {
+    "openapi": "https://api.spacepay.solutions/docs/swagger.json",
+    "playground": {
+      "display": "interactive"
+    },
+    "mdx": {
+      "server": "https://api.spacepay.solutions"
+    }
+  },
   "contextual": {
     "options": [
       "copy",
       "view",
+      "download-spec",
       "chatgpt",
       "claude",
       "perplexity",
