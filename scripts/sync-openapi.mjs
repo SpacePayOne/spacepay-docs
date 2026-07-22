@@ -1,13 +1,13 @@
 #!/usr/bin/env node
 /**
  * Refresh api-reference/openapi.json with merchant-facing (/v1/external/*) paths
- * from the staging OpenAPI document.
+ * from the testnet OpenAPI document.
  *
  * Usage:
  *   yarn sync:openapi
  *
  * Env:
- *   OPENAPI_SOURCE_URL  default https://api.app-testnet.spacepay.solutions/docs/swagger.json
+ *   OPENAPI_SOURCE_URL  default https://api-testnet.spacepay.solutions/docs/swagger.json
  */
 
 import fs from 'node:fs'
@@ -19,7 +19,12 @@ const ROOT = path.resolve(__dirname, '..')
 const DEST = path.join(ROOT, 'api-reference/openapi.json')
 const SOURCE_URL =
   process.env.OPENAPI_SOURCE_URL ||
-  'https://api.app-testnet.spacepay.solutions/docs/swagger.json'
+  'https://api-testnet.spacepay.solutions/docs/swagger.json'
+
+const DEFAULT_SERVERS = [
+  { url: 'https://api.spacepay.solutions', description: 'Mainnet' },
+  { url: 'https://api-testnet.spacepay.solutions', description: 'Testnet' },
+]
 
 async function main() {
   const res = await fetch(SOURCE_URL)
@@ -53,15 +58,8 @@ async function main() {
         src.info?.description || 'Merchant-facing SpacePay API endpoints.',
       version: src.info?.version || '1.0',
     },
-    servers: src.servers?.length
-      ? src.servers
-      : [
-          { url: 'https://api.spacepay.solutions', description: 'Mainnet' },
-          {
-            url: 'https://api.app-testnet.spacepay.solutions',
-            description: 'Testnet',
-          },
-        ],
+    // Always publish consumer base URLs (source swagger often has empty servers).
+    servers: DEFAULT_SERVERS,
     tags,
     paths,
     components: src.components || {},

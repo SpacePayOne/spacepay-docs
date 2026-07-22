@@ -59,7 +59,12 @@
             "pages": [
               "POST /v1/external/secretkey-auth/payments",
               "GET /v1/external/secretkey-auth/payments",
-              "GET /v1/external/secretkey-auth/payments/{paymentId}"
+              "GET /v1/external/secretkey-auth/payments/{paymentId}",
+              "GET /v1/external/payment-secret-auth/payments/{paymentId}",
+              "GET /v1/external/payment-secret-auth/payments/{paymentId}/status",
+              "GET /v1/external/payment-secret-auth/payments/{paymentId}/quotes",
+              "POST /v1/external/payment-secret-auth/payments/{paymentId}/quotes",
+              "POST /v1/external/payment-secret-auth/payments/{paymentId}/refresh-status"
             ]
           },
           {
@@ -68,7 +73,18 @@
             "pages": [
               "POST /v1/external/secretkey-auth/withdrawals",
               "GET /v1/external/secretkey-auth/withdrawals",
-              "GET /v1/external/secretkey-auth/withdrawals/{withdrawalId}"
+              "GET /v1/external/secretkey-auth/withdrawals/{withdrawalId}",
+              "GET /v1/external/secretkey-auth/wallet/balances"
+            ]
+          },
+          {
+            "group": "Token registry",
+            "openapi": "api-reference/openapi.json",
+            "pages": [
+              "GET /v1/external/chains",
+              "GET /v1/external/chains/{chainId}",
+              "GET /v1/external/tokens",
+              "GET /v1/external/tokens/{tokenId}"
             ]
           }
         ]
@@ -110,8 +126,8 @@
     "playground": {
       "display": "interactive"
     },
-    "mdx": {
-      "server": "https://api.spacepay.solutions"
+    "examples": {
+      "prefill": true
     }
   },
   "contextual": {

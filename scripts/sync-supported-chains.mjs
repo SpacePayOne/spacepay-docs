@@ -38,7 +38,7 @@ const DEFAULT_TOKENS_JSON = path.join(
 const MAINNET_API_BASE =
   process.env.MAINNET_API_BASE || 'https://api.spacepay.solutions'
 const TESTNET_API_BASE =
-  process.env.TESTNET_API_BASE || 'https://api.app-testnet.spacepay.solutions'
+  process.env.TESTNET_API_BASE || 'https://api-testnet.spacepay.solutions'
 
 function parseSource() {
   const arg = process.argv.find((a) => a.startsWith('--source='))

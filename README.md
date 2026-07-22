@@ -23,16 +23,16 @@ yarn format:check  # CI check
 yarn validate      # Mintlify build
 yarn broken-links  # internal link check
 yarn sync:chains   # refresh supported chains/tokens (local data/token-registry dump by default)
-yarn sync:openapi  # refresh filtered external OpenAPI from staging
+yarn sync:openapi  # refresh filtered external OpenAPI from testnet
 ```
 
 Supported networks and tokens are maintained in `developer-docs/blockchain-concepts.mdx` only. Run `yarn sync:chains` (see `.cursor/skills/sync-supported-chains/SKILL.md`) after registry changes. Use `yarn sync:chains --source=api` once the public APIs expose the full enabled set.
 
 ## OpenAPI
 
-API reference pages are generated from `api-reference/openapi.json` (merchant-facing `/v1/external/*` endpoints only) with Mintlify’s interactive playground — same pattern as AlphaGrid. The sidebar groups them under **Payments & Deposits** and **Withdrawals**.
+API reference pages are generated from `api-reference/openapi.json` (merchant-facing `/v1/external/*` endpoints only) with Mintlify’s interactive playground — same pattern as AlphaGrid. The sidebar groups them under **Payments & Deposits**, **Withdrawals**, and **Token registry**.
 
-Refresh the filtered spec from staging:
+Refresh the filtered spec from testnet:
 
 ```bash
 yarn sync:openapi

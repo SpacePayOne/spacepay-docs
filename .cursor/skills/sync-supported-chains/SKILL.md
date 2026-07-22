@@ -28,7 +28,7 @@ Optional env:
 
 - `CHAINS_JSON` / `TOKENS_JSON` — override local file paths
 - `MAINNET_API_BASE` (default `https://api.spacepay.solutions`)
-- `TESTNET_API_BASE` (default `https://api.app-testnet.spacepay.solutions`)
+- `TESTNET_API_BASE` (default `https://api-testnet.spacepay.solutions`)
 
 ## Refresh workflow
 
