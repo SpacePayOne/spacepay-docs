@@ -12,7 +12,9 @@
     "format": "prettier \"**/*.{css,js,json,md,mdx,ts,tsx}\" --write",
     "format:check": "prettier \"**/*.{css,js,json,md,mdx,ts,tsx}\" --check",
     "validate": "mint validate",
-    "broken-links": "mint broken-links"
+    "broken-links": "mint broken-links",
+    "sync:chains": "node scripts/sync-supported-chains.mjs",
+    "sync:openapi": "node scripts/sync-openapi.mjs"
   },
   "devDependencies": {
     "@mintlify/prettier-config": "^1.0.6",

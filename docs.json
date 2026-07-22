@@ -55,18 +55,20 @@
           },
           {
             "group": "Payments & Deposits",
+            "openapi": "api-reference/openapi.json",
             "pages": [
-              "api-reference/endpoint/external-payments-create",
-              "api-reference/endpoint/external-payments-list",
-              "api-reference/endpoint/external-payments-get"
+              "POST /v1/external/secretkey-auth/payments",
+              "GET /v1/external/secretkey-auth/payments",
+              "GET /v1/external/secretkey-auth/payments/{paymentId}"
             ]
           },
           {
             "group": "Withdrawals",
+            "openapi": "api-reference/openapi.json",
             "pages": [
-              "api-reference/endpoint/external-withdrawals-create",
-              "api-reference/endpoint/external-withdrawals-list",
-              "api-reference/endpoint/external-withdrawals-get"
+              "POST /v1/external/secretkey-auth/withdrawals",
+              "GET /v1/external/secretkey-auth/withdrawals",
+              "GET /v1/external/secretkey-auth/withdrawals/{withdrawalId}"
             ]
           }
         ]
@@ -104,7 +106,7 @@
     ]
   },
   "api": {
-    "openapi": "https://api.spacepay.solutions/docs/swagger.json",
+    "openapi": "api-reference/openapi.json",
     "playground": {
       "display": "interactive"
     },

@@ -9,7 +9,7 @@ For maximum control, integrate directly with SpacePay's REST APIs to build your 
 
 ## Authentication
 
-**Merchant secret key** (`X-SpacePay-Secret-Key`): use on your server for [creating payments or deposits](/api-reference/endpoint/external-payments-create), [reading a payment by id](/api-reference/endpoint/external-payments-get), and [withdrawals](/api-reference/endpoint/external-withdrawals-create).
+**Merchant secret key** (`X-SpacePay-Secret-Key`): use on your server for creating payments or deposits, reading a payment by id, and withdrawals. See the interactive endpoints under **API reference → Payments & Deposits / Withdrawals**.
 
 **Payment secret** (`X-SpacePay-Payment-Secret`): returned in the create-payment response as `secret`. Use it for customer-scoped routes under `/v1/external/payment-secret-auth/payments/...` (status, quotes, refresh).
 
@@ -71,7 +71,7 @@ const { paymentId, secret, paymentUrl } = await response.json();
 
 ## List payments (merchant secret)
 
-[`GET /v1/external/secretkey-auth/payments`](/api-reference/endpoint/external-payments-list) supports optional query params: `type`, `status`, `search`, `sortBy`, `sortOrder`, `limit`, and `offset`.
+`GET /v1/external/secretkey-auth/payments` supports optional query params: `type`, `status`, `search`, `sortBy`, `sortOrder`, `limit`, and `offset`. See **API reference → Payments & Deposits / Withdrawals**.
 
 ```javascript
 const params = new URLSearchParams({

@@ -1,0 +1,172 @@
+[
+  {
+    "chain_id": "eip155:84532",
+    "name": "Base Sepolia",
+    "native_symbol": "ETH",
+    "native_decimals": 18,
+    "confirmations": 10,
+    "is_enabled": false,
+    "is_testnet": true,
+    "shout_blockchain_id": "BASECHAIN_SEPOLIA"
+  },
+  {
+    "chain_id": "eip155:11155111",
+    "name": "Ethereum Sepolia",
+    "native_symbol": "ETH",
+    "native_decimals": 18,
+    "confirmations": 12,
+    "is_enabled": false,
+    "is_testnet": true,
+    "shout_blockchain_id": "ETHEREUM_SEPOLIA"
+  },
+  {
+    "chain_id": "eip155:42161",
+    "name": "Arbitrum",
+    "native_symbol": "ETH",
+    "native_decimals": 18,
+    "confirmations": 12,
+    "is_enabled": false,
+    "is_testnet": false,
+    "shout_blockchain_id": "ARBITRUM"
+  },
+  {
+    "chain_id": "eip155:10",
+    "name": "Optimism",
+    "native_symbol": "ETH",
+    "native_decimals": 18,
+    "confirmations": 12,
+    "is_enabled": false,
+    "is_testnet": false,
+    "shout_blockchain_id": "OPTIMISM"
+  },
+  {
+    "chain_id": "eip155:56",
+    "name": "Binance Smart Chain",
+    "native_symbol": "BNB",
+    "native_decimals": 18,
+    "confirmations": 15,
+    "is_enabled": false,
+    "is_testnet": false,
+    "shout_blockchain_id": "BNB_SMART_CHAIN"
+  },
+  {
+    "chain_id": "eip155:137",
+    "name": "Polygon",
+    "native_symbol": "POL",
+    "native_decimals": 18,
+    "confirmations": 256,
+    "is_enabled": false,
+    "is_testnet": false,
+    "shout_blockchain_id": "POLYGON"
+  },
+  {
+    "chain_id": "eip155:43114",
+    "name": "Avalanche",
+    "native_symbol": "AVAX",
+    "native_decimals": 18,
+    "confirmations": 6,
+    "is_enabled": false,
+    "is_testnet": false,
+    "shout_blockchain_id": "AVALANCHE"
+  },
+  {
+    "chain_id": "bip122:000000000019d6689c085ae165831e93",
+    "name": "Bitcoin",
+    "native_symbol": "BTC",
+    "native_decimals": 8,
+    "confirmations": 3,
+    "is_enabled": false,
+    "is_testnet": false,
+    "shout_blockchain_id": "BTC"
+  },
+  {
+    "chain_id": "tron:0x2b6653dc",
+    "name": "Tron",
+    "native_symbol": "TRX",
+    "native_decimals": 6,
+    "confirmations": 19,
+    "is_enabled": false,
+    "is_testnet": false,
+    "shout_blockchain_id": "TRON"
+  },
+  {
+    "chain_id": "solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp",
+    "name": "Solana",
+    "native_symbol": "SOL",
+    "native_decimals": 9,
+    "confirmations": 32,
+    "is_enabled": false,
+    "is_testnet": false,
+    "shout_blockchain_id": "SOL"
+  },
+  {
+    "chain_id": "tvm:-239",
+    "name": "TON",
+    "native_symbol": "TON",
+    "native_decimals": 9,
+    "confirmations": 5,
+    "is_enabled": false,
+    "is_testnet": false,
+    "shout_blockchain_id": "TON"
+  },
+  {
+    "chain_id": "bip122:12a765e31ffd4059bada1e25190f6e98",
+    "name": "Litecoin",
+    "native_symbol": "LTC",
+    "native_decimals": 8,
+    "confirmations": 6,
+    "is_enabled": false,
+    "is_testnet": false,
+    "shout_blockchain_id": "LTC"
+  },
+  {
+    "chain_id": "bip122:000000000000000000651ef99cb9fcbe",
+    "name": "Bitcoin Cash",
+    "native_symbol": "BCH",
+    "native_decimals": 8,
+    "confirmations": 15,
+    "is_enabled": false,
+    "is_testnet": false,
+    "shout_blockchain_id": "BCH"
+  },
+  {
+    "chain_id": "bip122:1a91e3dace36e2be3bf030a65679fe82",
+    "name": "Dogecoin",
+    "native_symbol": "DOGE",
+    "native_decimals": 8,
+    "confirmations": 40,
+    "is_enabled": false,
+    "is_testnet": false,
+    "shout_blockchain_id": "DOGE"
+  },
+  {
+    "chain_id": "xrpl:0",
+    "name": "XRP",
+    "native_symbol": "XRP",
+    "native_decimals": 6,
+    "confirmations": 1,
+    "is_enabled": false,
+    "is_testnet": false,
+    "shout_blockchain_id": "XRP"
+  },
+  {
+    "chain_id": "eip155:1",
+    "name": "Ethereum",
+    "native_symbol": "ETH",
+    "native_decimals": 18,
+    "confirmations": 12,
+    "is_enabled": true,
+    "is_testnet": false,
+    "shout_blockchain_id": "ETHEREUM"
+  },
+  {
+    "chain_id": "eip155:8453",
+    "name": "Base",
+    "native_symbol": "ETH",
+    "native_decimals": 18,
+    "confirmations": 10,
+    "is_enabled": true,
+    "is_testnet": false,
+    "shout_blockchain_id": "BASECHAIN"
+  }
+]

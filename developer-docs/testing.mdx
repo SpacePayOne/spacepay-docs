@@ -13,23 +13,23 @@ SpacePay offers two separate environments for development and production:
 
 <CardGroup cols={2}>
 <Card title="Testnet Environment" icon="flask">
-  **Networks**: Base Sepolia, Ethereum Sepolia
-  
   **Use for**: Development and testing
   
   **API Keys**: `pk_test_...`, `sk_test_...`
   
   **Base URL**: `https://api-testnet.spacepay.solutions`
+  
+  Supported testnet networks are listed in [Blockchain Concepts](/developer-docs/blockchain-concepts).
 </Card>
 
 <Card title="Mainnet Environment" icon="rocket">
-  **Networks**: Base, Ethereum, Polygon, BSC, Avalanche
-  
   **Use for**: Production with real tokens
   
   **API Keys**: `pk_...`, `sk_...`
   
   **Base URL**: `https://api.spacepay.solutions`
+  
+  Supported mainnet networks and assets are listed in [Blockchain Concepts](/developer-docs/blockchain-concepts).
 </Card>
 </CardGroup>
 
@@ -90,19 +90,7 @@ SpacePay offers two separate environments for development and production:
 
 ### Testnet Tokens
 
-<AccordionGroup>
-<Accordion title="Ethereum Sepolia Testnet (Chain ID: 11155111)">
-  - **ETH**: Native token (`0x0000000000000000000000000000000000000000`)
-  - **USDC**: `0xcae5e5b4a5dd769b021f9f93257b44b0742f77d3`
-  - **USDT**: `0xd14fce5bc55861c3b71bdea38d22590df8666dbc`
-</Accordion>
-
-<Accordion title="Base Sepolia Testnet (Chain ID: 84532)">
-  - **ETH**: Native token (`0x0000000000000000000000000000000000000000`)
-  - **USDC**: `0x00fc61d7de7655db3984db634e3489130ebeacf6`
-  - **USDT**: `0xe290136a17a1804d4e538bd747b7a48d1a44a629`
-</Accordion>
-</AccordionGroup>
+Supported testnet networks and token contract addresses are listed in [Blockchain Concepts](/developer-docs/blockchain-concepts#testnet-networks).
 
 ## Going Live Checklist
 

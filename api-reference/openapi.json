@@ -1,0 +1,5071 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "SpacePay External API",
+    "description": "Merchant-facing SpacePay API endpoints.",
+    "version": "1.0"
+  },
+  "servers": [
+    {
+      "url": "https://api.spacepay.solutions",
+      "description": "Mainnet"
+    },
+    {
+      "url": "https://api.app-testnet.spacepay.solutions",
+      "description": "Testnet"
+    }
+  ],
+  "tags": [
+    {
+      "name": "External - Token Registry (Public)"
+    },
+    {
+      "name": "External - Payments (Secret Key)"
+    },
+    {
+      "name": "External - Payments (Payment Secret)"
+    },
+    {
+      "name": "External - Withdrawals (Secret Key)"
+    },
+    {
+      "name": "External - Wallet (Secret Key)"
+    }
+  ],
+  "paths": {
+    "/v1/external/chains": {
+      "get": {
+        "operationId": "ExternalChainsController_getAllChains",
+        "parameters": [
+          {
+            "name": "limit",
+            "required": false,
+            "in": "query",
+            "description": "Number of items to return",
+            "schema": {
+              "minimum": 1,
+              "maximum": 1000,
+              "default": 100,
+              "example": 50,
+              "type": "number"
+            }
+          },
+          {
+            "name": "offset",
+            "required": false,
+            "in": "query",
+            "description": "Number of items to skip",
+            "schema": {
+              "minimum": 0,
+              "default": 0,
+              "example": 0,
+              "type": "number"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Chains retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PaginatedChainDtoResult"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Get all chains. Returns only active chains.",
+        "tags": [
+          "External - Token Registry (Public)"
+        ]
+      }
+    },
+    "/v1/external/chains/{chainId}": {
+      "get": {
+        "operationId": "ExternalChainsController_getChainById",
+        "parameters": [
+          {
+            "name": "chainId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Chain retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ChainDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Chain not found"
+          }
+        },
+        "summary": "Get a chain by ID. Returns only active chains.",
+        "tags": [
+          "External - Token Registry (Public)"
+        ]
+      }
+    },
+    "/v1/external/tokens": {
+      "get": {
+        "operationId": "ExternalTokensController_getAllTokens",
+        "parameters": [
+          {
+            "name": "chainId",
+            "required": false,
+            "in": "query",
+            "description": "Filter by CAIP-2 chain id",
+            "schema": {
+              "maxLength": 41,
+              "example": "eip155:1",
+              "type": "string"
+            }
+          },
+          {
+            "name": "symbol",
+            "required": false,
+            "in": "query",
+            "description": "Filter by token symbol (case-insensitive)",
+            "schema": {
+              "example": "USDC",
+              "type": "string"
+            }
+          },
+          {
+            "name": "contractAddress",
+            "required": false,
+            "in": "query",
+            "description": "Filter by contract address (case-insensitive)",
+            "schema": {
+              "example": "0xa0b86a33e6441b8c4c8c0c0c0c0c0c0c0c0c0c0",
+              "type": "string"
+            }
+          },
+          {
+            "name": "assetType",
+            "required": false,
+            "in": "query",
+            "description": "Filter by asset type",
+            "schema": {
+              "example": "erc20",
+              "type": "string",
+              "enum": [
+                "native",
+                "erc20"
+              ]
+            }
+          },
+          {
+            "name": "tokenType",
+            "required": false,
+            "in": "query",
+            "description": "Filter by token type",
+            "schema": {
+              "example": "stablecoin",
+              "type": "string",
+              "enum": [
+                "stablecoin",
+                "volatile"
+              ]
+            }
+          },
+          {
+            "name": "limit",
+            "required": false,
+            "in": "query",
+            "description": "Number of items to return",
+            "schema": {
+              "minimum": 1,
+              "maximum": 1000,
+              "default": 100,
+              "example": 50,
+              "type": "number"
+            }
+          },
+          {
+            "name": "offset",
+            "required": false,
+            "in": "query",
+            "description": "Number of items to skip",
+            "schema": {
+              "minimum": 0,
+              "default": 0,
+              "example": 0,
+              "type": "number"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Tokens retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PaginatedTokenDtoResult"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Get all tokens. Returns only active tokens for enabled chains. Includes price in USD.",
+        "tags": [
+          "External - Token Registry (Public)"
+        ]
+      }
+    },
+    "/v1/external/tokens/{tokenId}": {
+      "get": {
+        "operationId": "ExternalTokensController_getTokenById",
+        "parameters": [
+          {
+            "name": "tokenId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Token retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TokenDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Token not found"
+          }
+        },
+        "summary": "Get a token by ID, including price in USD. Returns only active tokens for enabled chains.",
+        "tags": [
+          "External - Token Registry (Public)"
+        ]
+      }
+    },
+    "/v1/external/secretkey-auth/payments": {
+      "post": {
+        "operationId": "ExternalPaymentsBySecretKeyController_createPayment",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreatePaymentRequestDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Payment created successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CreatePaymentResponseDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid input data"
+          },
+          "401": {
+            "description": "Invalid or missing x-spacepay-secret-key header"
+          },
+          "409": {
+            "description": "Idempotency conflict (in-progress or payload mismatch)"
+          }
+        },
+        "security": [
+          {
+            "Secret Key": []
+          }
+        ],
+        "summary": "Create a new payment using secret key (external API)",
+        "tags": [
+          "External - Payments (Secret Key)"
+        ]
+      },
+      "get": {
+        "operationId": "ExternalPaymentsBySecretKeyController_getPayments",
+        "parameters": [
+          {
+            "name": "type",
+            "required": false,
+            "in": "query",
+            "description": "Filter by payment type",
+            "schema": {
+              "example": "payment",
+              "type": "string",
+              "enum": [
+                "payment",
+                "deposit"
+              ]
+            }
+          },
+          {
+            "name": "status",
+            "required": false,
+            "in": "query",
+            "description": "Filter by payment status",
+            "schema": {
+              "example": "pending",
+              "type": "string",
+              "enum": [
+                "pending",
+                "processing",
+                "completed",
+                "failed",
+                "expired",
+                "cancelled"
+              ]
+            }
+          },
+          {
+            "name": "search",
+            "required": false,
+            "in": "query",
+            "description": "Search by partial match of payment ID, deposit wallet address, merchant short name, receipt tx hash, receipt tx sender address",
+            "schema": {
+              "example": "Merchant name",
+              "type": "string"
+            }
+          },
+          {
+            "name": "sortBy",
+            "required": false,
+            "in": "query",
+            "description": "Field to sort by",
+            "schema": {
+              "example": "createdAt",
+              "type": "string",
+              "enum": [
+                "createdAt",
+                "amountInCents"
+              ]
+            }
+          },
+          {
+            "name": "sortOrder",
+            "required": false,
+            "in": "query",
+            "description": "Sort order",
+            "schema": {
+              "example": "DESC",
+              "type": "string",
+              "enum": [
+                "ASC",
+                "DESC"
+              ]
+            }
+          },
+          {
+            "name": "limit",
+            "required": false,
+            "in": "query",
+            "description": "Number of items to return",
+            "schema": {
+              "minimum": 1,
+              "maximum": 1000,
+              "default": 100,
+              "example": 50,
+              "type": "number"
+            }
+          },
+          {
+            "name": "offset",
+            "required": false,
+            "in": "query",
+            "description": "Number of items to skip",
+            "schema": {
+              "minimum": 0,
+              "default": 0,
+              "example": 0,
+              "type": "number"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Payments retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PaginatedMerchantPaymentDtoResult"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "Secret Key": []
+          }
+        ],
+        "summary": "Get all payments for a merchant",
+        "tags": [
+          "External - Payments (Secret Key)"
+        ]
+      }
+    },
+    "/v1/external/secretkey-auth/payments/{paymentId}": {
+      "get": {
+        "operationId": "ExternalPaymentsBySecretKeyController_getPaymentDetails",
+        "parameters": [
+          {
+            "name": "paymentId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Payment retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MerchantPaymentDto"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Invalid or missing x-spacepay-secret-key header"
+          },
+          "404": {
+            "description": "Payment not found"
+          }
+        },
+        "security": [
+          {
+            "Secret Key": []
+          }
+        ],
+        "summary": "Get payment details by ID using secret key (external API)",
+        "tags": [
+          "External - Payments (Secret Key)"
+        ]
+      }
+    },
+    "/v1/external/payment-secret-auth/payments/{paymentId}": {
+      "get": {
+        "operationId": "ExternalPaymentsByPaymentSecretController_getPaymentDetails",
+        "parameters": [
+          {
+            "name": "paymentId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Payment retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PaymentDto"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Invalid or missing x-spacepay-payment-secret header"
+          },
+          "404": {
+            "description": "Payment not found"
+          }
+        },
+        "security": [
+          {
+            "Payment Secret": []
+          }
+        ],
+        "summary": "Get payment details by ID using Payment Secret.",
+        "tags": [
+          "External - Payments (Payment Secret)"
+        ]
+      }
+    },
+    "/v1/external/payment-secret-auth/payments/{paymentId}/status": {
+      "get": {
+        "operationId": "ExternalPaymentsByPaymentSecretController_getPaymentStatus",
+        "parameters": [
+          {
+            "name": "paymentId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Payment status retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PaymentStatusDto"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Invalid or missing x-spacepay-payment-secret header"
+          },
+          "404": {
+            "description": "Payment not found"
+          }
+        },
+        "security": [
+          {
+            "Payment Secret": []
+          }
+        ],
+        "summary": "Get payment status by ID using Payment Secret, for polling",
+        "tags": [
+          "External - Payments (Payment Secret)"
+        ]
+      }
+    },
+    "/v1/external/payment-secret-auth/payments/{paymentId}/quotes": {
+      "get": {
+        "operationId": "ExternalPaymentsByPaymentSecretController_getActiveQuotes",
+        "parameters": [
+          {
+            "name": "paymentId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "List of active quotes",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/PaymentQuoteDto"
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Invalid or missing x-spacepay-payment-secret header"
+          }
+        },
+        "security": [
+          {
+            "Payment Secret": []
+          }
+        ],
+        "summary": "Get active quotes for a payment using Payment Secret",
+        "tags": [
+          "External - Payments (Payment Secret)"
+        ]
+      },
+      "post": {
+        "operationId": "ExternalPaymentsByPaymentSecretController_createOrUpdateQuote",
+        "parameters": [
+          {
+            "name": "paymentId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateQuoteByContractDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Quote created or updated successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PaymentQuoteDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Payment is not pending, cannot create or update a quote"
+          },
+          "401": {
+            "description": "Invalid or missing x-spacepay-payment-secret header"
+          }
+        },
+        "security": [
+          {
+            "Payment Secret": []
+          }
+        ],
+        "summary": "Create or update a quote by contract address and chain using Payment Secret. If neither contractAddress nor chainId is provided, a default quote will be created.",
+        "tags": [
+          "External - Payments (Payment Secret)"
+        ]
+      }
+    },
+    "/v1/external/payment-secret-auth/payments/{paymentId}/refresh-status": {
+      "post": {
+        "operationId": "ExternalPaymentsByPaymentSecretController_refreshPaymentStatus",
+        "parameters": [
+          {
+            "name": "paymentId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RefreshPaymentStatusDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Payment status refresh initiated successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PaymentStatusDto"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Invalid or missing x-spacepay-payment-secret header"
+          },
+          "403": {
+            "description": "Payment does not belong to the merchant"
+          },
+          "404": {
+            "description": "Payment not found"
+          }
+        },
+        "security": [
+          {
+            "Payment Secret": []
+          }
+        ],
+        "summary": "Force refresh payment status using Payment Secret. Polls the provider for partner-custody rails (e.g. Shout, for missed webhooks), on-chain verification otherwise.",
+        "tags": [
+          "External - Payments (Payment Secret)"
+        ]
+      }
+    },
+    "/v1/external/secretkey-auth/withdrawals": {
+      "post": {
+        "operationId": "ExternalWithdrawalsBySecretKeyController_createWithdrawal",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateWithdrawalDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Withdrawal created successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/WithdrawalDto"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Invalid or missing x-spacepay-secret-key header"
+          },
+          "409": {
+            "description": "Idempotency conflict (in-progress or payload mismatch)"
+          }
+        },
+        "security": [
+          {
+            "Secret Key": []
+          }
+        ],
+        "summary": "Create a withdrawal using secret key (external API)",
+        "tags": [
+          "External - Withdrawals (Secret Key)"
+        ]
+      },
+      "get": {
+        "operationId": "ExternalWithdrawalsBySecretKeyController_getWithdrawals",
+        "parameters": [
+          {
+            "name": "status",
+            "required": false,
+            "in": "query",
+            "description": "Filter by withdrawal status",
+            "schema": {
+              "example": "processing",
+              "type": "string",
+              "enum": [
+                "pending",
+                "processing",
+                "completed",
+                "failed",
+                "cancelled"
+              ]
+            }
+          },
+          {
+            "name": "limit",
+            "required": false,
+            "in": "query",
+            "description": "Number of items to return",
+            "schema": {
+              "minimum": 1,
+              "maximum": 1000,
+              "default": 100,
+              "example": 50,
+              "type": "number"
+            }
+          },
+          {
+            "name": "offset",
+            "required": false,
+            "in": "query",
+            "description": "Number of items to skip",
+            "schema": {
+              "minimum": 0,
+              "default": 0,
+              "example": 0,
+              "type": "number"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Withdrawals retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PaginatedWithdrawalDtoResult"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "Secret Key": []
+          }
+        ],
+        "summary": "Get all withdrawals for a merchant",
+        "tags": [
+          "External - Withdrawals (Secret Key)"
+        ]
+      }
+    },
+    "/v1/external/secretkey-auth/withdrawals/{withdrawalId}": {
+      "get": {
+        "operationId": "ExternalWithdrawalsBySecretKeyController_getWithdrawalDetails",
+        "parameters": [
+          {
+            "name": "withdrawalId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Withdrawal retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/WithdrawalDto"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Invalid or missing x-spacepay-secret-key header"
+          }
+        },
+        "security": [
+          {
+            "Secret Key": []
+          }
+        ],
+        "summary": "Get withdrawal details by ID using secret key (external API)",
+        "tags": [
+          "External - Withdrawals (Secret Key)"
+        ]
+      }
+    },
+    "/v1/external/secretkey-auth/wallet/balances": {
+      "get": {
+        "operationId": "ExternalWalletBalancesSecretKeyController_getOnchainBalances",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Balances read from RPC for the merchant payout wallet; excludes inactive tokens/chains and chains without RPC in this environment",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MerchantWalletOnchainBalancesResponseDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Merchant wallet address is not configured"
+          },
+          "401": {
+            "description": "Invalid or missing x-spacepay-secret-key header"
+          }
+        },
+        "security": [
+          {
+            "Secret Key": []
+          }
+        ],
+        "summary": "Get on-chain balances for the default withdrawal token per chain (secret key)",
+        "tags": [
+          "External - Wallet (Secret Key)"
+        ]
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "Privy access token": {
+        "scheme": "bearer",
+        "bearerFormat": "JWT",
+        "type": "http",
+        "description": "Privy access token for end-user authentication. Obtain via Privy SDK getAccessToken()."
+      },
+      "Secret Key": {
+        "type": "apiKey",
+        "in": "header",
+        "name": "x-spacepay-secret-key",
+        "description": "Secret key for authentication of external API."
+      },
+      "Payment Secret": {
+        "type": "apiKey",
+        "in": "header",
+        "name": "x-spacepay-payment-secret",
+        "description": "Payment secret for authentication of external API."
+      },
+      "cookie": {
+        "type": "apiKey",
+        "in": "cookie",
+        "name": "privy-token",
+        "description": "Privy access token cookie (privy-token). Set automatically when HttpOnly cookies are enabled in Privy."
+      }
+    },
+    "schemas": {
+      "OrganizationDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Organization ID",
+            "example": "org_1234567890abcdef"
+          },
+          "name": {
+            "type": "string",
+            "description": "Organization name",
+            "example": "Acme Corp"
+          },
+          "slug": {
+            "type": "string",
+            "description": "Organization slug",
+            "example": "acme-corp"
+          },
+          "role": {
+            "type": "string",
+            "nullable": true,
+            "description": "User role in the organization",
+            "example": "admin"
+          }
+        },
+        "required": [
+          "id",
+          "name",
+          "slug",
+          "role"
+        ]
+      },
+      "SimpleMerchantDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Merchant ID",
+            "example": "merchant_1234567890abcdef"
+          },
+          "shortName": {
+            "type": "string",
+            "description": "Business name",
+            "example": "Acme Corp"
+          },
+          "clerkOrganizationId": {
+            "type": "string",
+            "description": "Clerk organization ID",
+            "example": "org_1234567890abcdef"
+          },
+          "status": {
+            "type": "string",
+            "description": "Merchant status",
+            "example": "pending"
+          }
+        },
+        "required": [
+          "id",
+          "shortName",
+          "clerkOrganizationId",
+          "status"
+        ]
+      },
+      "AuthBusinessUserDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "User ID",
+            "example": "user_1234567890abcdef"
+          },
+          "email": {
+            "type": "string",
+            "description": "User email address",
+            "example": "john.doe@example.com"
+          },
+          "firstName": {
+            "type": "string",
+            "nullable": true,
+            "description": "User first name",
+            "example": "John"
+          },
+          "lastName": {
+            "type": "string",
+            "nullable": true,
+            "description": "User last name",
+            "example": "Doe"
+          },
+          "organizations": {
+            "description": "List of organizations the user belongs to",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/OrganizationDto"
+            }
+          },
+          "merchant": {
+            "nullable": true,
+            "description": "Merchant information if user belongs to a merchant organization",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/SimpleMerchantDto"
+              }
+            ]
+          },
+          "role": {
+            "enum": [
+              "business_member",
+              "superadmin"
+            ],
+            "type": "string",
+            "description": "User role. If user is super admin, this will be SUPER_ADMIN. If user is a business member, this will be BUSINESS_MEMBER.",
+            "example": "business_member"
+          }
+        },
+        "required": [
+          "id",
+          "email",
+          "firstName",
+          "lastName",
+          "organizations",
+          "merchant",
+          "role"
+        ]
+      },
+      "MerchantDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "clerkOrganizationId": {
+            "type": "string"
+          },
+          "shortName": {
+            "type": "string"
+          },
+          "businessName": {
+            "type": "string"
+          },
+          "contactEmail": {
+            "type": "string",
+            "nullable": true
+          },
+          "contactPhone": {
+            "type": "string",
+            "nullable": true
+          },
+          "countryCode": {
+            "type": "string",
+            "nullable": true
+          },
+          "fieldOfOperation": {
+            "nullable": true,
+            "enum": [
+              "food_beverage",
+              "retail",
+              "health_beauty",
+              "home_garden",
+              "sports_outdoors",
+              "entertainment",
+              "digital_services",
+              "travel",
+              "nonprofit",
+              "other"
+            ],
+            "type": "object"
+          },
+          "description": {
+            "type": "string",
+            "nullable": true
+          },
+          "websiteUrl": {
+            "type": "string",
+            "nullable": true
+          },
+          "logoUrl": {
+            "type": "string",
+            "nullable": true
+          },
+          "status": {
+            "enum": [
+              "pending",
+              "onboarding",
+              "approved",
+              "rejected"
+            ],
+            "type": "string"
+          },
+          "rejectionReason": {
+            "type": "string",
+            "nullable": true
+          },
+          "depositsEnabled": {
+            "type": "boolean",
+            "nullable": true
+          },
+          "withdrawalsEnabled": {
+            "type": "boolean",
+            "nullable": true
+          },
+          "balanceInCents": {
+            "type": "number"
+          },
+          "createdAt": {
+            "format": "date-time",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "clerkOrganizationId",
+          "shortName",
+          "businessName",
+          "status",
+          "balanceInCents",
+          "createdAt"
+        ]
+      },
+      "UpdateMerchantRequestDto": {
+        "type": "object",
+        "properties": {
+          "shortName": {
+            "type": "string",
+            "maxLength": 255
+          },
+          "businessName": {
+            "type": "string",
+            "maxLength": 255
+          },
+          "contactEmail": {
+            "type": "string",
+            "maxLength": 255,
+            "format": "email"
+          },
+          "contactPhone": {
+            "type": "string",
+            "maxLength": 255
+          },
+          "countryCode": {
+            "type": "string",
+            "minLength": 3
+          },
+          "fieldOfOperation": {
+            "type": "string",
+            "enum": [
+              "food_beverage",
+              "retail",
+              "health_beauty",
+              "home_garden",
+              "sports_outdoors",
+              "entertainment",
+              "digital_services",
+              "travel",
+              "nonprofit",
+              "other"
+            ]
+          },
+          "description": {
+            "type": "string",
+            "maxLength": 1000
+          },
+          "websiteUrl": {
+            "type": "string",
+            "maxLength": 500
+          },
+          "logoUrl": {
+            "type": "string",
+            "maxLength": 500
+          }
+        }
+      },
+      "MerchantOnboardingDto": {
+        "type": "object",
+        "properties": {
+          "merchantVerified": {
+            "type": "boolean",
+            "description": "Whether merchant is verified (status is approved)",
+            "example": false
+          },
+          "payoutsSetUp": {
+            "type": "boolean",
+            "description": "Whether payouts are configured",
+            "example": false
+          },
+          "integrationSetUp": {
+            "type": "boolean",
+            "description": "Whether integration is configured (has secret key)",
+            "example": false
+          },
+          "firstPayment": {
+            "type": "boolean",
+            "description": "Whether first payment was made",
+            "example": false
+          }
+        },
+        "required": [
+          "merchantVerified",
+          "payoutsSetUp",
+          "integrationSetUp",
+          "firstPayment"
+        ]
+      },
+      "MerchantPayoutAccountDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "merchantId": {
+            "type": "string"
+          },
+          "bankName": {
+            "type": "string"
+          },
+          "bankAddress": {
+            "type": "string"
+          },
+          "iban": {
+            "type": "string"
+          },
+          "currency": {
+            "enum": [
+              "USD",
+              "EUR",
+              "GBP"
+            ],
+            "type": "string"
+          },
+          "isActive": {
+            "type": "boolean"
+          },
+          "createdAt": {
+            "format": "date-time",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "merchantId",
+          "bankName",
+          "bankAddress",
+          "iban",
+          "currency",
+          "isActive",
+          "createdAt"
+        ]
+      },
+      "MerchantBalanceDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "balanceInCents": {
+            "type": "number"
+          },
+          "updatedAt": {
+            "format": "date-time",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "balanceInCents",
+          "updatedAt"
+        ]
+      },
+      "MerchantPayoutDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "payoutAccountId": {
+            "type": "string"
+          },
+          "paymentReference": {
+            "type": "string"
+          },
+          "amountInCents": {
+            "type": "number"
+          },
+          "amountInCentsPayoutCurrency": {
+            "type": "number"
+          },
+          "payoutCurrency": {
+            "enum": [
+              "USD",
+              "EUR",
+              "GBP"
+            ],
+            "type": "string"
+          },
+          "payoutDate": {
+            "format": "date-time",
+            "type": "string"
+          },
+          "status": {
+            "enum": [
+              "pending",
+              "completed",
+              "failed"
+            ],
+            "type": "string"
+          },
+          "createdAt": {
+            "format": "date-time",
+            "type": "string"
+          },
+          "updatedAt": {
+            "format": "date-time",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "payoutAccountId",
+          "paymentReference",
+          "amountInCents",
+          "amountInCentsPayoutCurrency",
+          "payoutCurrency",
+          "payoutDate",
+          "status",
+          "createdAt",
+          "updatedAt"
+        ]
+      },
+      "PaginationMetaDto": {
+        "type": "object",
+        "properties": {
+          "total": {
+            "type": "number"
+          },
+          "limit": {
+            "type": "number"
+          },
+          "offset": {
+            "type": "number"
+          },
+          "hasMore": {
+            "type": "boolean"
+          },
+          "totalPages": {
+            "type": "number"
+          },
+          "currentPage": {
+            "type": "number"
+          }
+        },
+        "required": [
+          "total",
+          "limit",
+          "offset",
+          "hasMore",
+          "totalPages",
+          "currentPage"
+        ]
+      },
+      "PaginatedMerchantPayoutDtoResult": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/MerchantPayoutDto"
+            }
+          },
+          "pagination": {
+            "$ref": "#/components/schemas/PaginationMetaDto"
+          }
+        },
+        "required": [
+          "data",
+          "pagination"
+        ]
+      },
+      "PaginatedMerchantDtoResult": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/MerchantDto"
+            }
+          },
+          "pagination": {
+            "$ref": "#/components/schemas/PaginationMetaDto"
+          }
+        },
+        "required": [
+          "data",
+          "pagination"
+        ]
+      },
+      "UpdateMerchantStatusDto": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "enum": [
+              "pending",
+              "onboarding",
+              "approved",
+              "rejected"
+            ],
+            "type": "string",
+            "description": "New status for the merchant",
+            "example": "approved"
+          },
+          "rejectionReason": {
+            "type": "string",
+            "maxLength": 1000,
+            "description": "Reason for rejection (required when status is REJECTED)",
+            "example": "Incomplete documentation"
+          }
+        },
+        "required": [
+          "status"
+        ]
+      },
+      "UpdateMerchantFeaturesDto": {
+        "type": "object",
+        "properties": {
+          "depositsEnabled": {
+            "type": "boolean",
+            "description": "Enable/disable deposits for this merchant",
+            "example": true
+          },
+          "withdrawalsEnabled": {
+            "type": "boolean",
+            "description": "Enable/disable withdrawals for this merchant",
+            "example": false
+          }
+        }
+      },
+      "CreateMerchantPayoutAccountDto": {
+        "type": "object",
+        "properties": {
+          "bankName": {
+            "type": "string",
+            "description": "Bank name"
+          },
+          "bankAddress": {
+            "type": "string",
+            "description": "Bank address"
+          },
+          "iban": {
+            "type": "string",
+            "minLength": 10,
+            "maxLength": 34,
+            "description": "IBAN"
+          },
+          "currency": {
+            "enum": [
+              "USD",
+              "EUR",
+              "GBP"
+            ],
+            "type": "string",
+            "description": "Currency"
+          },
+          "isActive": {
+            "type": "boolean",
+            "description": "Whether this account should be active"
+          }
+        },
+        "required": [
+          "bankName",
+          "bankAddress",
+          "iban",
+          "currency"
+        ]
+      },
+      "CreateMerchantPayoutDto": {
+        "type": "object",
+        "properties": {
+          "paymentReference": {
+            "type": "string",
+            "description": "Payment reference"
+          },
+          "amountInCents": {
+            "type": "number",
+            "minimum": 0,
+            "description": "Payout amount in cents, USD"
+          },
+          "amountInCentsPayoutCurrency": {
+            "type": "number",
+            "minimum": 0,
+            "description": "Payout amount in cents in the payout currency"
+          },
+          "payoutCurrency": {
+            "enum": [
+              "USD",
+              "EUR",
+              "GBP"
+            ],
+            "type": "string",
+            "description": "Currency in which the payout was made"
+          },
+          "payoutDate": {
+            "type": "string",
+            "description": "Payout date and time (ISO 8601 format)"
+          }
+        },
+        "required": [
+          "paymentReference",
+          "amountInCents",
+          "amountInCentsPayoutCurrency",
+          "payoutCurrency",
+          "payoutDate"
+        ]
+      },
+      "MerchantOfframpAddressDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "merchantId": {
+            "type": "string"
+          },
+          "address": {
+            "type": "string",
+            "description": "Ethereum address (lowercase)",
+            "example": "0xabc123..."
+          },
+          "isActive": {
+            "type": "boolean"
+          },
+          "createdAt": {
+            "format": "date-time",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "merchantId",
+          "address",
+          "isActive",
+          "createdAt"
+        ]
+      },
+      "UpdateMerchantOfframpAddressDto": {
+        "type": "object",
+        "properties": {
+          "address": {
+            "type": "string",
+            "description": "Ethereum address to send tokens to"
+          }
+        },
+        "required": [
+          "address"
+        ]
+      },
+      "ChainDto": {
+        "type": "object",
+        "properties": {
+          "chainId": {
+            "type": "string",
+            "description": "CAIP-2 chain id",
+            "example": "eip155:1"
+          },
+          "name": {
+            "type": "string",
+            "description": "Chain name",
+            "example": "Ethereum"
+          },
+          "nativeSymbol": {
+            "type": "string",
+            "description": "Native token symbol",
+            "example": "ETH"
+          },
+          "nativeDecimals": {
+            "type": "number",
+            "description": "Native token decimals",
+            "example": 18
+          },
+          "isEnabled": {
+            "type": "boolean",
+            "description": "Whether the chain is enabled",
+            "example": true
+          },
+          "isTestnet": {
+            "type": "boolean",
+            "description": "Whether the chain is a testnet",
+            "example": false
+          }
+        },
+        "required": [
+          "chainId",
+          "name",
+          "nativeSymbol",
+          "nativeDecimals",
+          "isEnabled",
+          "isTestnet"
+        ]
+      },
+      "TokenDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Token ID",
+            "example": "123e4567-e89b-12d3-a456-426614174000"
+          },
+          "coingeckoApiId": {
+            "type": "string",
+            "description": "Coingecko API ID",
+            "example": "ethereum"
+          },
+          "chain": {
+            "description": "Chain information",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/ChainDto"
+              }
+            ]
+          },
+          "symbol": {
+            "type": "string",
+            "description": "Token symbol",
+            "example": "USDC"
+          },
+          "contractAddress": {
+            "type": "string",
+            "description": "Token contract address (lowercase)",
+            "example": "0xa0b86a33e6441b8c4c8c0c0c0c0c0c0c0c0c0c0"
+          },
+          "decimals": {
+            "type": "number",
+            "description": "Token decimals",
+            "example": 6
+          },
+          "type": {
+            "enum": [
+              "stablecoin",
+              "volatile"
+            ],
+            "type": "string",
+            "description": "Token type",
+            "example": "stablecoin"
+          },
+          "assetType": {
+            "enum": [
+              "native",
+              "erc20"
+            ],
+            "type": "string",
+            "description": "Token asset type",
+            "example": "native"
+          },
+          "status": {
+            "enum": [
+              "active",
+              "deprecated",
+              "blocked"
+            ],
+            "type": "string",
+            "description": "Token status",
+            "example": "active"
+          },
+          "tokenPriceUsd": {
+            "type": "number",
+            "nullable": true,
+            "description": "Token price in USD",
+            "example": 1
+          }
+        },
+        "required": [
+          "id",
+          "coingeckoApiId",
+          "chain",
+          "symbol",
+          "contractAddress",
+          "decimals",
+          "type",
+          "assetType",
+          "status",
+          "tokenPriceUsd"
+        ]
+      },
+      "MerchantWithdrawalAddressDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "merchantId": {
+            "type": "string"
+          },
+          "token": {
+            "description": "Token (implies the chain)",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/TokenDto"
+              }
+            ]
+          },
+          "address": {
+            "type": "string"
+          },
+          "status": {
+            "enum": [
+              "pending",
+              "approved",
+              "rejected",
+              "deactivated"
+            ],
+            "type": "string"
+          },
+          "createdAt": {
+            "format": "date-time",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "merchantId",
+          "token",
+          "address",
+          "status",
+          "createdAt"
+        ]
+      },
+      "CreateMerchantWithdrawalAddressDto": {
+        "type": "object",
+        "properties": {
+          "tokenId": {
+            "type": "string",
+            "format": "uuid",
+            "description": "Token registry id (implies the chain) this withdrawal address is for"
+          },
+          "address": {
+            "type": "string",
+            "minLength": 20,
+            "maxLength": 64,
+            "description": "Destination address. Format depends on the token chain (base58 for Tron, 0x-hex for EVM); validated server-side."
+          },
+          "emailOtcCode": {
+            "type": "string",
+            "minLength": 6,
+            "maxLength": 6,
+            "description": "One-time code emailed via POST /merchants/:merchantId/email-otc with purpose add_withdrawal_address"
+          }
+        },
+        "required": [
+          "tokenId",
+          "address",
+          "emailOtcCode"
+        ]
+      },
+      "ApiKeyDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string",
+            "nullable": true
+          },
+          "type": {
+            "enum": [
+              "public",
+              "secret"
+            ],
+            "type": "string"
+          },
+          "keyPrefix": {
+            "type": "string"
+          },
+          "keyValue": {
+            "type": "string",
+            "nullable": true
+          },
+          "merchantId": {
+            "type": "string"
+          },
+          "isActive": {
+            "type": "boolean"
+          },
+          "lastUsedAt": {
+            "format": "date-time",
+            "type": "string",
+            "nullable": true
+          },
+          "createdAt": {
+            "format": "date-time",
+            "type": "string"
+          },
+          "updatedAt": {
+            "format": "date-time",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "name",
+          "type",
+          "keyPrefix",
+          "merchantId",
+          "isActive",
+          "createdAt",
+          "updatedAt"
+        ]
+      },
+      "CreateSecretKeyRequestDto": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "maxLength": 255
+          },
+          "description": {
+            "type": "string",
+            "maxLength": 1000
+          }
+        },
+        "required": [
+          "name"
+        ]
+      },
+      "CreateSecretKeyResponseDto": {
+        "type": "object",
+        "properties": {
+          "secretKeyOnlyOnce": {
+            "type": "string"
+          },
+          "apiKey": {
+            "$ref": "#/components/schemas/ApiKeyDto"
+          }
+        },
+        "required": [
+          "secretKeyOnlyOnce",
+          "apiKey"
+        ]
+      },
+      "UpdateApiKeyDto": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "maxLength": 255,
+            "description": "Name of the API key",
+            "example": "Production API Key"
+          },
+          "description": {
+            "type": "string",
+            "maxLength": 1000,
+            "description": "Description of the API key",
+            "example": "API key for production environment"
+          }
+        }
+      },
+      "ApplicationEventDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "merchantId": {
+            "type": "string"
+          },
+          "type": {
+            "enum": [
+              "payment.created",
+              "payment.updated",
+              "payment.cancelled",
+              "payment.received",
+              "payment.confirmed",
+              "payment.failed",
+              "payment.transaction.risk.changed",
+              "withdrawal.created",
+              "withdrawal.updated",
+              "merchant.created",
+              "merchant.updated",
+              "merchant.status.changed",
+              "merchant.offramp_address.updated",
+              "merchant.wallet.created",
+              "merchant.payout_account.created",
+              "merchant.withdrawal_address.created",
+              "merchant.withdrawal_address.removed",
+              "merchant.withdrawal_address.status_changed",
+              "merchant.beneficiary.created",
+              "merchant.beneficiary.removed",
+              "merchant.beneficiary.status_changed",
+              "payout.created",
+              "payout.completed",
+              "transfer.offramp.created",
+              "transfer.refund.created",
+              "transfer.offramp.completed",
+              "transfer.refund.completed",
+              "transfer.offramp.failed",
+              "transfer.refund.failed"
+            ],
+            "type": "string"
+          },
+          "occurredAt": {
+            "format": "date-time",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "merchantId",
+          "type",
+          "occurredAt"
+        ]
+      },
+      "PaginatedApplicationEventDtoResult": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ApplicationEventDto"
+            }
+          },
+          "pagination": {
+            "$ref": "#/components/schemas/PaginationMetaDto"
+          }
+        },
+        "required": [
+          "data",
+          "pagination"
+        ]
+      },
+      "MerchantNotificationSettingsDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Unique identifier for the notification settings",
+            "example": "123e4567-e89b-12d3-a456-426614174000"
+          },
+          "emailEnabled": {
+            "type": "boolean",
+            "description": "Whether email notifications are enabled for this merchant",
+            "example": true
+          },
+          "emailSubscribedEvents": {
+            "nullable": true,
+            "type": "array",
+            "items": {
+              "type": "string",
+              "enum": [
+                "payment.created",
+                "payment.succeeded",
+                "payment.failed",
+                "withdrawal.created",
+                "withdrawal.succeeded",
+                "withdrawal.failed"
+              ]
+            },
+            "description": "List of event types the merchant is subscribed to for email notifications",
+            "example": [
+              "payment.succeeded",
+              "payment.failed"
+            ]
+          },
+          "updatedAt": {
+            "format": "date-time",
+            "type": "string",
+            "description": "When these settings were last updated",
+            "example": "2024-01-01T00:00:00.000Z"
+          }
+        },
+        "required": [
+          "id",
+          "emailEnabled",
+          "emailSubscribedEvents",
+          "updatedAt"
+        ]
+      },
+      "UpdateMerchantNotificationSettingsDto": {
+        "type": "object",
+        "properties": {
+          "emailEnabled": {
+            "type": "boolean",
+            "description": "Enable/disable email notifications entirely"
+          },
+          "emailSubscribedEvents": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "enum": [
+                "payment.created",
+                "payment.succeeded",
+                "payment.failed",
+                "withdrawal.created",
+                "withdrawal.succeeded",
+                "withdrawal.failed"
+              ]
+            },
+            "description": "List of event types to subscribe to for email notifications"
+          }
+        }
+      },
+      "WebhookEndpointDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string",
+            "nullable": true
+          },
+          "url": {
+            "type": "string"
+          },
+          "merchantId": {
+            "type": "string"
+          },
+          "status": {
+            "enum": [
+              "ACTIVE",
+              "INACTIVE"
+            ],
+            "type": "string"
+          },
+          "secretPrefix": {
+            "type": "string"
+          },
+          "lastTriggeredAt": {
+            "format": "date-time",
+            "type": "string",
+            "nullable": true
+          },
+          "createdAt": {
+            "format": "date-time",
+            "type": "string"
+          },
+          "updatedAt": {
+            "format": "date-time",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "name",
+          "url",
+          "merchantId",
+          "status",
+          "secretPrefix",
+          "createdAt",
+          "updatedAt"
+        ]
+      },
+      "CreateWebhookEndpointRequestDto": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "maxLength": 255
+          },
+          "description": {
+            "type": "string",
+            "maxLength": 1000
+          },
+          "url": {
+            "type": "string",
+            "maxLength": 2048,
+            "format": "uri"
+          }
+        },
+        "required": [
+          "name",
+          "url"
+        ]
+      },
+      "CreateWebhookEndpointResponseDto": {
+        "type": "object",
+        "properties": {
+          "secretKeyOnlyOnce": {
+            "type": "string"
+          },
+          "webhook": {
+            "$ref": "#/components/schemas/WebhookEndpointDto"
+          }
+        },
+        "required": [
+          "secretKeyOnlyOnce",
+          "webhook"
+        ]
+      },
+      "UpdateWebhookEndpointRequestDto": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "maxLength": 255
+          },
+          "description": {
+            "type": "string",
+            "maxLength": 1000
+          },
+          "url": {
+            "type": "string",
+            "maxLength": 2048,
+            "format": "uri"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "ACTIVE",
+              "INACTIVE"
+            ]
+          }
+        }
+      },
+      "RequestEmailOtcDto": {
+        "type": "object",
+        "properties": {
+          "purpose": {
+            "enum": [
+              "add_withdrawal_address",
+              "add_beneficiary"
+            ],
+            "type": "string",
+            "description": "The sensitive action the code will authorize. Scopes the one-time code."
+          }
+        },
+        "required": [
+          "purpose"
+        ]
+      },
+      "EmailOtcRequestedDto": {
+        "type": "object",
+        "properties": {
+          "expiresAt": {
+            "format": "date-time",
+            "type": "string",
+            "description": "When the emailed one-time code expires."
+          }
+        },
+        "required": [
+          "expiresAt"
+        ]
+      },
+      "FeeValuesDto": {
+        "type": "object",
+        "properties": {
+          "percentBps": {
+            "type": "number",
+            "description": "Fee percent in basis points (0-10000)"
+          },
+          "fixedCents": {
+            "type": "number",
+            "description": "Fee fixed in cents (>=0)"
+          }
+        },
+        "required": [
+          "percentBps",
+          "fixedCents"
+        ]
+      },
+      "ScopeOverridesDto": {
+        "type": "object",
+        "properties": {
+          "global": {
+            "description": "Global scope override (merchantId null, chainId null); 0 when no row exists",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/FeeValuesDto"
+              }
+            ]
+          },
+          "chains": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "object",
+              "properties": {
+                "percentBps": {
+                  "type": "number"
+                },
+                "fixedCents": {
+                  "type": "number"
+                }
+              }
+            },
+            "description": "Chain-only overrides (merchantId null, chainId set), keyed by CAIP-2 chainId string",
+            "example": {
+              "eip155:1": {
+                "percentBps": 150,
+                "fixedCents": 0
+              }
+            }
+          }
+        },
+        "required": [
+          "global",
+          "chains"
+        ]
+      },
+      "CustomizedMerchantsDto": {
+        "type": "object",
+        "properties": {
+          "global": {
+            "description": "Merchants with a merchant-only override (merchantId set, chainId null)",
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "chains": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "format": "uuid"
+              }
+            },
+            "description": "Merchants with a merchant+chain override, keyed by CAIP-2 chainId string",
+            "example": {
+              "eip155:1": [
+                "merchant-uuid-3"
+              ],
+              "eip155:137": [
+                "merchant-uuid-4"
+              ]
+            }
+          }
+        },
+        "required": [
+          "global",
+          "chains"
+        ]
+      },
+      "SimpleFeeDto": {
+        "type": "object",
+        "properties": {
+          "percentBps": {
+            "type": "number",
+            "description": "Fee percent in basis points (0-10000)"
+          },
+          "fixedCents": {
+            "type": "number",
+            "description": "Fee fixed in cents (>=0)"
+          },
+          "source": {
+            "type": "string",
+            "enum": [
+              "merchant_chain",
+              "merchant",
+              "chain",
+              "global"
+            ],
+            "description": "Where the resolved value came from"
+          },
+          "isInherited": {
+            "type": "boolean",
+            "description": "True when the fee resolved from a parent of the requested scope"
+          }
+        },
+        "required": [
+          "percentBps",
+          "fixedCents",
+          "source",
+          "isInherited"
+        ]
+      },
+      "UpsertFeeDto": {
+        "type": "object",
+        "properties": {
+          "percentBps": {
+            "type": "number",
+            "nullable": true,
+            "minimum": 0,
+            "maximum": 10000,
+            "description": "Fee percent in basis points (0-10000)"
+          },
+          "fixedCents": {
+            "type": "number",
+            "nullable": true,
+            "minimum": 0,
+            "description": "Fee fixed in cents (>=0)"
+          }
+        }
+      },
+      "RebuildLedgerBalancesDto": {
+        "type": "object",
+        "properties": {
+          "ledgerAccountId": {
+            "type": "string",
+            "format": "uuid",
+            "description": "Ledger account id to rebuild; omit to rebuild all"
+          }
+        }
+      },
+      "ManualAdjustmentLegDto": {
+        "type": "object",
+        "properties": {
+          "direction": {
+            "type": "string",
+            "enum": [
+              "debit",
+              "credit"
+            ]
+          },
+          "ownerType": {
+            "enum": [
+              "organization",
+              "provider",
+              "platform",
+              "system"
+            ],
+            "type": "string"
+          },
+          "ownerId": {
+            "type": "string",
+            "format": "uuid",
+            "description": "Owner id (merchant/provider); omit for global accounts"
+          },
+          "accountClass": {
+            "enum": [
+              "client_liability",
+              "provider_asset",
+              "provider_clearing",
+              "provider_payable",
+              "provider_receivable",
+              "platform_revenue",
+              "platform_expense",
+              "treasury_asset",
+              "treasury_liability",
+              "suspense"
+            ],
+            "type": "string"
+          },
+          "balanceState": {
+            "enum": [
+              "available",
+              "reserved",
+              "pending_in",
+              "pending_out",
+              "settled",
+              "suspense"
+            ],
+            "type": "string"
+          },
+          "assetId": {
+            "type": "string",
+            "format": "uuid",
+            "description": "Ledger asset id"
+          },
+          "amount": {
+            "type": "string",
+            "description": "Positive magnitude in base units (integer string)"
+          }
+        },
+        "required": [
+          "direction",
+          "ownerType",
+          "accountClass",
+          "balanceState",
+          "assetId",
+          "amount"
+        ]
+      },
+      "CreateManualAdjustmentDto": {
+        "type": "object",
+        "properties": {
+          "merchantId": {
+            "type": "string",
+            "format": "uuid",
+            "description": "Merchant this adjustment concerns"
+          },
+          "reason": {
+            "type": "string",
+            "description": "Human reason for the correction (audited)"
+          },
+          "idempotencyKey": {
+            "type": "string",
+            "description": "Idempotency key, replaying returns the same journal"
+          },
+          "legs": {
+            "minItems": 2,
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ManualAdjustmentLegDto"
+            }
+          }
+        },
+        "required": [
+          "reason",
+          "idempotencyKey",
+          "legs"
+        ]
+      },
+      "EmailEndpointDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string",
+            "nullable": true
+          },
+          "emailAddress": {
+            "type": "string"
+          },
+          "status": {
+            "enum": [
+              "ACTIVE",
+              "INACTIVE"
+            ],
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "name",
+          "emailAddress",
+          "status"
+        ]
+      },
+      "CreateEmailEndpointRequestDto": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "maxLength": 255
+          },
+          "description": {
+            "type": "string",
+            "maxLength": 1000
+          },
+          "emailAddress": {
+            "type": "string",
+            "format": "email"
+          }
+        },
+        "required": [
+          "emailAddress"
+        ]
+      },
+      "SyncEmailAddressesDto": {
+        "type": "object",
+        "properties": {
+          "emailAddresses": {
+            "description": "Array of email addresses to sync",
+            "example": [
+              "user1@example.com",
+              "user2@example.com"
+            ],
+            "type": "array",
+            "items": {
+              "type": "string",
+              "format": "email"
+            }
+          }
+        },
+        "required": [
+          "emailAddresses"
+        ]
+      },
+      "SyncEmailAddressesResponseDto": {
+        "type": "object",
+        "properties": {
+          "added": {
+            "type": "number",
+            "description": "Number of new endpoints added",
+            "example": 2
+          },
+          "deleted": {
+            "type": "number",
+            "description": "Number of endpoints deleted",
+            "example": 1
+          },
+          "total": {
+            "type": "number",
+            "description": "Total number of email addresses after sync",
+            "example": 3
+          }
+        },
+        "required": [
+          "added",
+          "deleted",
+          "total"
+        ]
+      },
+      "UpdateEmailEndpointRequestDto": {
+        "type": "object",
+        "properties": {}
+      },
+      "MerchantWalletDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "merchantId": {
+            "type": "string"
+          },
+          "address": {
+            "type": "string",
+            "nullable": true,
+            "description": "Wallet address (lowercase)"
+          },
+          "provider": {
+            "enum": [
+              "internal_hd",
+              "shout"
+            ],
+            "type": "string",
+            "description": "Custody provider that holds this wallet"
+          },
+          "settlementToken": {
+            "nullable": true,
+            "description": "Token the merchant settles in; chain is nested",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/TokenDto"
+              }
+            ]
+          },
+          "createdAt": {
+            "format": "date-time",
+            "type": "string"
+          },
+          "updatedAt": {
+            "format": "date-time",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "merchantId",
+          "provider",
+          "settlementToken",
+          "createdAt",
+          "updatedAt"
+        ]
+      },
+      "UpsertShoutCredentialsDto": {
+        "type": "object",
+        "properties": {
+          "kid": {
+            "type": "string",
+            "description": "Key ID sent in the JWS header"
+          },
+          "privateKeyPem": {
+            "type": "string",
+            "description": "PKCS#8 PEM private key (PS256). Supports \\n-escaped newlines."
+          },
+          "environment": {
+            "type": "string",
+            "enum": [
+              "sandbox",
+              "production"
+            ]
+          }
+        },
+        "required": [
+          "kid",
+          "privateKeyPem",
+          "environment"
+        ]
+      },
+      "ShoutCredentialsDto": {
+        "type": "object",
+        "properties": {
+          "merchantId": {
+            "type": "string"
+          },
+          "kid": {
+            "type": "string",
+            "description": "Key ID sent in the JWS header"
+          },
+          "environment": {
+            "type": "string",
+            "enum": [
+              "sandbox",
+              "production"
+            ]
+          },
+          "keyVersion": {
+            "type": "number",
+            "description": "Master key version used to encrypt the private key"
+          },
+          "hasPrivateKey": {
+            "type": "boolean",
+            "description": "Whether an encrypted private key is stored"
+          },
+          "createdAt": {
+            "format": "date-time",
+            "type": "string"
+          },
+          "updatedAt": {
+            "format": "date-time",
+            "type": "string"
+          }
+        },
+        "required": [
+          "merchantId",
+          "kid",
+          "environment",
+          "keyVersion",
+          "hasPrivateKey",
+          "createdAt",
+          "updatedAt"
+        ]
+      },
+      "ShoutConnectionAccountDto": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "Partner user display name"
+          },
+          "email": {
+            "type": "string",
+            "description": "Partner user email"
+          },
+          "customerId": {
+            "type": "string",
+            "description": "Shout customer identifier"
+          },
+          "portalStatus": {
+            "type": "string",
+            "description": "Partner portal access status on Shout"
+          }
+        },
+        "required": [
+          "name",
+          "email",
+          "customerId",
+          "portalStatus"
+        ]
+      },
+      "ShoutConnectionTestDto": {
+        "type": "object",
+        "properties": {
+          "ok": {
+            "type": "boolean",
+            "description": "Whether the Shout /me call succeeded"
+          },
+          "environment": {
+            "type": "string",
+            "enum": [
+              "sandbox",
+              "production"
+            ],
+            "description": "Environment the tested credentials target"
+          },
+          "account": {
+            "description": "Authenticated Shout account (present on success)",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/ShoutConnectionAccountDto"
+              }
+            ]
+          },
+          "message": {
+            "type": "string",
+            "description": "Failure reason (present on failure)"
+          }
+        },
+        "required": [
+          "ok",
+          "environment"
+        ]
+      },
+      "PaginatedChainDtoResult": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ChainDto"
+            }
+          },
+          "pagination": {
+            "$ref": "#/components/schemas/PaginationMetaDto"
+          }
+        },
+        "required": [
+          "data",
+          "pagination"
+        ]
+      },
+      "PaginatedTokenDtoResult": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/TokenDto"
+            }
+          },
+          "pagination": {
+            "$ref": "#/components/schemas/PaginationMetaDto"
+          }
+        },
+        "required": [
+          "data",
+          "pagination"
+        ]
+      },
+      "BackendWalletBalanceDto": {
+        "type": "object",
+        "properties": {
+          "amount": {
+            "type": "string",
+            "description": "Raw native token balance amount in wei/smallest unit",
+            "example": "1000000000000000000"
+          },
+          "formatted": {
+            "type": "string",
+            "description": "Formatted native token balance amount (human-readable)",
+            "example": "1.0"
+          }
+        },
+        "required": [
+          "amount",
+          "formatted"
+        ]
+      },
+      "AdminTokenDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Token ID",
+            "example": "123e4567-e89b-12d3-a456-426614174000"
+          },
+          "coingeckoApiId": {
+            "type": "string",
+            "description": "Coingecko API ID",
+            "example": "ethereum"
+          },
+          "shoutAssetId": {
+            "type": "string",
+            "nullable": true,
+            "description": "Shout (Fireblocks/gateway) asset identifier. Null if the token is not supported by Shout.",
+            "example": "ETH_TEST5"
+          },
+          "chain": {
+            "description": "Chain information",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/ChainDto"
+              }
+            ]
+          },
+          "symbol": {
+            "type": "string",
+            "description": "Token symbol",
+            "example": "USDC"
+          },
+          "contractAddress": {
+            "type": "string",
+            "description": "Token contract address (lowercase)",
+            "example": "0xa0b86a33e6441b8c4c8c0c0c0c0c0c0c0c0c0c0"
+          },
+          "decimals": {
+            "type": "number",
+            "description": "Token decimals",
+            "example": 6
+          },
+          "type": {
+            "enum": [
+              "stablecoin",
+              "volatile"
+            ],
+            "type": "string",
+            "description": "Token type",
+            "example": "stablecoin"
+          },
+          "assetType": {
+            "enum": [
+              "native",
+              "erc20"
+            ],
+            "type": "string",
+            "description": "Token asset type",
+            "example": "native"
+          },
+          "status": {
+            "enum": [
+              "active",
+              "deprecated",
+              "blocked"
+            ],
+            "type": "string",
+            "description": "Token status",
+            "example": "active"
+          },
+          "tokenPriceUsd": {
+            "type": "number",
+            "nullable": true,
+            "description": "Token price in USD",
+            "example": 1
+          },
+          "swapTokenOut": {
+            "nullable": true,
+            "description": "Swap token out (stablecoin to swap to)",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/AdminTokenDto"
+              }
+            ]
+          },
+          "swapPoolFee": {
+            "type": "number",
+            "nullable": true,
+            "description": "Uniswap pool fee for swap (100, 500, or 3000)",
+            "example": 3000
+          }
+        },
+        "required": [
+          "id",
+          "coingeckoApiId",
+          "shoutAssetId",
+          "chain",
+          "symbol",
+          "contractAddress",
+          "decimals",
+          "type",
+          "assetType",
+          "status",
+          "tokenPriceUsd",
+          "swapTokenOut",
+          "swapPoolFee"
+        ]
+      },
+      "AdminChainDetailDto": {
+        "type": "object",
+        "properties": {
+          "chain": {
+            "description": "Chain information",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/ChainDto"
+              }
+            ]
+          },
+          "rpcUrl": {
+            "type": "string",
+            "nullable": true,
+            "description": "RPC URL for the chain",
+            "example": "https://eth-mainnet.g.alchemy.com/v2/..."
+          },
+          "delegationAddress": {
+            "type": "string",
+            "nullable": true,
+            "description": "EIP-7702 delegation address for the chain",
+            "example": "0x1234567890123456789012345678901234567890"
+          },
+          "backendWalletAddress": {
+            "type": "string",
+            "description": "Backend wallet address (same across all chains)",
+            "example": "0xabcdefabcdefabcdefabcdefabcdefabcdefabcd"
+          },
+          "backendWalletBalance": {
+            "description": "Backend wallet balances on this chain",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/BackendWalletBalanceDto"
+              }
+            ]
+          },
+          "tokens": {
+            "description": "All tokens registered for this chain",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/AdminTokenDto"
+            }
+          }
+        },
+        "required": [
+          "chain",
+          "rpcUrl",
+          "delegationAddress",
+          "backendWalletAddress",
+          "backendWalletBalance",
+          "tokens"
+        ]
+      },
+      "DepositAddressDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "description": "Deposit address ID"
+          },
+          "paymentId": {
+            "type": "string",
+            "nullable": true
+          },
+          "type": {
+            "type": "string",
+            "enum": [
+              "EVM"
+            ]
+          },
+          "address": {
+            "type": "string",
+            "description": "Token contract address (lowercase)",
+            "example": "0xa0b86a33e6441b8c4c8c0c0c0c0c0c0c0c0c0c0"
+          },
+          "createdAt": {
+            "format": "date-time",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "type",
+          "address",
+          "createdAt"
+        ]
+      },
+      "PaymentQuoteDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "description": "Quote ID"
+          },
+          "paymentId": {
+            "type": "string",
+            "format": "uuid",
+            "description": "Payment ID"
+          },
+          "token": {
+            "description": "Token",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/TokenDto"
+              }
+            ]
+          },
+          "chainId": {
+            "type": "string",
+            "description": "CAIP-2 chain id",
+            "example": "eip155:1"
+          },
+          "depositAddress": {
+            "description": "Deposit address for this quote",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/DepositAddressDto"
+              }
+            ]
+          },
+          "expectedAmountAsset": {
+            "type": "string",
+            "description": "Expected amount asset"
+          },
+          "rateUsdAsset": {
+            "type": "number",
+            "description": "Rate USD asset"
+          },
+          "amountDueCents": {
+            "type": "number",
+            "nullable": true,
+            "description": "Amount the buyer pays for this quote in cents, including the convenience fee. Null for quotes without a resolved fee breakdown."
+          },
+          "expiresAt": {
+            "format": "date-time",
+            "type": "string",
+            "description": "Expires at"
+          },
+          "status": {
+            "enum": [
+              "active",
+              "expired",
+              "used",
+              "failed"
+            ],
+            "type": "string",
+            "description": "Status"
+          },
+          "createdAt": {
+            "format": "date-time",
+            "type": "string",
+            "description": "Created at"
+          }
+        },
+        "required": [
+          "id",
+          "paymentId",
+          "token",
+          "chainId",
+          "depositAddress",
+          "expectedAmountAsset",
+          "rateUsdAsset",
+          "amountDueCents",
+          "expiresAt",
+          "status",
+          "createdAt"
+        ]
+      },
+      "PaymentReceiptDto": {
+        "type": "object",
+        "properties": {
+          "paymentId": {
+            "type": "string",
+            "format": "uuid",
+            "description": "Payment ID"
+          },
+          "selectedQuote": {
+            "description": "Selected quote",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/PaymentQuoteDto"
+              }
+            ]
+          },
+          "settledToken": {
+            "description": "Settled token",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/TokenDto"
+              }
+            ]
+          },
+          "settledChain": {
+            "description": "Settled chain",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/ChainDto"
+              }
+            ]
+          },
+          "settledAmountAsset": {
+            "type": "string",
+            "description": "Settled amount in asset",
+            "example": "100"
+          },
+          "settledAmountUsd": {
+            "type": "string",
+            "description": "Settled amount in USD",
+            "example": "100.00"
+          },
+          "txHash": {
+            "type": "string",
+            "nullable": true,
+            "description": "Transaction hash",
+            "example": "0xda3be87732110de6c1354c83770aae630ede9ac308d9f7b399ecfba23d923384"
+          },
+          "txBlockNumber": {
+            "type": "number",
+            "nullable": true,
+            "description": "Block number",
+            "example": 123456
+          },
+          "txTimestamp": {
+            "format": "date-time",
+            "type": "string",
+            "nullable": true,
+            "description": "Timestamp",
+            "example": "2021-01-01T00:00:00.000Z"
+          },
+          "txSenderAddress": {
+            "type": "string",
+            "nullable": true,
+            "description": "Sender address",
+            "example": "0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee"
+          },
+          "txGasUsed": {
+            "type": "number",
+            "nullable": true,
+            "description": "Gas used",
+            "example": 100000
+          },
+          "txTotalCost": {
+            "type": "string",
+            "nullable": true,
+            "description": "Total cost",
+            "example": "1000000000000000000"
+          },
+          "txTotalCostUsdFractions": {
+            "type": "number",
+            "nullable": true,
+            "description": "Total cost in USD, 6 decimals of precision",
+            "example": 1000000
+          },
+          "txIsSponsored": {
+            "type": "boolean",
+            "nullable": true,
+            "description": "Is transaction sponsored",
+            "example": true
+          },
+          "processedBy": {
+            "nullable": true,
+            "enum": [
+              "webhook",
+              "frontend",
+              "cron",
+              "manual",
+              "shout_webhook"
+            ],
+            "type": "string",
+            "description": "Who processed the transaction (webhook, frontend, cron)",
+            "example": "webhook"
+          },
+          "txRiskScore": {
+            "type": "number",
+            "nullable": true,
+            "description": "Transaction risk score (1-100, higher is safer)",
+            "example": 85
+          },
+          "txRiskSeverity": {
+            "nullable": true,
+            "enum": [
+              "CRITICAL_RISK",
+              "HIGH_RISK",
+              "MEDIUM_RISK",
+              "LOW_RISK",
+              "NO_RISK"
+            ],
+            "type": "string",
+            "description": "Transaction risk severity label",
+            "example": "LOW_RISK"
+          },
+          "txRiskProvider": {
+            "type": "string",
+            "nullable": true,
+            "description": "Transaction risk provider identifier",
+            "example": "scorechain"
+          },
+          "createdAt": {
+            "format": "date-time",
+            "type": "string",
+            "description": "Created at"
+          }
+        },
+        "required": [
+          "paymentId",
+          "selectedQuote",
+          "settledToken",
+          "settledChain",
+          "settledAmountAsset",
+          "settledAmountUsd",
+          "txHash",
+          "txBlockNumber",
+          "txTimestamp",
+          "txSenderAddress",
+          "txGasUsed",
+          "txTotalCost",
+          "txTotalCostUsdFractions",
+          "txIsSponsored",
+          "processedBy",
+          "txRiskScore",
+          "txRiskSeverity",
+          "txRiskProvider",
+          "createdAt"
+        ]
+      },
+      "MerchantPaymentDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "description": "Payment ID"
+          },
+          "merchantId": {
+            "type": "string",
+            "format": "uuid",
+            "description": "Merchant ID"
+          },
+          "merchantShortName": {
+            "type": "string",
+            "description": "Merchant short name"
+          },
+          "merchantLogoUrl": {
+            "type": "string",
+            "nullable": true,
+            "description": "Merchant logo URL"
+          },
+          "type": {
+            "enum": [
+              "payment",
+              "deposit"
+            ],
+            "type": "string",
+            "description": "Payment type"
+          },
+          "amountInCents": {
+            "type": "number",
+            "description": "Payment amount in cents"
+          },
+          "amountDueCents": {
+            "type": "number",
+            "description": "Amount due in cents. Provisional until a quote is paid, then finalized to the paid quote (chain-specific convenience fee)."
+          },
+          "convenienceFeeCents": {
+            "type": "number",
+            "nullable": true,
+            "description": "Convenience fee in cents charged to the buyer. Null until the payment settles."
+          },
+          "merchantFeeCents": {
+            "type": "number",
+            "nullable": true,
+            "description": "Merchant fee in cents deducted from the merchant. Null until the payment settles."
+          },
+          "swapFeeCents": {
+            "type": "number",
+            "nullable": true,
+            "description": "Swap fee in cents deducted from the merchant. Null until the payment settles."
+          },
+          "currency": {
+            "type": "string",
+            "enum": [
+              "USD"
+            ],
+            "description": "Currency of the payment"
+          },
+          "status": {
+            "enum": [
+              "pending",
+              "processing",
+              "completed",
+              "failed",
+              "expired",
+              "cancelled"
+            ],
+            "type": "string",
+            "description": "Payment status"
+          },
+          "quotes": {
+            "description": "Quotes",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/PaymentQuoteDto"
+            }
+          },
+          "receipt": {
+            "nullable": true,
+            "description": "Receipt",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/PaymentReceiptDto"
+              }
+            ]
+          },
+          "orderId": {
+            "type": "string",
+            "nullable": true,
+            "description": "Order ID"
+          },
+          "redirectUrl": {
+            "type": "string",
+            "nullable": true,
+            "description": "Redirect URL"
+          },
+          "createdAt": {
+            "format": "date-time",
+            "type": "string",
+            "description": "Created at"
+          },
+          "amountMerchantNetCents": {
+            "type": "number",
+            "description": "Amount the merchant receives after fees, in cents"
+          }
+        },
+        "required": [
+          "id",
+          "merchantId",
+          "merchantShortName",
+          "merchantLogoUrl",
+          "type",
+          "amountInCents",
+          "amountDueCents",
+          "convenienceFeeCents",
+          "merchantFeeCents",
+          "swapFeeCents",
+          "currency",
+          "status",
+          "quotes",
+          "receipt",
+          "orderId",
+          "redirectUrl",
+          "createdAt",
+          "amountMerchantNetCents"
+        ]
+      },
+      "PaginatedMerchantPaymentDtoResult": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/MerchantPaymentDto"
+            }
+          },
+          "pagination": {
+            "$ref": "#/components/schemas/PaginationMetaDto"
+          }
+        },
+        "required": [
+          "data",
+          "pagination"
+        ]
+      },
+      "CreatePaymentRequestDto": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "enum": [
+              "payment",
+              "deposit"
+            ],
+            "type": "string",
+            "description": "Type of the payment. \"payment\" requires a fixed amount; \"deposit\" accepts any amount sent by the customer.",
+            "default": "payment"
+          },
+          "amount": {
+            "type": "number",
+            "minimum": 400,
+            "maximum": 100000000,
+            "description": "Payment amount in cents (e.g., 100 = $1.00). Required for type \"payment\", ignored for type \"deposit\". Minimum: 400 cents, Maximum: 100000000 cents.",
+            "example": 400
+          },
+          "currency": {
+            "type": "string",
+            "enum": [
+              "USD"
+            ],
+            "description": "The currency of the payment. Only USD is supported.",
+            "example": "USD"
+          },
+          "orderId": {
+            "type": "string",
+            "maxLength": 255,
+            "description": "The order ID from the merchant",
+            "example": "Order_1234567890"
+          },
+          "customerRefId": {
+            "type": "string",
+            "maxLength": 255,
+            "description": "Stable customer identifier for deposits: the same value reuses the same deposit wallet across a customer's deposits (scoped to the merchant). Ignored for checkout (PAYMENT-type) payments.",
+            "example": "customer_42"
+          },
+          "redirectUrl": {
+            "type": "string",
+            "maxLength": 2048,
+            "format": "uri",
+            "description": "URL to redirect the customer to after successful payment",
+            "example": "https://merchant.example.com/checkout/success"
+          },
+          "customMetadata": {
+            "type": "string",
+            "maxLength": 2048,
+            "description": "Arbitrary metadata to append to the redirect URL as a query string",
+            "example": "{\"cartId\":\"abc123\",\"promo\":\"SUMMER24\"}"
+          }
+        },
+        "required": [
+          "currency",
+          "orderId"
+        ]
+      },
+      "CreatePaymentResponseDto": {
+        "type": "object",
+        "properties": {
+          "paymentUrl": {
+            "type": "string",
+            "description": "URL of the payment screen where the customer can complete the payment",
+            "example": "https://spacepay.example.com/payment?paymentId=1234567890&secret=1234567890"
+          },
+          "secret": {
+            "type": "string",
+            "description": "Secret of the payment",
+            "example": "1234567890"
+          },
+          "paymentId": {
+            "type": "string",
+            "description": "Payment ID",
+            "example": "1234567890"
+          },
+          "payment": {
+            "description": "Payment",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/MerchantPaymentDto"
+              }
+            ]
+          }
+        },
+        "required": [
+          "paymentUrl",
+          "secret",
+          "paymentId",
+          "payment"
+        ]
+      },
+      "PaymentDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "description": "Payment ID"
+          },
+          "merchantId": {
+            "type": "string",
+            "format": "uuid",
+            "description": "Merchant ID"
+          },
+          "merchantShortName": {
+            "type": "string",
+            "description": "Merchant short name"
+          },
+          "merchantLogoUrl": {
+            "type": "string",
+            "nullable": true,
+            "description": "Merchant logo URL"
+          },
+          "type": {
+            "enum": [
+              "payment",
+              "deposit"
+            ],
+            "type": "string",
+            "description": "Payment type"
+          },
+          "amountInCents": {
+            "type": "number",
+            "description": "Payment amount in cents"
+          },
+          "amountDueCents": {
+            "type": "number",
+            "description": "Amount due in cents. Provisional until a quote is paid, then finalized to the paid quote (chain-specific convenience fee)."
+          },
+          "convenienceFeeCents": {
+            "type": "number",
+            "nullable": true,
+            "description": "Convenience fee in cents charged to the buyer. Null until the payment settles."
+          },
+          "merchantFeeCents": {
+            "type": "number",
+            "nullable": true,
+            "description": "Merchant fee in cents deducted from the merchant. Null until the payment settles."
+          },
+          "swapFeeCents": {
+            "type": "number",
+            "nullable": true,
+            "description": "Swap fee in cents deducted from the merchant. Null until the payment settles."
+          },
+          "currency": {
+            "type": "string",
+            "enum": [
+              "USD"
+            ],
+            "description": "Currency of the payment"
+          },
+          "status": {
+            "enum": [
+              "pending",
+              "processing",
+              "completed",
+              "failed",
+              "expired",
+              "cancelled"
+            ],
+            "type": "string",
+            "description": "Payment status"
+          },
+          "quotes": {
+            "description": "Quotes",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/PaymentQuoteDto"
+            }
+          },
+          "receipt": {
+            "nullable": true,
+            "description": "Receipt",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/PaymentReceiptDto"
+              }
+            ]
+          },
+          "orderId": {
+            "type": "string",
+            "nullable": true,
+            "description": "Order ID"
+          },
+          "redirectUrl": {
+            "type": "string",
+            "nullable": true,
+            "description": "Redirect URL"
+          },
+          "createdAt": {
+            "format": "date-time",
+            "type": "string",
+            "description": "Created at"
+          }
+        },
+        "required": [
+          "id",
+          "merchantId",
+          "merchantShortName",
+          "merchantLogoUrl",
+          "type",
+          "amountInCents",
+          "amountDueCents",
+          "convenienceFeeCents",
+          "merchantFeeCents",
+          "swapFeeCents",
+          "currency",
+          "status",
+          "quotes",
+          "receipt",
+          "orderId",
+          "redirectUrl",
+          "createdAt"
+        ]
+      },
+      "PaymentStatusDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "description": "Payment ID"
+          },
+          "status": {
+            "enum": [
+              "pending",
+              "processing",
+              "completed",
+              "failed",
+              "expired",
+              "cancelled"
+            ],
+            "type": "string",
+            "description": "Payment status"
+          }
+        },
+        "required": [
+          "id",
+          "status"
+        ]
+      },
+      "CreateQuoteByContractDto": {
+        "type": "object",
+        "properties": {
+          "chainId": {
+            "type": "string",
+            "maxLength": 41,
+            "description": "CAIP-2 chain id",
+            "example": "eip155:1"
+          },
+          "forceDepositAmount": {
+            "type": "number",
+            "minimum": 1,
+            "description": "Force a specific amount (in cents) for deposit-type payments. Only allowed when payment type is \"deposit\". The quote will be priced based on this amount.",
+            "example": 1000
+          },
+          "contractAddress": {
+            "type": "string"
+          }
+        }
+      },
+      "RefreshPaymentStatusDto": {
+        "type": "object",
+        "properties": {
+          "transactionHash": {
+            "type": "string",
+            "description": "Transaction hash (optional)",
+            "example": "0xda3be87732110de6c1354c83770aae630ede9ac308d9f7b399ecfba23d923384"
+          },
+          "chainId": {
+            "type": "string",
+            "maxLength": 41,
+            "description": "CAIP-2 chain id (optional)",
+            "example": "eip155:1"
+          },
+          "tokenContractAddress": {
+            "type": "string",
+            "description": "Token contract address (optional)",
+            "example": "0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee"
+          }
+        }
+      },
+      "TransferPreviewDto": {
+        "type": "object",
+        "properties": {
+          "recipientAddress": {
+            "type": "string",
+            "description": "Recipient address for the transfer",
+            "example": "0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb"
+          },
+          "depositAddressBalance": {
+            "type": "string",
+            "description": "Deposit address balance in token smallest units",
+            "example": "1000000000000000000"
+          },
+          "token": {
+            "description": "Token to be transferred",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/TokenDto"
+              }
+            ]
+          },
+          "chain": {
+            "description": "Chain where the transfer will occur",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/ChainDto"
+              }
+            ]
+          },
+          "txTotalCostEstimateWei": {
+            "type": "string",
+            "nullable": true,
+            "description": "Total cost in wei (native token)",
+            "example": "1000000000000000000"
+          },
+          "txTotalCostEstimateToken": {
+            "type": "string",
+            "nullable": true,
+            "description": "Total cost in token smallest units of the token that will be transferred",
+            "example": "1000000000000000000"
+          },
+          "txTotalCostEstimateUsdFractions": {
+            "type": "string",
+            "nullable": true,
+            "description": "Total cost in USD, 6 decimals of precision",
+            "example": 1000000
+          },
+          "gasEstimate": {
+            "type": "string",
+            "nullable": true,
+            "description": "Gas estimate",
+            "example": "1000000000000000000"
+          }
+        },
+        "required": [
+          "recipientAddress",
+          "depositAddressBalance",
+          "token",
+          "chain",
+          "txTotalCostEstimateWei",
+          "txTotalCostEstimateToken",
+          "txTotalCostEstimateUsdFractions",
+          "gasEstimate"
+        ]
+      },
+      "OfframpTransferDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "paymentId": {
+            "type": "string"
+          },
+          "depositAddressId": {
+            "type": "string",
+            "nullable": true
+          },
+          "merchantId": {
+            "type": "string"
+          },
+          "recipientAddress": {
+            "type": "string",
+            "description": "Recipient address",
+            "example": "0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb"
+          },
+          "transferType": {
+            "enum": [
+              "refund",
+              "offramp"
+            ],
+            "type": "string"
+          },
+          "reason": {
+            "type": "string",
+            "nullable": true
+          },
+          "initiator": {
+            "enum": [
+              "system",
+              "admin",
+              "cron"
+            ],
+            "type": "string"
+          },
+          "initiatorId": {
+            "type": "string",
+            "nullable": true
+          },
+          "token": {
+            "nullable": true,
+            "description": "Token",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/TokenDto"
+              }
+            ]
+          },
+          "chain": {
+            "nullable": true,
+            "description": "Chain",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/ChainDto"
+              }
+            ]
+          },
+          "amount": {
+            "type": "string",
+            "description": "Amount in token units (as string)"
+          },
+          "status": {
+            "enum": [
+              "pending",
+              "processing",
+              "completed",
+              "failed",
+              "retrying"
+            ],
+            "type": "string"
+          },
+          "txHash": {
+            "type": "string",
+            "nullable": true
+          },
+          "txGasUsed": {
+            "type": "number",
+            "nullable": true,
+            "description": "Gas used",
+            "example": 100000
+          },
+          "txTotalCost": {
+            "type": "string",
+            "nullable": true,
+            "description": "Total cost",
+            "example": "1000000000000000000"
+          },
+          "txTotalCostUsdFractions": {
+            "type": "number",
+            "nullable": true,
+            "description": "Total cost in USD, 6 decimals of precision",
+            "example": 1000000
+          },
+          "errorMessage": {
+            "type": "string",
+            "nullable": true
+          },
+          "retryCount": {
+            "type": "number"
+          },
+          "createdAt": {
+            "format": "date-time",
+            "type": "string"
+          },
+          "updatedAt": {
+            "format": "date-time",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "paymentId",
+          "depositAddressId",
+          "merchantId",
+          "recipientAddress",
+          "transferType",
+          "reason",
+          "initiator",
+          "initiatorId",
+          "token",
+          "chain",
+          "amount",
+          "status",
+          "txHash",
+          "txGasUsed",
+          "txTotalCost",
+          "txTotalCostUsdFractions",
+          "errorMessage",
+          "retryCount",
+          "createdAt",
+          "updatedAt"
+        ]
+      },
+      "PaginatedOfframpTransferDtoResult": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/OfframpTransferDto"
+            }
+          },
+          "pagination": {
+            "$ref": "#/components/schemas/PaginationMetaDto"
+          }
+        },
+        "required": [
+          "data",
+          "pagination"
+        ]
+      },
+      "ManualTransferRequestDto": {
+        "type": "object",
+        "properties": {
+          "transferType": {
+            "enum": [
+              "refund",
+              "offramp"
+            ],
+            "type": "string",
+            "description": "Type of transfer",
+            "example": "offramp"
+          },
+          "amountToTransfer": {
+            "type": "string",
+            "nullable": true,
+            "description": "Amount in asset units"
+          },
+          "reason": {
+            "type": "string",
+            "description": "Reason for manual transfer (required for manual transfers)",
+            "example": "Customer requested refund"
+          }
+        },
+        "required": [
+          "transferType",
+          "reason"
+        ]
+      },
+      "PaymentAttentionReasonItemDto": {
+        "type": "object",
+        "properties": {
+          "reason": {
+            "enum": [
+              "status_not_expired_but_too_old",
+              "amount_out_of_supported_range",
+              "status_completed_but_missing_sender",
+              "status_completed_but_no_offramp_transfer",
+              "completed_offramp_but_no_tx_cost"
+            ],
+            "type": "string",
+            "description": "Reason code"
+          },
+          "description": {
+            "type": "string",
+            "description": "Human-readable description of the reason",
+            "example": "Payment is older than the expiration window but not marked expired"
+          }
+        },
+        "required": [
+          "reason",
+          "description"
+        ]
+      },
+      "PaymentAttentionItemDto": {
+        "type": "object",
+        "properties": {
+          "reasons": {
+            "description": "Reasons why this payment requires admin attention",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/PaymentAttentionReasonItemDto"
+            }
+          },
+          "payment": {
+            "description": "Payment details",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/MerchantPaymentDto"
+              }
+            ]
+          }
+        },
+        "required": [
+          "reasons",
+          "payment"
+        ]
+      },
+      "PaginatedPaymentAttentionItemDtoResult": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/PaymentAttentionItemDto"
+            }
+          },
+          "pagination": {
+            "$ref": "#/components/schemas/PaginationMetaDto"
+          }
+        },
+        "required": [
+          "data",
+          "pagination"
+        ]
+      },
+      "TatumFungibleWebhookDto": {
+        "type": "object",
+        "properties": {
+          "currency": {
+            "type": "string",
+            "description": "The currency symbol of the transaction.",
+            "example": "ETH"
+          },
+          "chain": {
+            "type": "string",
+            "description": "Tatum network name of the transaction.",
+            "example": "ethereum-sepolia"
+          },
+          "amount": {
+            "type": "string",
+            "description": "The amount of the transaction in the currency of the transaction.",
+            "example": "0.0001"
+          },
+          "address": {
+            "type": "string",
+            "description": "The recipient address of the transaction.",
+            "example": "0x23fc921b431b515c3e3e2b5a147f62cd4c7adab9"
+          },
+          "counterAddress": {
+            "type": "string",
+            "nullable": true,
+            "description": "The sender address of the transaction.",
+            "example": "0x23fc921b431b515c3e3e2b5a147f62cd4c7adab9"
+          },
+          "subscriptionType": {
+            "type": "string",
+            "description": "The type of the transaction.",
+            "enum": [
+              "INCOMING_NATIVE_TX",
+              "INCOMING_FUNGIBLE_TX"
+            ],
+            "example": "INCOMING_NATIVE_TX"
+          },
+          "blockNumber": {
+            "type": "number",
+            "description": "The block number of the transaction.",
+            "example": 1234567890
+          },
+          "txId": {
+            "type": "string",
+            "description": "The transaction hash of the transaction.",
+            "example": "0x5e57a675957dbf62676e3a9807014a355bfb95f7cd3d7dd26790a2ec8b3ca5ec"
+          },
+          "contractAddress": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "required": [
+          "currency",
+          "chain",
+          "amount",
+          "address",
+          "counterAddress",
+          "subscriptionType",
+          "blockNumber",
+          "txId"
+        ]
+      },
+      "AdminTransactionMonitoringTestDto": {
+        "type": "object",
+        "properties": {
+          "txHash": {
+            "type": "string",
+            "description": "Transaction hash to analyze",
+            "example": "0x1234abcd..."
+          },
+          "chainId": {
+            "type": "string",
+            "maxLength": 41,
+            "description": "CAIP-2 chain id corresponding to the transaction",
+            "example": "eip155:1"
+          }
+        },
+        "required": [
+          "txHash",
+          "chainId"
+        ]
+      },
+      "AdminAddressMonitoringTestDto": {
+        "type": "object",
+        "properties": {
+          "address": {
+            "type": "string",
+            "description": "Address to analyze",
+            "example": "0x1234abcd..."
+          },
+          "chainId": {
+            "type": "string",
+            "maxLength": 41,
+            "description": "CAIP-2 chain id corresponding to the address",
+            "example": "eip155:1"
+          }
+        },
+        "required": [
+          "address",
+          "chainId"
+        ]
+      },
+      "AdminWalletMonitoringTestDto": {
+        "type": "object",
+        "properties": {
+          "address": {
+            "type": "string",
+            "description": "Wallet address to analyze",
+            "example": "0x1234abcd..."
+          },
+          "chainId": {
+            "type": "string",
+            "maxLength": 41,
+            "description": "CAIP-2 chain id corresponding to the wallet",
+            "example": "eip155:1"
+          }
+        },
+        "required": [
+          "address",
+          "chainId"
+        ]
+      },
+      "MerchantBeneficiaryDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "merchantId": {
+            "type": "string"
+          },
+          "beneficiaryType": {
+            "enum": [
+              "individual",
+              "corporate"
+            ],
+            "type": "string"
+          },
+          "name": {
+            "type": "string",
+            "nullable": true,
+            "description": "Company name (corporate)"
+          },
+          "firstName": {
+            "type": "string",
+            "nullable": true,
+            "description": "First name (individual)"
+          },
+          "lastName": {
+            "type": "string",
+            "nullable": true,
+            "description": "Last name (individual)"
+          },
+          "nickname": {
+            "type": "string"
+          },
+          "accountNumberMasked": {
+            "type": "string",
+            "description": "Masked bank account number (last 4 only)"
+          },
+          "sortCodeMasked": {
+            "type": "string",
+            "description": "Masked bank sort code (last 4 only)"
+          },
+          "ibanMasked": {
+            "type": "string",
+            "nullable": true,
+            "description": "Masked IBAN (last 4 only)"
+          },
+          "swiftBic": {
+            "type": "string",
+            "nullable": true
+          },
+          "addressStreetLine1": {
+            "type": "string"
+          },
+          "addressCity": {
+            "type": "string"
+          },
+          "addressPostcode": {
+            "type": "string"
+          },
+          "addressCountry": {
+            "type": "string",
+            "description": "ISO 3166-1 alpha-2 country code"
+          },
+          "currency": {
+            "type": "string",
+            "nullable": true,
+            "description": "Currency of the Shout fiat account the beneficiary is under"
+          },
+          "status": {
+            "enum": [
+              "pending",
+              "approved",
+              "rejected",
+              "deactivated"
+            ],
+            "type": "string"
+          },
+          "createdAt": {
+            "format": "date-time",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "merchantId",
+          "beneficiaryType",
+          "name",
+          "firstName",
+          "lastName",
+          "nickname",
+          "accountNumberMasked",
+          "sortCodeMasked",
+          "ibanMasked",
+          "swiftBic",
+          "addressStreetLine1",
+          "addressCity",
+          "addressPostcode",
+          "addressCountry",
+          "currency",
+          "status",
+          "createdAt"
+        ]
+      },
+      "MerchantBeneficiaryAddressDto": {
+        "type": "object",
+        "properties": {
+          "streetLine1": {
+            "type": "string",
+            "maxLength": 255,
+            "description": "Primary street address line"
+          },
+          "city": {
+            "type": "string",
+            "maxLength": 128,
+            "description": "City or locality"
+          },
+          "postcode": {
+            "type": "string",
+            "maxLength": 32,
+            "description": "Postal or ZIP code"
+          },
+          "country": {
+            "type": "string",
+            "minLength": 2,
+            "maxLength": 2,
+            "description": "ISO 3166-1 alpha-2 country code"
+          }
+        },
+        "required": [
+          "streetLine1",
+          "city",
+          "postcode",
+          "country"
+        ]
+      },
+      "CreateMerchantBeneficiaryDto": {
+        "type": "object",
+        "properties": {
+          "beneficiaryType": {
+            "enum": [
+              "individual",
+              "corporate"
+            ],
+            "type": "string",
+            "description": "Beneficiary classification; controls which name fields are required"
+          },
+          "name": {
+            "type": "string",
+            "maxLength": 255,
+            "description": "Company name; required for corporate beneficiaries"
+          },
+          "firstName": {
+            "type": "string",
+            "maxLength": 128,
+            "description": "First name; required for individual beneficiaries"
+          },
+          "lastName": {
+            "type": "string",
+            "maxLength": 128,
+            "description": "Last name; required for individual beneficiaries"
+          },
+          "nickname": {
+            "type": "string",
+            "maxLength": 128,
+            "description": "Display label for the beneficiary"
+          },
+          "accountNumber": {
+            "type": "string",
+            "maxLength": 34,
+            "description": "Beneficiary bank account number; spaces and dashes are stripped server-side"
+          },
+          "sortCode": {
+            "type": "string",
+            "maxLength": 16,
+            "description": "Beneficiary bank sort code; spaces and dashes are stripped server-side"
+          },
+          "iban": {
+            "type": "string",
+            "maxLength": 34,
+            "description": "IBAN for international payout rails when supported"
+          },
+          "swiftBic": {
+            "type": "string",
+            "maxLength": 16,
+            "description": "SWIFT/BIC code of the beneficiary bank"
+          },
+          "address": {
+            "description": "Registered beneficiary address",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/MerchantBeneficiaryAddressDto"
+              }
+            ]
+          },
+          "emailOtcCode": {
+            "type": "string",
+            "minLength": 6,
+            "maxLength": 6,
+            "description": "One-time code emailed via POST /merchants/:merchantId/email-otc with purpose add_beneficiary"
+          }
+        },
+        "required": [
+          "beneficiaryType",
+          "nickname",
+          "accountNumber",
+          "sortCode",
+          "address",
+          "emailOtcCode"
+        ]
+      },
+      "CreateWithdrawalDto": {
+        "type": "object",
+        "properties": {
+          "amountInCents": {
+            "type": "number",
+            "minimum": 100,
+            "maximum": 100000000,
+            "description": "Withdrawal amount in cents (e.g., 100 = $1.00). Minimum: 100 cents, Maximum: 100000000 cents.",
+            "example": 100
+          },
+          "chainId": {
+            "type": "string",
+            "maxLength": 41,
+            "description": "CAIP-2 chain id (EVM)",
+            "example": "eip155:8453"
+          },
+          "recipientAddress": {
+            "type": "string",
+            "description": "Beneficiary address"
+          },
+          "orderId": {
+            "type": "string",
+            "maxLength": 255,
+            "description": "Order ID from the merchant",
+            "example": "Order_1234567890"
+          },
+          "customMetadata": {
+            "type": "string",
+            "maxLength": 2048,
+            "description": "Arbitrary metadata to attach to the withdrawal",
+            "example": "{\"cartId\":\"abc123\",\"promo\":\"SUMMER24\"}"
+          },
+          "currency": {
+            "type": "string",
+            "enum": [
+              "USD"
+            ],
+            "description": "Currency of the withdrawal (defaults to USD)"
+          }
+        },
+        "required": [
+          "amountInCents",
+          "chainId",
+          "recipientAddress"
+        ]
+      },
+      "WithdrawalReceiptDto": {
+        "type": "object",
+        "properties": {
+          "withdrawalId": {
+            "type": "string",
+            "format": "uuid",
+            "description": "Withdrawal ID"
+          },
+          "settledToken": {
+            "nullable": true,
+            "description": "Settled token",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/TokenDto"
+              }
+            ]
+          },
+          "settledChain": {
+            "nullable": true,
+            "description": "Settled chain",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/ChainDto"
+              }
+            ]
+          },
+          "settledAmountAsset": {
+            "type": "string",
+            "nullable": true,
+            "description": "Settled amount in asset",
+            "example": "100"
+          },
+          "settledAmountUsd": {
+            "type": "string",
+            "nullable": true,
+            "description": "Settled amount in USD",
+            "example": "100.00"
+          },
+          "txHash": {
+            "type": "string",
+            "nullable": true,
+            "description": "Transaction hash",
+            "example": "0xda3be87732110de6c1354c83770aae630ede9ac308d9f7b399ecfba23d923384"
+          },
+          "txBlockNumber": {
+            "type": "number",
+            "nullable": true,
+            "description": "Block number",
+            "example": 123456
+          },
+          "txTimestamp": {
+            "format": "date-time",
+            "type": "string",
+            "nullable": true,
+            "description": "Timestamp",
+            "example": "2021-01-01T00:00:00.000Z"
+          },
+          "txSenderAddress": {
+            "type": "string",
+            "nullable": true,
+            "description": "Sender address",
+            "example": "0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee"
+          },
+          "txGasUsed": {
+            "type": "number",
+            "nullable": true,
+            "description": "Gas used",
+            "example": 100000
+          },
+          "txTotalCost": {
+            "type": "string",
+            "nullable": true,
+            "description": "Total cost",
+            "example": "1000000000000000000"
+          },
+          "txTotalCostUsdFractions": {
+            "type": "number",
+            "nullable": true,
+            "description": "Total cost in USD, 6 decimals of precision",
+            "example": 1000000
+          },
+          "txIsSponsored": {
+            "type": "boolean",
+            "nullable": true,
+            "description": "Is transaction sponsored",
+            "example": true
+          },
+          "processedBy": {
+            "nullable": true,
+            "enum": [
+              "webhook",
+              "frontend",
+              "cron",
+              "manual"
+            ],
+            "type": "string",
+            "description": "Who processed the transaction"
+          },
+          "createdAt": {
+            "format": "date-time",
+            "type": "string",
+            "description": "Created at"
+          }
+        },
+        "required": [
+          "withdrawalId",
+          "settledToken",
+          "settledChain",
+          "settledAmountAsset",
+          "settledAmountUsd",
+          "txBlockNumber",
+          "txTimestamp",
+          "txSenderAddress",
+          "txGasUsed",
+          "txTotalCost",
+          "txTotalCostUsdFractions",
+          "txIsSponsored",
+          "processedBy",
+          "createdAt"
+        ]
+      },
+      "WithdrawalDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "description": "Withdrawal ID"
+          },
+          "merchantId": {
+            "type": "string",
+            "format": "uuid",
+            "description": "Merchant ID"
+          },
+          "amountInCents": {
+            "type": "number",
+            "description": "Withdrawal amount in USD cents"
+          },
+          "chainId": {
+            "type": "string",
+            "description": "CAIP-2 chain id",
+            "example": "eip155:8453"
+          },
+          "recipientAddress": {
+            "type": "string",
+            "description": "Beneficiary address"
+          },
+          "status": {
+            "enum": [
+              "pending",
+              "processing",
+              "completed",
+              "failed",
+              "cancelled"
+            ],
+            "type": "string",
+            "description": "Withdrawal status"
+          },
+          "currency": {
+            "type": "string",
+            "enum": [
+              "USD"
+            ],
+            "description": "Currency of the withdrawal"
+          },
+          "orderId": {
+            "type": "string",
+            "nullable": true,
+            "description": "Optional order ID"
+          },
+          "customMetadata": {
+            "type": "string",
+            "nullable": true,
+            "description": "Optional custom metadata"
+          },
+          "errorMessage": {
+            "type": "string",
+            "nullable": true,
+            "description": "Error message (if failed)"
+          },
+          "receipt": {
+            "nullable": true,
+            "description": "Withdrawal receipt",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/WithdrawalReceiptDto"
+              }
+            ]
+          },
+          "createdAt": {
+            "format": "date-time",
+            "type": "string",
+            "description": "Created at"
+          },
+          "updatedAt": {
+            "format": "date-time",
+            "type": "string",
+            "description": "Updated at"
+          }
+        },
+        "required": [
+          "id",
+          "merchantId",
+          "amountInCents",
+          "chainId",
+          "recipientAddress",
+          "status",
+          "currency",
+          "orderId",
+          "customMetadata",
+          "errorMessage",
+          "receipt",
+          "createdAt",
+          "updatedAt"
+        ]
+      },
+      "PaginatedWithdrawalDtoResult": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/WithdrawalDto"
+            }
+          },
+          "pagination": {
+            "$ref": "#/components/schemas/PaginationMetaDto"
+          }
+        },
+        "required": [
+          "data",
+          "pagination"
+        ]
+      },
+      "WithdrawalLimitsDto": {
+        "type": "object",
+        "properties": {
+          "minAmountInCents": {
+            "type": "number",
+            "description": "Minimum withdrawal amount in cents"
+          },
+          "maxAmountInCents": {
+            "type": "number",
+            "description": "Maximum withdrawal amount in cents"
+          }
+        },
+        "required": [
+          "minAmountInCents",
+          "maxAmountInCents"
+        ]
+      },
+      "WithdrawalConfigDto": {
+        "type": "object",
+        "properties": {
+          "backendWallet": {
+            "type": "string",
+            "description": "Backend wallet address (spender)"
+          },
+          "supported": {
+            "description": "Supported withdrawal tokens",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/TokenDto"
+            }
+          },
+          "limits": {
+            "description": "Withdrawal amount limits in cents",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/WithdrawalLimitsDto"
+              }
+            ]
+          }
+        },
+        "required": [
+          "backendWallet",
+          "supported",
+          "limits"
+        ]
+      },
+      "MerchantWalletOnchainBalanceItemDto": {
+        "type": "object",
+        "properties": {
+          "chainId": {
+            "type": "string",
+            "description": "CAIP-2 chain id",
+            "example": "eip155:8453"
+          },
+          "token": {
+            "description": "Default withdrawal token metadata from registry",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/TokenDto"
+              }
+            ]
+          },
+          "amountRaw": {
+            "type": "string",
+            "nullable": true,
+            "description": "Token balance in base units (wei / smallest unit) from chain; null if RPC failed",
+            "example": "1500000"
+          },
+          "amountFormatted": {
+            "type": "string",
+            "nullable": true,
+            "description": "Human-readable balance using token decimals; null if amount could not be fetched",
+            "example": "1.5"
+          }
+        },
+        "required": [
+          "chainId",
+          "token",
+          "amountRaw",
+          "amountFormatted"
+        ]
+      },
+      "MerchantWalletOnchainBalancesResponseDto": {
+        "type": "object",
+        "properties": {
+          "balances": {
+            "description": "Per-chain balance for the default withdrawal token (on-chain, not ledger)",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/MerchantWalletOnchainBalanceItemDto"
+            }
+          }
+        },
+        "required": [
+          "balances"
+        ]
+      },
+      "SummaryStatsDto": {
+        "type": "object",
+        "properties": {
+          "totalRevenueTodayUsd": {
+            "type": "number",
+            "description": "Total revenue in USD dollars today",
+            "example": 1234.56
+          },
+          "numTransactionsToday": {
+            "type": "number",
+            "description": "Number of transactions today",
+            "example": 42
+          },
+          "totalRevenueCurrentMonthUsd": {
+            "type": "number",
+            "description": "Total revenue in USD dollars current month",
+            "example": 1234.56
+          },
+          "numTransactionsCurrentMonth": {
+            "type": "number",
+            "description": "Number of transactions current month",
+            "example": 42
+          }
+        },
+        "required": [
+          "totalRevenueTodayUsd",
+          "numTransactionsToday",
+          "totalRevenueCurrentMonthUsd",
+          "numTransactionsCurrentMonth"
+        ]
+      },
+      "AggregatedStatsDto": {
+        "type": "object",
+        "properties": {
+          "totalGrossRevenueUsd": {
+            "type": "number",
+            "description": "Total gross revenue in USD dollars",
+            "example": 1234.56
+          },
+          "totalNetRevenueUsd": {
+            "type": "number",
+            "description": "Total net revenue in USD dollars",
+            "example": 1234.56
+          },
+          "numTransactions": {
+            "type": "number",
+            "description": "Number of transactions",
+            "example": 42
+          },
+          "numCustomers": {
+            "type": "number",
+            "description": "Number of customers",
+            "example": 42
+          },
+          "averageTransactionUsd": {
+            "type": "number",
+            "description": "Average Transaction Value in USD dollars",
+            "example": 12.34
+          },
+          "previousTotalGrossRevenueUsd": {
+            "type": "number",
+            "description": "Previous period total gross revenue in USD dollars",
+            "example": 1000
+          },
+          "previousTotalNetRevenueUsd": {
+            "type": "number",
+            "description": "Previous period total net revenue in USD dollars",
+            "example": 1000
+          },
+          "previousNumTransactions": {
+            "type": "number",
+            "description": "Previous period number of transactions",
+            "example": 35
+          },
+          "previousNumCustomers": {
+            "type": "number",
+            "description": "Previous period number of customers",
+            "example": 35
+          },
+          "previousAverageTransactionUsd": {
+            "type": "number",
+            "description": "Previous period average transaction value in USD dollars",
+            "example": 10
+          },
+          "totalGrossRevenueChangePercent": {
+            "type": "number",
+            "nullable": true,
+            "description": "Percentage change in total gross revenue",
+            "example": 23.46
+          },
+          "totalNetRevenueChangePercent": {
+            "type": "number",
+            "nullable": true,
+            "description": "Percentage change in total net revenue",
+            "example": 23.46
+          },
+          "numTransactionsChangePercent": {
+            "type": "number",
+            "nullable": true,
+            "description": "Percentage change in number of transactions",
+            "example": 20
+          },
+          "numCustomersChangePercent": {
+            "type": "number",
+            "nullable": true,
+            "description": "Percentage change in number of customers",
+            "example": 20
+          },
+          "averageTransactionChangePercent": {
+            "type": "number",
+            "nullable": true,
+            "description": "Percentage change in average transaction value",
+            "example": 23.4
+          }
+        },
+        "required": [
+          "totalGrossRevenueUsd",
+          "totalNetRevenueUsd",
+          "numTransactions",
+          "numCustomers",
+          "averageTransactionUsd",
+          "previousTotalGrossRevenueUsd",
+          "previousTotalNetRevenueUsd",
+          "previousNumTransactions",
+          "previousNumCustomers",
+          "previousAverageTransactionUsd",
+          "totalGrossRevenueChangePercent",
+          "totalNetRevenueChangePercent",
+          "numTransactionsChangePercent",
+          "numCustomersChangePercent",
+          "averageTransactionChangePercent"
+        ]
+      },
+      "DailyTotalDto": {
+        "type": "object",
+        "properties": {
+          "date": {
+            "type": "string",
+            "description": "Day (ISO date, UTC)",
+            "example": "2024-01-01"
+          },
+          "count": {
+            "type": "number",
+            "description": "Number of transactions on this day",
+            "example": 10
+          },
+          "totalRevenueUsd": {
+            "type": "number",
+            "description": "Total revenue in USD dollars on this day",
+            "example": 123.45
+          }
+        },
+        "required": [
+          "date",
+          "count",
+          "totalRevenueUsd"
+        ]
+      },
+      "StatusDistributionItemDto": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "enum": [
+              "pending",
+              "processing",
+              "completed",
+              "failed",
+              "expired",
+              "cancelled"
+            ],
+            "type": "string"
+          },
+          "count": {
+            "type": "number",
+            "example": 5
+          }
+        },
+        "required": [
+          "status",
+          "count"
+        ]
+      },
+      "ChainDistributionItemDto": {
+        "type": "object",
+        "properties": {
+          "chainId": {
+            "type": "string",
+            "description": "CAIP-2 chain id",
+            "example": "eip155:1"
+          },
+          "count": {
+            "type": "number",
+            "example": 7
+          }
+        },
+        "required": [
+          "chainId",
+          "count"
+        ]
+      },
+      "TokenDistributionItemDto": {
+        "type": "object",
+        "properties": {
+          "symbol": {
+            "type": "string",
+            "description": "Token symbol",
+            "example": "USDC"
+          },
+          "count": {
+            "type": "number",
+            "example": 7
+          }
+        },
+        "required": [
+          "symbol",
+          "count"
+        ]
+      },
+      "DetailedAnalyticsDto": {
+        "type": "object",
+        "properties": {
+          "dailyTotals": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/DailyTotalDto"
+            }
+          },
+          "statusDistribution": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/StatusDistributionItemDto"
+            }
+          },
+          "chainDistribution": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ChainDistributionItemDto"
+            }
+          },
+          "tokenDistribution": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/TokenDistributionItemDto"
+            }
+          },
+          "totalOrders": {
+            "type": "number",
+            "description": "Total number of orders in the range",
+            "example": 150
+          },
+          "totalCompleted": {
+            "type": "number",
+            "description": "Total number of completed orders in the range",
+            "example": 123
+          }
+        },
+        "required": [
+          "dailyTotals",
+          "statusDistribution",
+          "chainDistribution",
+          "tokenDistribution",
+          "totalOrders",
+          "totalCompleted"
+        ]
+      },
+      "EstablishSessionResponseDto": {
+        "type": "object",
+        "properties": {
+          "accountId": {
+            "type": "string",
+            "example": "f47ac10b-58cc-4372-a567-0e02b2c3d479"
+          },
+          "evmWalletAddress": {
+            "type": "string",
+            "nullable": true,
+            "example": "0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb"
+          },
+          "solanaWalletAddress": {
+            "type": "string",
+            "nullable": true,
+            "example": "7EcDhSYGxXyscszYAx35jpZjmUiW3FhtCTkMvM47mMEv"
+          }
+        },
+        "required": [
+          "accountId"
+        ]
+      },
+      "PaginatedPaymentDtoResult": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/PaymentDto"
+            }
+          },
+          "pagination": {
+            "$ref": "#/components/schemas/PaginationMetaDto"
+          }
+        },
+        "required": [
+          "data",
+          "pagination"
+        ]
+      },
+      "AccountPaymentStatsDto": {
+        "type": "object",
+        "properties": {
+          "numTransactions": {
+            "type": "number",
+            "description": "Number of completed transactions in the date range",
+            "example": 15
+          },
+          "totalAmountUsd": {
+            "type": "number",
+            "description": "Total amount in USD for completed transactions in the date range",
+            "example": 1234.56
+          }
+        },
+        "required": [
+          "numTransactions",
+          "totalAmountUsd"
+        ]
+      },
+      "DailyLimitInfoDto": {
+        "type": "object",
+        "properties": {
+          "limitCents": {
+            "type": "number",
+            "nullable": true,
+            "description": "Configured daily spending limit in cents"
+          },
+          "usedCents": {
+            "type": "number",
+            "nullable": true,
+            "description": "Amount spent today in cents (UTC)"
+          },
+          "remainingCents": {
+            "type": "number",
+            "nullable": true,
+            "description": "Remaining available spend today in cents (UTC)"
+          }
+        },
+        "required": [
+          "limitCents",
+          "usedCents",
+          "remainingCents"
+        ]
+      },
+      "PreflightResponseDto": {
+        "type": "object",
+        "properties": {
+          "allowed": {
+            "type": "boolean",
+            "example": true
+          },
+          "requestedAmountCents": {
+            "type": "number"
+          },
+          "dailyLimit": {
+            "$ref": "#/components/schemas/DailyLimitInfoDto"
+          }
+        },
+        "required": [
+          "allowed"
+        ]
+      },
+      "UpdateDailyLimitDto": {
+        "type": "object",
+        "properties": {
+          "dailySpendingLimitCents": {
+            "type": "number",
+            "nullable": true,
+            "minimum": 0,
+            "description": "Daily spending limit in cents. Null means unlimited. 0 blocks all.",
+            "example": 10000
+          }
+        }
+      },
+      "AccountWalletDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "accountId": {
+            "type": "string"
+          },
+          "address": {
+            "type": "string",
+            "description": "Wallet address (lowercase)",
+            "example": "0x742d35cc6634c0532925a3b844bc9e7595f0beb"
+          },
+          "type": {
+            "type": "string",
+            "description": "Wallet type",
+            "example": "Metamask"
+          },
+          "createdAt": {
+            "format": "date-time",
+            "type": "string"
+          },
+          "updatedAt": {
+            "format": "date-time",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "accountId",
+          "address",
+          "type",
+          "createdAt",
+          "updatedAt"
+        ]
+      },
+      "CreateAccountWalletDto": {
+        "type": "object",
+        "properties": {
+          "address": {
+            "type": "string",
+            "maxLength": 255,
+            "description": "Wallet address",
+            "example": "0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb"
+          },
+          "type": {
+            "type": "string",
+            "maxLength": 255,
+            "description": "Wallet type",
+            "example": "Metamask"
+          }
+        },
+        "required": [
+          "address",
+          "type"
+        ]
+      }
+    }
+  }
+}

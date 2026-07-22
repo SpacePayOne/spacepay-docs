@@ -7,54 +7,58 @@ description: 'Learn about supported blockchain networks, confirmations, finality
 
 Understanding blockchain fundamentals is essential for integrating cryptocurrency payments effectively. This guide covers the blockchain networks supported by SpacePay, confirmation requirements, finality concepts, and address management.
 
+{/* supported-chains:start */}
+
 ## Supported Chains and Assets
 
-SpacePay supports multiple blockchain networks, each with unique characteristics and use cases. Choose the networks that best fit your business needs and customer preferences.
+SpacePay supports the following blockchain networks and assets.
 
-### Ethereum
+### Mainnet
 
-**Supported Assets on Ethereum:**
+| Network             | Chain ID                                  | Token | Contract address                                   |
+| ------------------- | ----------------------------------------- | ----- | -------------------------------------------------- |
+| Arbitrum            | `eip155:42161`                            | ETH   | Native                                             |
+| Avalanche           | `eip155:43114`                            | AVAX  | Native                                             |
+| Avalanche           | `eip155:43114`                            | USDC  | `0xb97ef9ef8734c71904d8002f8b6bc66dd9c48a6e`       |
+| Avalanche           | `eip155:43114`                            | USDT  | `0x9702230a8ea53601f5cd2dc00fdbc13d4df4a8c7`       |
+| Base                | `eip155:8453`                             | ETH   | Native                                             |
+| Base                | `eip155:8453`                             | USDC  | `0x833589fcd6edb6e08f4c7c32d4f71b54bda02913`       |
+| Binance Smart Chain | `eip155:56`                               | BNB   | Native                                             |
+| Binance Smart Chain | `eip155:56`                               | USDC  | `0x8ac76a51cc950d9822d68b83fe1ad97b32cd580d`       |
+| Binance Smart Chain | `eip155:56`                               | USDT  | `0x55d398326f99059ff775485246999027b3197955`       |
+| Bitcoin             | `bip122:000000000019d6689c085ae165831e93` | BTC   | Native                                             |
+| Bitcoin Cash        | `bip122:000000000000000000651ef99cb9fcbe` | BCH   | Native                                             |
+| Dogecoin            | `bip122:1a91e3dace36e2be3bf030a65679fe82` | DOGE  | Native                                             |
+| Ethereum            | `eip155:1`                                | ETH   | Native                                             |
+| Ethereum            | `eip155:1`                                | USDC  | `0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48`       |
+| Ethereum            | `eip155:1`                                | USDT  | `0xdac17f958d2ee523a2206206994597c13d831ec7`       |
+| Litecoin            | `bip122:12a765e31ffd4059bada1e25190f6e98` | LTC   | Native                                             |
+| Optimism            | `eip155:10`                               | ETH   | Native                                             |
+| Polygon             | `eip155:137`                              | POL   | Native                                             |
+| Polygon             | `eip155:137`                              | USDC  | `0x3c499c542cef5e3811e1192ce70d8cc03d5c3359`       |
+| Polygon             | `eip155:137`                              | USDT  | `0xc2132d05d31c914a87c6611c10748aeb04b58e8f`       |
+| Solana              | `solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp` | SOL   | Native                                             |
+| Solana              | `solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp` | USDC  | `EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v`     |
+| Solana              | `solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp` | USDT  | `Es9vMFrzaCERmJfrF4H2FYD4KCoNkY11McCe8BenwNYB`     |
+| TON                 | `tvm:-239`                                | TON   | Native                                             |
+| TON                 | `tvm:-239`                                | USDT  | `EQCxE6mUtQJKFnGfaROTKOt1lZbDiiX1kCixRv7Nw2Id_sDs` |
+| Tron                | `tron:0x2b6653dc`                         | TRX   | Native                                             |
+| Tron                | `tron:0x2b6653dc`                         | USDT  | `TR7NHqjeKQxGTCi8q8ZY4pL8otSzgjLj6t`               |
+| XRP                 | `xrpl:0`                                  | XRP   | Native                                             |
 
-- **Chain ID**: 1
-- ETH (native)
-- USDC: `0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48`
-- USDT: `0xdac17f958d2ee523a2206206994597c13d831ec7`
+### Testnet networks
 
-### Polygon
+| Network          | Chain ID          | Token | Contract address                             |
+| ---------------- | ----------------- | ----- | -------------------------------------------- |
+| Base Sepolia     | `eip155:84532`    | ETH   | Native                                       |
+| Base Sepolia     | `eip155:84532`    | USDC  | `0x00fc61d7de7655db3984db634e3489130ebeacf6` |
+| Base Sepolia     | `eip155:84532`    | USDT  | `0xe290136a17a1804d4e538bd747b7a48d1a44a629` |
+| Ethereum Sepolia | `eip155:11155111` | ETH   | Native                                       |
+| Ethereum Sepolia | `eip155:11155111` | USDC  | `0xcae5e5b4a5dd769b021f9f93257b44b0742f77d3` |
+| Ethereum Sepolia | `eip155:11155111` | USDT  | `0xd14fce5bc55861c3b71bdea38d22590df8666dbc` |
 
-**Supported Assets on Polygon:**
-
-- **Chain ID**: 137
-- POL (native)
-- USDC: `0x3c499c542cef5e3811e1192ce70d8cc03d5c3359`
-- USDT: `0xc2132d05d31c914a87c6611c10748aeb04b58e8f` (bridged)
-
-### Binance Smart Chain (BSC)
-
-**Supported Assets on BSC:**
-
-- **Chain ID**: 56
-- BNB (native)
-- USDC: `0x8ac76a51cc950d9822d68b83fe1ad97b32cd580d` (bridged)
-- USDT: `0x55d398326f99059ff775485246999027b3197955` (bridged)
-
-### Base
-
-**Supported Assets on Base:**
-
-- **Chain ID**: 8453
-- ETH (native)
-- USDC: `0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913`
-- USDT: `0xfde4C96c8593536E31F229EA8f37b2ADa2699bb2` (bridged)
-
-### Avalanche
-
-**Supported Assets on Avalanche:**
-
-- **Chain ID**: 43114
-- AVAX (native)
-- USDC: `0xB97EF9Ef8734C71904D8002F8b6Bc66Dd9c48a6E`
-- USDT: `0x9702230a8ea53601f5cd2dc00fdbc13d4df4a8c7`
+See [Testing](/developer-docs/testing) for environment URLs and test scenarios.
+{/* supported-chains:end */}
 
 ### Monitoring Confirmations
 

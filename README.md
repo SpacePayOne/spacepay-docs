@@ -22,17 +22,23 @@ yarn format        # write
 yarn format:check  # CI check
 yarn validate      # Mintlify build
 yarn broken-links  # internal link check
+yarn sync:chains   # refresh supported chains/tokens (local data/token-registry dump by default)
+yarn sync:openapi  # refresh filtered external OpenAPI from staging
 ```
+
+Supported networks and tokens are maintained in `developer-docs/blockchain-concepts.mdx` only. Run `yarn sync:chains` (see `.cursor/skills/sync-supported-chains/SKILL.md`) after registry changes. Use `yarn sync:chains --source=api` once the public APIs expose the full enabled set.
 
 ## OpenAPI
 
-Mintlify loads the live spec from:
+API reference pages are generated from `api-reference/openapi.json` (merchant-facing `/v1/external/*` endpoints only) with Mintlify’s interactive playground — same pattern as AlphaGrid. The sidebar groups them under **Payments & Deposits** and **Withdrawals**.
 
-```text
-https://api.spacepay.solutions/docs/swagger.json
+Refresh the filtered spec from staging:
+
+```bash
+yarn sync:openapi
 ```
 
-Testnet is also available at `https://api-testnet.spacepay.solutions/docs/swagger.json` (not wired into `docs.json` by default). Visitors can download the configured spec from the contextual menu on API reference pages (`download-spec` in `docs.json`).
+Visitors can download the configured spec from the contextual menu on API pages (`download-spec` in `docs.json`).
 
 ## Publishing changes
 
